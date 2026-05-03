@@ -14,7 +14,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
-# --- Initial NLTK Setup ---
+# Initial NLTK Setup
 print("Downloading NLTK Data...")
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
@@ -102,7 +102,7 @@ def perform_eda_and_visualize(df):
     print("✅ Visualizations saved as 'keyword_frequency.png' and 'platform_distribution.png'.")
 
 def main():
-    # 1. DEFINE TARGETS (Included MIT to guarantee you hit the 50-200 rubric size)
+    # 1. DEFINE TARGETS
     targets = [
         {"name": "CourseTalk", "url": "https://coursetalk.tumblr.com/"},
         {"name": "Cybrary", "url": "https://www.cybrary.it/catalog/"},
@@ -130,7 +130,7 @@ def main():
             soup = BeautifulSoup(driver.page_source, 'html.parser')
             courses_found = 0
 
-            # --- PARSING LOGIC ---
+            # PARSING
             if "MIT" in site['name']:
                 for card in soup.find_all('article'):
                     title_tag = card.find('div', class_='course-title')
@@ -139,19 +139,16 @@ def main():
                         courses_found += 1
             
             elif site['name'] == "MaharaTech":
-                # NOTE: You may need to inspect the live MaharaTech site to fix this class!
                 for card in soup.find_all('div', class_='coursename'):
                     all_scraped_data.append({"provider": site['name'], "title": card.text.strip(), "url": site['url']})
                     courses_found += 1
                     
             elif site['name'] == "Khan Academy":
-                # NOTE: You may need to inspect the live Khan Academy site to fix this class!
                 for card in soup.find_all('h2', class_='_14hvpoy'): 
                     all_scraped_data.append({"provider": site['name'], "title": card.text.strip(), "url": site['url']})
                     courses_found += 1
 
             else:
-                # GENERIC FALLBACK for Cybrary, CourseTalk, SECC
                 headers = soup.find_all(['h2', 'h3'])
                 for header in headers[:20]: 
                     title = header.text.strip()
@@ -166,18 +163,16 @@ def main():
 
     driver.quit()
 
-    # --- THE DATA PIPELINE ---
+    # DATA PIPELINE
     processed_df = clean_and_process_data(all_scraped_data)
 
     if not processed_df.empty:
         export_df = processed_df.drop(columns=['cleaned_tokens'])
         
-        # Save as JSON
         json_export = export_df.to_dict(orient='records')
         with open("CS_Dataset_Phase1.json", "w") as f:
             json.dump(json_export, f, indent=4)
             
-        # Save as Excel 
         try:
             export_df.to_excel("CS_Dataset_Phase1.xlsx", index=False)
             print("\n✅ Data successfully saved to JSON and Excel.")
@@ -186,7 +181,7 @@ def main():
             print("❌ CLOSE EXCEL AND RUN AGAIN.")
             return
             
-        # Visualizations
+        # Visualization
         perform_eda_and_visualize(processed_df)
 
 if __name__ == "__main__":
