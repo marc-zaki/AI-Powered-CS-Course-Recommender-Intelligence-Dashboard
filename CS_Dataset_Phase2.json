@@ -1,0 +1,1143 @@
+[
+    {
+        "provider": "MIT",
+        "title": "A Gentle Introduction to Programming Using Python",
+        "content_text": "6.189 | Undergraduate  Mihir Kedia Aseem Kishore Engineering Computer Science Software Design and Engineering + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-189-a-gentle-introduction-to-programming-using-python-january-iap-2008/",
+        "indexed_string": "gentle programming using python undergraduate mihir kedia aseem kishore engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Introduction to CS and Programming using Python",
+        "content_text": "6.100L | Undergraduate  Dr. Ana Bell Engineering Computer Science Programming Languages",
+        "url": "https://ocw.mit.edu/courses/6-100l-introduction-to-cs-and-programming-using-python-fall-2022/",
+        "indexed_string": "cs programming using python l undergraduate dr ana bell engineering programming languages"
+    },
+    {
+        "provider": "MIT",
+        "title": "Introduction to Computer Science and Programming in Python",
+        "content_text": "6.0001 | Undergraduate  Dr. Ana Bell Prof. Eric Grimson Prof. John Guttag Engineering Computer Science Programming Languages + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/",
+        "indexed_string": "programming python undergraduate dr ana bell prof eric grimson prof john guttag engineering programming languages"
+    },
+    {
+        "provider": "MIT",
+        "title": "Introduction to Computational Thinking and Data Science",
+        "content_text": "6.0002 | Undergraduate  Dr. Ana Bell Prof. Eric Grimson Prof. John Guttag Engineering Computer Science Mathematics + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/",
+        "indexed_string": "computational thinking data undergraduate dr ana bell prof eric grimson prof john guttag engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Programming for the Puzzled",
+        "content_text": "6.S095 | Undergraduate  Prof. Srini Devadas Engineering Computer Science Programming Languages + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-s095-programming-for-the-puzzled-january-iap-2018/",
+        "indexed_string": "programming puzzled undergraduate prof srini devadas engineering programming languages"
+    },
+    {
+        "provider": "MIT",
+        "title": "Fundamentals of Computational Media Design",
+        "content_text": "MAS.110 | Undergraduate  Dr. V. Michael Bove Dr. Henry Holtzman Prof. David Small + 1 more Visual Arts Media Studies Fine Arts + 3 more",
+        "url": "https://ocw.mit.edu/courses/mas-110-fundamentals-of-computational-media-design-fall-2008/",
+        "indexed_string": "computational media design mas undergraduate dr v michael bove dr henry holtzman prof david small visual arts media studies fine arts"
+    },
+    {
+        "provider": "MIT",
+        "title": "Pervasive Human Centric Computing (SMA 5508)",
+        "content_text": "6.883 | Graduate  Dr. Larry Rudolph Engineering Computer Science Programming Languages + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-883-pervasive-human-centric-computing-sma-5508-spring-2006/",
+        "indexed_string": "pervasive human centric computing sma graduate dr larry rudolph engineering programming languages"
+    },
+    {
+        "provider": "MIT",
+        "title": "Interactive Music Systems",
+        "content_text": "21M.385 | Undergraduate  Eran Egozy Engineering Computer Science Music + 3 more",
+        "url": "https://ocw.mit.edu/courses/21m-385-interactive-music-systems-fall-2016/",
+        "indexed_string": "interactive music systems undergraduate eran egozy engineering music"
+    },
+    {
+        "provider": "MIT",
+        "title": "Music and Technology: Algorithmic and Generative Music",
+        "content_text": "21M.380 | Undergraduate  Prof. Christopher Ariza Engineering Computer Science Music + 8 more",
+        "url": "https://ocw.mit.edu/courses/21m-380-music-and-technology-algorithmic-and-generative-music-spring-2010/",
+        "indexed_string": "music technology algorithmic generative music undergraduate prof christopher ariza engineering music"
+    },
+    {
+        "provider": "MIT",
+        "title": "Artificial Intelligence",
+        "content_text": "6.034 | Undergraduate  Patrick Henry Winston Engineering Computer Science  + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/",
+        "indexed_string": "artificial intelligence undergraduate patrick henry winston engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Medical Artificial Intelligence",
+        "content_text": "HST.947 | Graduate  Prof. Lucila Ohno-Machado Prof. Peter Szolovits Engineering Computer Science Artificial Intelligence + 4 more",
+        "url": "https://ocw.mit.edu/courses/hst-947-medical-artificial-intelligence-spring-2005/",
+        "indexed_string": "medical artificial intelligence hst graduate prof lucila ohnomachado prof peter szolovits engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Ethics for Engineers: Artificial Intelligence",
+        "content_text": "10.01 | Undergraduate  Daniel Doneson Prof. Bernhardt Trout Engineering Computer Science Humanities + 3 more",
+        "url": "https://ocw.mit.edu/courses/10-01-ethics-for-engineers-artificial-intelligence-spring-2020/",
+        "indexed_string": "ethics engineers artificial intelligence undergraduate daniel doneson prof bernhardt trout engineering humanities"
+    },
+    {
+        "provider": "MIT",
+        "title": "Techniques in Artificial Intelligence (SMA 5504)",
+        "content_text": "6.825 | Graduate  Prof. Leslie Kaelbling Prof. Tom\u00e1s Lozano-P\u00e9rez Engineering Science Computer Science + 3 more",
+        "url": "https://ocw.mit.edu/courses/6-825-techniques-in-artificial-intelligence-sma-5504-fall-2002/",
+        "indexed_string": "techniques artificial intelligence sma graduate prof leslie kaelbling prof toms lozanoprez engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Generative Artificial Intelligence in K\u201312 Education",
+        "content_text": "6.S062 | Undergraduate  Prof. Harold Abelson Safinah Ali Prof. Cynthia Breazeal + 3 more Engineering Computer Science Artificial Intelligence + 3 more",
+        "url": "https://ocw.mit.edu/courses/6-s062-generative-artificial-intelligence-in-k12-education-fall-2023/",
+        "indexed_string": "generative artificial intelligence k education undergraduate prof harold abelson safinah ali prof cynthia breazeal engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Physical Intelligence",
+        "content_text": "PE.910 | Undergraduate  Noah Riskin Science Health and Medicine Physical Education and Recreation + 1 more",
+        "url": "https://ocw.mit.edu/courses/pe-910-physical-intelligence-january-iap-2002/",
+        "indexed_string": "physical intelligence pe undergraduate noah riskin health medicine physical education recreation"
+    },
+    {
+        "provider": "MIT",
+        "title": "Intelligence: Practice, Problems and Prospects",
+        "content_text": "17.951 | Graduate  Prof. Barry Posen Prof. Harvey Sapolsky Prof. Robert Vickers Social Science Public Administration Political Science + 3 more",
+        "url": "https://ocw.mit.edu/courses/17-951-intelligence-practice-problems-and-prospects-spring-2005/",
+        "indexed_string": "intelligence practice problems prospects graduate prof barry posen prof harvey sapolsky prof robert vickers social public administration political"
+    },
+    {
+        "provider": "MIT",
+        "title": "Ambient Intelligence",
+        "content_text": "MAS.961 | Graduate  Prof. Patricia Maes Engineering Computer Science Artificial Intelligence + 4 more",
+        "url": "https://ocw.mit.edu/courses/mas-961-ambient-intelligence-spring-2005/",
+        "indexed_string": "ambient intelligence mas graduate prof patricia maes engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "The Human Intelligence Enterprise",
+        "content_text": "6.803 | Undergraduate  Patrick Henry Winston Engineering Science Computer Science + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-803-the-human-intelligence-enterprise-spring-2019/",
+        "indexed_string": "human intelligence enterprise undergraduate patrick henry winston engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Data Management",
+        "content_text": "RES.STR-002 | Non-Credit  MIT Libraries  Business Information Technology Project Management",
+        "url": "https://ocw.mit.edu/courses/res-str-002-data-management-spring-2016/",
+        "indexed_string": "data management resstr noncredit mit libraries business information technology project management"
+    },
+    {
+        "provider": "MIT",
+        "title": "Topics in Mathematics of Data Science",
+        "content_text": "18.S096 | Undergraduate  Dr. Afonso Bandeira Engineering Computer Science Mathematics + 3 more",
+        "url": "https://ocw.mit.edu/courses/18-s096-topics-in-mathematics-of-data-science-fall-2015/",
+        "indexed_string": "topics mathematics data undergraduate dr afonso bandeira engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "CS3 Lecture Series: Fundamentals of Climate Science and Policy",
+        "content_text": "RES.ENV-009 | Non-Credit  MIT Center for Sustainability Science and Strategy Energy Climate",
+        "url": "https://ocw.mit.edu/courses/res-env-009-cs3-lecture-series-fundamentals-of-climate-science-and-policy-january-iap-2026/",
+        "indexed_string": "cs lecture series climate policy resenv noncredit mit center sustainability strategy energy climate"
+    },
+    {
+        "provider": "MIT",
+        "title": "Collaborative Data Science for Healthcare",
+        "content_text": "HST.953 | Graduate  Dr. Louis  Agha-Mir-Salim Leo A. Celi Marie-Laure  Charpignon Engineering Computer Science Artificial Intelligence + 5 more",
+        "url": "https://ocw.mit.edu/courses/hst-953-collaborative-data-science-for-healthcare-fall-2020/",
+        "indexed_string": "collaborative data healthcare hst graduate dr louis aghamirsalim leo celi marielaure charpignon engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Global Warming Science",
+        "content_text": "12.340 | Undergraduate  Prof. Daniel Cziczo Prof. Kerry Emanuel Prof. David McGee + 1 more Science Earth Science Energy + 4 more",
+        "url": "https://ocw.mit.edu/courses/12-340-global-warming-science-spring-2012/",
+        "indexed_string": "global warming undergraduate prof daniel cziczo prof kerry emanuel prof david mcgee earth energy"
+    },
+    {
+        "provider": "MIT",
+        "title": "The Science Essay",
+        "content_text": "21W.777 | Undergraduate  Karen Boiko Humanities Literature Criticism + 3 more",
+        "url": "https://ocw.mit.edu/courses/21w-777-the-science-essay-spring-2009/",
+        "indexed_string": "essay w undergraduate karen boiko humanities literature criticism"
+    },
+    {
+        "provider": "MIT",
+        "title": "Political Science Laboratory",
+        "content_text": "17.871 | Undergraduate  Prof. Charles Stewart Mathematics Probability and Statistics Social Science + 1 more",
+        "url": "https://ocw.mit.edu/courses/17-871-political-science-laboratory-spring-2012/",
+        "indexed_string": "political laboratory undergraduate prof charles stewart mathematics probability statistics social"
+    },
+    {
+        "provider": "MIT",
+        "title": "Science and Communication",
+        "content_text": "12.757 | Graduate  Dr. James F. Price Communication Science Humanities + 3 more",
+        "url": "https://ocw.mit.edu/courses/12-757-science-and-communication-spring-2005/",
+        "indexed_string": "communication graduate dr james f price communication humanities"
+    },
+    {
+        "provider": "MIT",
+        "title": "Machine Learning for Healthcare",
+        "content_text": "6.S897 | Graduate  Prof. David Sontag Prof. Peter Szolovits Engineering Computer Science Artificial Intelligence + 4 more",
+        "url": "https://ocw.mit.edu/courses/6-s897-machine-learning-for-healthcare-spring-2019/",
+        "indexed_string": "machine healthcare graduate prof david sontag prof peter szolovits engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Machine Learning",
+        "content_text": "6.867 | Graduate  Prof. Tommi Jaakkola Ali Mohammad Rohit Singh Engineering Science Computer Science + 5 more",
+        "url": "https://ocw.mit.edu/courses/6-867-machine-learning-fall-2006/",
+        "indexed_string": "machine graduate prof tommi jaakkola ali mohammad rohit singh engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Algorithmic Aspects of Machine Learning",
+        "content_text": "18.409 | Graduate  Prof. Ankur Moitra Engineering Computer Science Mathematics + 4 more",
+        "url": "https://ocw.mit.edu/courses/18-409-algorithmic-aspects-of-machine-learning-spring-2015/",
+        "indexed_string": "algorithmic aspects machine graduate prof ankur moitra engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Mathematics of Machine Learning",
+        "content_text": "18.657 | Graduate  Prof. Philippe Rigollet Engineering Computer Science Artificial Intelligence + 6 more",
+        "url": "https://ocw.mit.edu/courses/18-657-mathematics-of-machine-learning-fall-2015/",
+        "indexed_string": "mathematics machine graduate prof philippe rigollet engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Prediction: Machine Learning and Statistics",
+        "content_text": "15.097 | Graduate  Prof. Cynthia Rudin Engineering Computer Science Artificial Intelligence + 4 more",
+        "url": "https://ocw.mit.edu/courses/15-097-prediction-machine-learning-and-statistics-spring-2012/",
+        "indexed_string": "prediction machine statistics graduate prof cynthia rudin engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Mathematics of Big Data and Machine Learning",
+        "content_text": "RES.LL-005 | Undergraduate  Dr. Vijay Gadepally Dr. Jeremy Kepner Engineering Computer Science Business + 2 more",
+        "url": "https://ocw.mit.edu/courses/res-ll-005-mathematics-of-big-data-and-machine-learning-january-iap-2020/",
+        "indexed_string": "mathematics big data machine resll undergraduate dr vijay gadepally dr jeremy kepner engineering business"
+    },
+    {
+        "provider": "MIT",
+        "title": "Exploring Fairness in Machine Learning for International Development",
+        "content_text": "RES.EC-001 | Non-Credit  Dr. Richard Fletcher Prof. Daniel Frey Amit Gandhi + 2 more Engineering Computer Science Artificial Intelligence + 2 more",
+        "url": "https://ocw.mit.edu/courses/res-ec-001-exploring-fairness-in-machine-learning-for-international-development-spring-2020/",
+        "indexed_string": "exploring fairness machine international development resec noncredit dr richard fletcher prof daniel frey amit gandhi engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Introduction to Machine Learning",
+        "content_text": "6.036 | Undergraduate  Prof. Duane Boning Prof. Isaac Chuang Prof. Leslie Kaelbling + 1 more Engineering Computer Science Artificial Intelligence + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-036-introduction-to-machine-learning-fall-2020/",
+        "indexed_string": "machine undergraduate prof duane boning prof isaac chuang prof leslie kaelbling engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Matrix Calculus for Machine Learning and Beyond",
+        "content_text": "18.S096 | Undergraduate  Prof. Alan Edelman Prof. Steven G. Johnson Mathematics Applied Mathematics Linear Algebra + 1 more",
+        "url": "https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/",
+        "indexed_string": "matrix calculus machine beyond undergraduate prof alan edelman prof steven g johnson mathematics applied mathematics linear algebra"
+    },
+    {
+        "provider": "MIT",
+        "title": "Machine Learning for Inverse Graphics",
+        "content_text": "6.S980 | Graduate  Prof. Vincent Sitzmann Engineering Computer Science Artificial Intelligence + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-s980-machine-learning-for-inverse-graphics-fall-2022/",
+        "indexed_string": "machine inverse graphics graduate prof vincent sitzmann engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "Network and Computer Security",
+        "content_text": "6.857 | Graduate  Prof. Ronald Rivest Engineering Computer Science Social Science + 4 more",
+        "url": "https://ocw.mit.edu/courses/6-857-network-and-computer-security-spring-2014/",
+        "indexed_string": "network security graduate prof ronald rivest engineering social"
+    },
+    {
+        "provider": "MIT",
+        "title": "Social and Ethical Responsibilities of Computing (SERC)",
+        "content_text": "RES.TLL-008 | Non-Credit  SERC Contributors Engineering Computer Science Artificial Intelligence + 3 more",
+        "url": "https://ocw.mit.edu/courses/res-tll-008-social-and-ethical-responsibilities-of-computing-serc/",
+        "indexed_string": "social ethical responsibilities computing serc restll noncredit serc contributors engineering artificial intelligence"
+    },
+    {
+        "provider": "MIT",
+        "title": "LL EduCATE: Introduction to Engineering Concepts",
+        "content_text": "RES.LL-004 | Non-Credit  Juliana Furgala Cristina Gath Adam Kern + 5 more Engineering",
+        "url": "https://ocw.mit.edu/courses/res.ll-004-ll-educate-introduction-to-engineering-concepts-spring-2022/",
+        "indexed_string": "educate engineering concepts resll noncredit juliana furgala cristina gath adam kern engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Foundations of Information Policy",
+        "content_text": "6.4590 | Undergraduate, Graduate  Prof. Harold Abelson Prof. Michael M.J. Fischer Prof. Daniel Weitzner Engineering Computer Science Social Science + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-4590-foundations-of-information-policy-fall-2024/",
+        "indexed_string": "foundations information policy undergraduate graduate prof harold abelson prof michael mj fischer prof daniel weitzner engineering social"
+    },
+    {
+        "provider": "MIT",
+        "title": "Energy Decisions, Markets, and Policies",
+        "content_text": "15.031J | Undergraduate  Prof. Richard Schmalensee Economics Social Science Public Administration + 5 more",
+        "url": "https://ocw.mit.edu/courses/15-031j-energy-decisions-markets-and-policies-spring-2012/",
+        "indexed_string": "energy decisions markets policies j undergraduate prof richard schmalensee economics social public administration"
+    },
+    {
+        "provider": "MIT",
+        "title": "Entrepreneurship Without Borders",
+        "content_text": "15.395 | Graduate  Michael Casey Brian Forde Prof. Simon Johnson Entrepreneurship Economics Social Science + 2 more",
+        "url": "https://ocw.mit.edu/courses/15-395-entrepreneurship-without-borders-fall-2016/",
+        "indexed_string": "entrepreneurship without borders graduate michael casey brian forde prof simon johnson entrepreneurship economics social"
+    },
+    {
+        "provider": "MIT",
+        "title": "Computer Systems Security",
+        "content_text": "6.858 | Graduate  Prof. Nickolai Zeldovich Engineering Computer Science Software Design and Engineering + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/",
+        "indexed_string": "systems security graduate prof nickolai zeldovich engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Liberalism, Toleration, and Freedom of Speech",
+        "content_text": "24.150J | Undergraduate  Prof. Alex Byrne Prof. Brad Skow Humanities Philosophy Political Philosophy",
+        "url": "https://ocw.mit.edu/courses/24-150j-liberalism-toleration-and-freedom-of-speech-fall-2023/",
+        "indexed_string": "liberalism toleration freedom speech j undergraduate prof alex byrne prof brad skow humanities philosophy political philosophy"
+    },
+    {
+        "provider": "MIT",
+        "title": "FinTech: Shaping the Financial World",
+        "content_text": "15.S08 | Graduate  Prof. Gary Gensler Engineering Computer Science Innovation + 4 more",
+        "url": "https://ocw.mit.edu/courses/15-s08-fintech-shaping-the-financial-world-spring-2020/",
+        "indexed_string": "fintech shaping financial world graduate prof gary gensler engineering innovation"
+    },
+    {
+        "provider": "MIT",
+        "title": "Algorithms for Inference",
+        "content_text": "6.438 | Graduate  Prof. Devavrat Shah Engineering Computer Science Mathematics + 3 more",
+        "url": "https://ocw.mit.edu/courses/6-438-algorithms-for-inference-fall-2014/",
+        "indexed_string": "algorithms inference graduate prof devavrat shah engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Distributed Algorithms",
+        "content_text": "6.852J | Graduate  Prof. Nancy Lynch Engineering Computer Science Algorithms and Data Structures + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-852j-distributed-algorithms-fall-2009/",
+        "indexed_string": "distributed algorithms j graduate prof nancy lynch engineering algorithms data structures"
+    },
+    {
+        "provider": "MIT",
+        "title": "Advanced Algorithms",
+        "content_text": "6.854J | Graduate  Prof. Michel Goemans Engineering Computer Science Algorithms and Data Structures + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-854j-advanced-algorithms-fall-2008/",
+        "indexed_string": "advanced algorithms j graduate prof michel goemans engineering algorithms data structures"
+    },
+    {
+        "provider": "MIT",
+        "title": "Behavior of Algorithms",
+        "content_text": "18.409 | Graduate  Prof. Daniel Spielman Engineering Computer Science Mathematics + 4 more",
+        "url": "https://ocw.mit.edu/courses/18-409-behavior-of-algorithms-spring-2002/",
+        "indexed_string": "behavior algorithms graduate prof daniel spielman engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Introduction to Algorithms",
+        "content_text": "6.006 | Undergraduate  Prof. Erik Demaine Dr. Jason Ku Prof. Justin Solomon Engineering Computer Science Mathematics + 3 more",
+        "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+        "indexed_string": "algorithms undergraduate prof erik demaine dr jason ku prof justin solomon engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Randomized Algorithms",
+        "content_text": "6.856J | Graduate  Prof. David R. Karger Engineering Computer Science Mathematics + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-856j-randomized-algorithms-fall-2002/",
+        "indexed_string": "randomized algorithms j graduate prof david r karger engineering mathematics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Design and Analysis of Algorithms",
+        "content_text": "6.046J | Undergraduate  Prof. Dana Moshkovitz Prof. Bruce Tidor Engineering Computer Science Algorithms and Data Structures",
+        "url": "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2012/",
+        "indexed_string": "design analysis algorithms j undergraduate prof dana moshkovitz prof bruce tidor engineering algorithms data structures"
+    },
+    {
+        "provider": "MIT",
+        "title": "Laboratory in Software Engineering",
+        "content_text": "6.170 | Undergraduate  Prof. Srini Devadas Prof. Daniel Jackson Engineering Computer Science Software Design and Engineering",
+        "url": "https://ocw.mit.edu/courses/6-170-laboratory-in-software-engineering-fall-2005/",
+        "indexed_string": "laboratory software engineering undergraduate prof srini devadas prof daniel jackson engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Software Engineering Concepts",
+        "content_text": "16.355J | Graduate  Prof. Nancy Leveson Engineering Computer Science Systems Engineering + 4 more",
+        "url": "https://ocw.mit.edu/courses/16-355j-software-engineering-concepts-fall-2005/",
+        "indexed_string": "software engineering concepts j graduate prof nancy leveson engineering systems engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Foundations of Software Engineering",
+        "content_text": "1.124J | Graduate  Prof. Kevin Amaratunga Engineering Computer Science Software Design and Engineering",
+        "url": "https://ocw.mit.edu/courses/1-124j-foundations-of-software-engineering-fall-2000/",
+        "indexed_string": "foundations software engineering j graduate prof kevin amaratunga engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Software Engineering for Web Applications",
+        "content_text": "6.171 | Undergraduate  Prof. Harold Abelson Dr. Philip Greenspun Engineering Computer Science Electrical Engineering + 5 more",
+        "url": "https://ocw.mit.edu/courses/6-171-software-engineering-for-web-applications-fall-2003/",
+        "indexed_string": "software engineering web applications undergraduate prof harold abelson dr philip greenspun engineering electrical engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Performance Engineering of Software Systems",
+        "content_text": "6.172 | Undergraduate  Prof. Charles Leiserson Prof. Julian Shun Engineering Computer Science Systems Engineering + 3 more",
+        "url": "https://ocw.mit.edu/courses/6-172-performance-engineering-of-software-systems-fall-2018/",
+        "indexed_string": "performance engineering software systems undergraduate prof charles leiserson prof julian shun engineering systems engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "The Software Business",
+        "content_text": "15.358 | Graduate  Prof. Michael Cusumano Engineering Computer Science Entrepreneurship + 4 more",
+        "url": "https://ocw.mit.edu/courses/15-358-the-software-business-fall-2005/",
+        "indexed_string": "software business graduate prof michael cusumano engineering entrepreneurship"
+    },
+    {
+        "provider": "MIT",
+        "title": "Software Studio",
+        "content_text": "6.170 | Undergraduate  Prof. Daniel Jackson Engineering Computer Science Software Design and Engineering + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-170-software-studio-spring-2013/",
+        "indexed_string": "software studio undergraduate prof daniel jackson engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Software Construction",
+        "content_text": "6.005 | Undergraduate  Dr. Max Goldman Prof. Robert Miller Engineering Computer Science Software Design and Engineering + 2 more",
+        "url": "https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/",
+        "indexed_string": "software construction undergraduate dr max goldman prof robert miller engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Internal Combustion Engines",
+        "content_text": "2.61 | Graduate  Prof. Wai Cheng Engineering Science Physics + 8 more",
+        "url": "https://ocw.mit.edu/courses/2-61-internal-combustion-engines-spring-2017/",
+        "indexed_string": "internal combustion engines graduate prof wai cheng engineering physics"
+    },
+    {
+        "provider": "MIT",
+        "title": "Operating System Engineering",
+        "content_text": "6.828 | Graduate  Prof. Frans Kaashoek Engineering Computer Science Software Design and Engineering + 1 more",
+        "url": "https://ocw.mit.edu/courses/6-828-operating-system-engineering-fall-2012/",
+        "indexed_string": "operating system engineering graduate prof frans kaashoek engineering software design engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Database Systems",
+        "content_text": "6.830 | Graduate, Undergraduate  Dr. Carlo Curino Prof. Samuel Madden Prof. Robert Morris + 1 more Engineering Computer Science Business + 4 more",
+        "url": "https://ocw.mit.edu/courses/6-830-database-systems-fall-2010/",
+        "indexed_string": "database systems graduate undergraduate dr carlo curino prof samuel madden prof robert morris engineering business"
+    },
+    {
+        "provider": "MIT",
+        "title": "Spatial Database Management and Advanced Geographic Information Systems",
+        "content_text": "11.521 | Graduate  Prof. Joseph Ferreira Prof. Lorlene Hoyt Engineering Computer Science Social Science + 10 more",
+        "url": "https://ocw.mit.edu/courses/11-521-spatial-database-management-and-advanced-geographic-information-systems-spring-2003/",
+        "indexed_string": "spatial database management advanced geographic information systems graduate prof joseph ferreira prof lorlene hoyt engineering social"
+    },
+    {
+        "provider": "MIT",
+        "title": "Database, Internet, and Systems Integration Technologies",
+        "content_text": "1.264J | Graduate  Dr. George Kocur Engineering Computer Science Business + 3 more",
+        "url": "https://ocw.mit.edu/courses/1-264j-database-internet-and-systems-integration-technologies-fall-2013/",
+        "indexed_string": "database internet systems integration technologies j graduate dr george kocur engineering business"
+    },
+    {
+        "provider": "MIT",
+        "title": "Introduction to Computers in Public Management II",
+        "content_text": "11.208 | Graduate  Prof. Joseph Ferreira Thomas Grayson Prof. Lorlene Hoyt Engineering Systems Engineering Social Science + 6 more",
+        "url": "https://ocw.mit.edu/courses/11-208-introduction-to-computers-in-public-management-ii-january-iap-2002/",
+        "indexed_string": "computers public management ii graduate prof joseph ferreira thomas grayson prof lorlene hoyt engineering systems engineering social"
+    },
+    {
+        "provider": "MIT",
+        "title": "Information Technology Essentials",
+        "content_text": "15.561 | Graduate  Prof. Thomas Malone Engineering Computer Science Business + 3 more",
+        "url": "https://ocw.mit.edu/courses/15-561-information-technology-essentials-spring-2005/",
+        "indexed_string": "information technology essentials graduate prof thomas malone engineering business"
+    },
+    {
+        "provider": "MIT",
+        "title": "Computer Algorithms in Systems Engineering",
+        "content_text": "1.204 | Graduate  Dr. George Kocur Engineering Computer Science Systems Engineering + 1 more",
+        "url": "https://ocw.mit.edu/courses/1-204-computer-algorithms-in-systems-engineering-spring-2010/",
+        "indexed_string": "algorithms systems engineering graduate dr george kocur engineering systems engineering"
+    },
+    {
+        "provider": "MIT",
+        "title": "Biomedical Information Technology",
+        "content_text": "20.453J | Graduate  Prof. Sourav Saha Bhowmick Prof. C. Forbes Dewey Prof. Hanry Yu Engineering Computer Science Biological Engineering + 8 more",
+        "url": "https://ocw.mit.edu/courses/20-453j-biomedical-information-technology-fall-2008/",
+        "indexed_string": "biomedical information technology j graduate prof sourav saha bhowmick prof c forbes dewey prof hanry yu engineering biological engineering"
+    },
+    {
+        "provider": "University of Michigan",
+        "title": "Python for Everybody",
+        "content_text": "Build toward a degree Specialization",
+        "url": "https://www.coursera.org/specializations/python",
+        "indexed_string": "python everybody build toward degree specialization"
+    },
+    {
+        "provider": "University of Michigan",
+        "title": "Programming for Everybody (Getting Started with Python)",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/python",
+        "indexed_string": "programming everybody getting started python"
+    },
+    {
+        "provider": "IBM",
+        "title": "IBM AI Developer",
+        "content_text": "Build toward a degree Professional Certificate",
+        "url": "https://www.coursera.org/professional-certificates/applied-artifical-intelligence-ibm-watson-ai",
+        "indexed_string": "ibm ai developer build toward degree professional certificate"
+    },
+    {
+        "provider": "IBM",
+        "title": "IBM DevOps and Software Engineering",
+        "content_text": "Build toward a degree Professional Certificate",
+        "url": "https://www.coursera.org/professional-certificates/devops-and-software-engineering",
+        "indexed_string": "ibm devops software engineering build toward degree professional certificate"
+    },
+    {
+        "provider": "Coursera",
+        "title": "Python Developer",
+        "content_text": "",
+        "url": "https://www.coursera.org/career-academy/roles/python-developer?recommenderId=role-ranker",
+        "indexed_string": "python developer"
+    },
+    {
+        "provider": "Coursera",
+        "title": "User Interface / User Experience (UI / UX) Designer",
+        "content_text": "",
+        "url": "https://www.coursera.org/career-academy/roles/user-interface-user-experience-ui-ux-designer?recommenderId=role-ranker",
+        "indexed_string": "user interface user experience ui ux designer"
+    },
+    {
+        "provider": "Google",
+        "title": "Google Cybersecurity",
+        "content_text": "Build toward a degree Professional Certificate",
+        "url": "https://www.coursera.org/professional-certificates/google-cybersecurity",
+        "indexed_string": "google cybersecurity build toward degree professional certificate"
+    },
+    {
+        "provider": "Google",
+        "title": "Google UX Design",
+        "content_text": "Build toward a degree Professional Certificate",
+        "url": "https://www.coursera.org/professional-certificates/google-ux-design",
+        "indexed_string": "google ux design build toward degree professional certificate"
+    },
+    {
+        "provider": "Scrimba",
+        "title": "Intro to Dall-E and GPT Vision",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/intro-to-dall-e-and-gpt-vision",
+        "indexed_string": "intro dalle gpt vision"
+    },
+    {
+        "provider": "Packt",
+        "title": "Build a DALL-E Generator with React, JS & OpenAI",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/packt-build-a-dall-e-generator-with-react-js-and-openai-o4gwg",
+        "indexed_string": "build dalle generator react js openai"
+    },
+    {
+        "provider": "Codio",
+        "title": "Images with  DALL-E",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/codio-images-with-dalle",
+        "indexed_string": "images dalle"
+    },
+    {
+        "provider": "Coursera",
+        "title": "ChatGPT for Beginners: SciFi Writing with Dall-e",
+        "content_text": "Guided Project",
+        "url": "https://www.coursera.org/projects/chatgpt-dall-e-scifi-writing",
+        "indexed_string": "chatgpt beginners scifi writing dalle guided project"
+    },
+    {
+        "provider": "University of Colorado Boulder",
+        "title": "Introduction to Generative AI",
+        "content_text": "Build toward a degree Course",
+        "url": "https://www.coursera.org/learn/introduction-generative-ai",
+        "indexed_string": "generative ai build toward degree"
+    },
+    {
+        "provider": "Alberta Machine Intelligence Institute",
+        "title": "Introduction to Generative AI: Concepts and Techniques",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/introduction-to-generative-ai-concepts-and-techniques",
+        "indexed_string": "generative ai concepts techniques"
+    },
+    {
+        "provider": "Pearson",
+        "title": "Programming Generative AI: Unit 1",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/pearson-programming-generative-ai-video-course-1-ka3z6",
+        "indexed_string": "programming generative ai unit"
+    },
+    {
+        "provider": "University of Michigan",
+        "title": "C Programming for Everybody",
+        "content_text": "Specialization",
+        "url": "https://www.coursera.org/specializations/c-programming-for-everybody",
+        "indexed_string": "c programming everybody specialization"
+    },
+    {
+        "provider": "Simplilearn",
+        "title": "Python Programming Essentials Training",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/python-programming-essentials-training",
+        "indexed_string": "python programming essentials training"
+    },
+    {
+        "provider": "University of London",
+        "title": "Bachelor of Science in Computer Science",
+        "content_text": "Earn a degree Degree",
+        "url": "https://www.coursera.org/degrees/bachelor-of-science-computer-science-london",
+        "indexed_string": "bachelor earn degree degree"
+    },
+    {
+        "provider": "University of Huddersfield",
+        "title": "BSc Data Science",
+        "content_text": "Earn a degree Degree",
+        "url": "https://www.coursera.org/degrees/bsc-data-science-huddersfield",
+        "indexed_string": "bsc data earn degree degree"
+    },
+    {
+        "provider": "University of Illinois Urbana-Champaign",
+        "title": "Master of Business Administration (iMBA)",
+        "content_text": "Earn a degree Degree",
+        "url": "https://www.coursera.org/degrees/imba",
+        "indexed_string": "master business administration imba earn degree degree"
+    },
+    {
+        "provider": "University of Illinois Urbana-Champaign",
+        "title": "Master of Science in Management (iMSM)",
+        "content_text": "Earn a degree Degree",
+        "url": "https://www.coursera.org/degrees/ms-management-illinois",
+        "indexed_string": "master management imsm earn degree degree"
+    },
+    {
+        "provider": "Google",
+        "title": "Google AI",
+        "content_text": "Skills you'll gain: Vibe coding, Prompt Patterns, AI powered creativity, Brainstorming, Planning, AI literacy, Visual Storytelling, Responsible AI, Prompt Engineering Tools, Generative AI, Data Wrangling, Data Analysis, Content Creation, Artificial Intelligence, Presentations, Business Communication, Data Visualization, Research, Project Management, Machine Learning 4.8 Rating, 4.8 out of 5 stars \u00b7 3.7K reviews Beginner \u00b7 Professional Certificate \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/professional-certificates/google-ai",
+        "indexed_string": "google ai skills youll gain vibe coding prompt patterns ai powered creativity brainstorming planning ai literacy visual storytelling responsible ai prompt engineering tools generative ai data wrangling data analysis content creation artificial intelligence presentations business communication data visualization research project management machine rating stars k reviews beginner professional certificate months"
+    },
+    {
+        "provider": "Google",
+        "title": "Google Data Analytics",
+        "content_text": "Skills you'll gain: Data Storytelling, Rmarkdown, Data Visualization, Data Presentation, Data Ethics, Data Cleansing, Interactive Data Visualization, Data Validation, Ggplot2,  Sheets, Sampling (Statistics), Spreadsheet Software, Data Analysis, Stakeholder Communications, LinkedIn, Object Oriented Programming (OOP), File Management, Web Presence, Data Structures, Interviewing Skills Build toward a degree 4.8 Rating, 4.8 out of 5 stars \u00b7 179K reviews Beginner \u00b7 Professional Certificate \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/professional-certificates/google-data-analytics",
+        "indexed_string": "google data analytics skills youll gain data storytelling rmarkdown data visualization data presentation data ethics data cleansing interactive data visualization data validation ggplot sheets sampling statistics spreadsheet software data analysis stakeholder communications linkedin object oriented programming oop file management web presence data structures interviewing skills build toward degree rating stars k reviews beginner professional certificate months"
+    },
+    {
+        "provider": "Google",
+        "title": "Google AI Essentials",
+        "content_text": "Skills you'll gain: Prompt Patterns,  Gemini, Generative AI, AI literacy, Model Training, AI Integrations,  Sheets, Critical Thinking, Innovation 4.8 Rating, 4.8 out of 5 stars \u00b7 22K reviews Beginner \u00b7 Specialization \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/specializations/ai-essentials-google",
+        "indexed_string": "google ai essentials skills youll gain prompt patterns gemini generative ai ai literacy model training ai integrations sheets critical thinking innovation rating stars k reviews beginner specialization months"
+    },
+    {
+        "provider": "Google",
+        "title": "Google Project Management",
+        "content_text": "Skills you'll gain: Quality Management, Project Closure, Scope Management, Team Management, Project Management Life Cycle, Product Quality (QA/QC), Sprint Retrospectives, Project Management, Project Planning, Agile Project Management, Quality Assessment, Quality Assurance, Backlogs, Team Leadership, Project Scoping, Agile Software Development, Stakeholder Communications, Change Management, Web Presence, Interviewing Skills Build toward a degree 4.8 Rating, 4.8 out of 5 stars \u00b7 143K reviews Beginner \u00b7 Professional Certificate \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/professional-certificates/google-project-management",
+        "indexed_string": "google project management skills youll gain quality management project closure scope management team management project management life cycle product quality qaqc sprint retrospectives project management project planning agile project management quality assessment quality assurance backlogs team leadership project scoping agile software development stakeholder communications change management web presence interviewing skills build toward degree rating stars k reviews beginner professional certificate months"
+    },
+    {
+        "provider": "Google",
+        "title": "Google IT Support",
+        "content_text": "Skills you'll gain: IT Security Architecture, Computer Networking, Operating System Administration, Package and Software Management, Network Troubleshooting, Version Control, IT Automation, Systems Administration, IT Infrastructure, Network Administration, Information Systems Security, TCP/IP, Git (Version Control System), Chef (Configuration Management Tool), Network Security, General Networking, Ruby (Programming Language), Desktop Support, Web Presence, Interviewing Skills Build toward a degree 4.8 Rating, 4.8 out of 5 stars \u00b7 214K reviews Beginner \u00b7 Professional Certificate \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/professional-certificates/google-it-support",
+        "indexed_string": "google support skills youll gain security architecture networking operating system administration package software management network troubleshooting version control automation systems administration infrastructure network administration information systems security tcpip git version control system chef configuration management tool network security general networking ruby programming language desktop support web presence interviewing skills build toward degree rating stars k reviews beginner professional certificate months"
+    },
+    {
+        "provider": "Google",
+        "title": "Google Digital Marketing & E-commerce",
+        "content_text": "Skills you'll gain: Data Storytelling, Media Planning, Social Media Marketing,  Ads, Email Marketing, Social Media Strategy, Order Fulfillment, Paid media, Social Media Management, Online Advertising, Search Engine Optimization, Performance Measurement, Spreadsheet Software, Client Services, Campaign Management, E-Commerce, Loyalty Programs, Marketing, Web Presence, Interviewing Skills Build toward a degree 4.8 Rating, 4.8 out of 5 stars \u00b7 49K reviews Beginner \u00b7 Professional Certificate \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/professional-certificates/google-digital-marketing-ecommerce",
+        "indexed_string": "google digital marketing ecommerce skills youll gain data storytelling media planning social media marketing ads email marketing social media strategy order fulfillment paid media social media management online advertising search engine optimization performance measurement spreadsheet software client services campaign management ecommerce loyalty programs marketing web presence interviewing skills build toward degree rating stars k reviews beginner professional certificate months"
+    },
+    {
+        "provider": "DeepLearning.AI",
+        "title": "AI For Everyone",
+        "content_text": "Skills you'll gain: AI Product Strategy, Responsible AI, Data Ethics, AI Enablement, Applied Machine Learning, Artificial Intelligence, AI literacy, Machine Learning, Data Science, AI Integrations, Deep Learning, Artificial Neural Networks 4.8 Rating, 4.8 out of 5 stars \u00b7 52K reviews Beginner \u00b7 Course \u00b7 1 - 4 Weeks",
+        "url": "https://www.coursera.org/learn/ai-for-everyone",
+        "indexed_string": "ai everyone skills youll gain ai product strategy responsible ai data ethics ai enablement applied machine artificial intelligence ai literacy machine data ai integrations deep artificial neural networks rating stars k reviews beginner weeks"
+    },
+    {
+        "provider": "Google",
+        "title": "Google Advanced Data Analytics",
+        "content_text": "Skills you'll gain: Data Storytelling, Data Visualization, A/B Testing, Sampling (Statistics), Data Analysis, Exploratory Data Analysis, Regression Analysis, Data Visualization Software, Data Presentation, Data Ethics, Feature Engineering, Statistical Hypothesis Testing, Analytics, Statistical Analysis, Data Science, Tableau Software, Machine Learning, Object Oriented Programming (OOP), Web Presence, Python Programming Build toward a degree 4.8 Rating, 4.8 out of 5 stars \u00b7 11K reviews Advanced \u00b7 Professional Certificate \u00b7 3 - 6 Months",
+        "url": "https://www.coursera.org/professional-certificates/google-advanced-data-analytics",
+        "indexed_string": "google advanced data analytics skills youll gain data storytelling data visualization ab testing sampling statistics data analysis exploratory data analysis regression analysis data visualization software data presentation data ethics feature engineering statistical hypothesis testing analytics statistical analysis data tableau software machine object oriented programming oop web presence python programming build toward degree rating stars k reviews advanced professional certificate months"
+    },
+    {
+        "provider": "Google",
+        "title": "AI Fundamentals",
+        "content_text": "Skills you'll gain: Prompt Patterns, Responsible AI, AI powered creativity, AI Enablement, AI literacy,  Gemini, Artificial Intelligence, AI Workflows, LLM Application, AI Personalization, Generative AI,  Workspace, Data Literacy, Data Synthesis 4.8 Rating, 4.8 out of 5 stars \u00b7 1.8K reviews Beginner \u00b7 Course \u00b7 1 - 3 Months",
+        "url": "https://www.coursera.org/learn/google-ai-fundamentals",
+        "indexed_string": "ai skills youll gain prompt patterns responsible ai ai powered creativity ai enablement ai literacy gemini artificial intelligence ai workflows llm application ai personalization generative ai workspace data literacy data synthesis rating stars k reviews beginner months"
+    },
+    {
+        "provider": "The Hong Kong University of Science and Technology",
+        "title": "Discrete Math for Computer Science - Algorithms & Recursion",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/discrete-mathematics-for-computer-science-algorithms-recursion",
+        "indexed_string": "discrete math algorithms recursion"
+    },
+    {
+        "provider": "The Hong Kong University of Science and Technology",
+        "title": "Discrete Math for Computer Science - Logic & Set Theory",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/discrete-mathematics-for-computer-science-logic-set",
+        "indexed_string": "discrete math logic set theory"
+    },
+    {
+        "provider": "The Hong Kong University of Science and Technology",
+        "title": "Discrete Mathematical Tools for Computer Science",
+        "content_text": "Specialization",
+        "url": "https://www.coursera.org/specializations/discretemath",
+        "indexed_string": "discrete mathematical tools specialization"
+    },
+    {
+        "provider": "The Hong Kong University of Science and Technology",
+        "title": "Discrete Math for Computer Science - Counting & Probability",
+        "content_text": "Course",
+        "url": "https://www.coursera.org/learn/discrete-mathematics-for-computer-science-counting-probability",
+        "indexed_string": "discrete math counting probability"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Welcome to Khan Academy!",
+        "content_text": "So we can give you the right tools, let us know if you're a... Learner Teacher Parent",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "welcome khan academy give right tools let us know youre learner teacher parent"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Intro to programming",
+        "content_text": "What is Programming? Learning programming on Khan Academy",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "intro programming programming programming khan academy"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Drawing basics",
+        "content_text": "Making drawings with code Quick tip: number scrubbing Challenge: Simple snowman Drawing more shapes with code Challenge: Waving snowman",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "drawing basics making drawings code quick tip number scrubbing challenge simple snowman drawing shapes code challenge waving snowman"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Coloring",
+        "content_text": "with code Quick tip: color picking Challenge: Sunny snowy day The Power of the Docs Project: What's for dinner?",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "coloring code quick tip color picking challenge sunny snowy day power docs project whats dinner"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Variables",
+        "content_text": "Intro to  Using variables Challenge: Bucktooth Bunny More on  Challenge: Funky Frog Review:",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "variables intro using variables challenge bucktooth bunny challenge funky frog"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Animation basics",
+        "content_text": "What are animations? Making animations Challenge: Exploding Sun Incrementing shortcuts A shorter shortcut Challenge: Parting Clouds Project: Shooting star",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "animation basics animations making animations challenge exploding sun incrementing shortcuts shorter shortcut challenge parting clouds project shooting star"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Interactive programs",
+        "content_text": "Mouse Interaction Challenge: Tasty Tomato Challenge: Mouse movement mania",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "interactive programs mouse interaction challenge tasty tomato challenge mouse movement mania"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Becoming a community coder",
+        "content_text": "Ask for help",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "becoming community coder ask help"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Bonus: Resizing with variables",
+        "content_text": "Using math expressions in JS Resizing shapes with variable expressions Using variable expressions Challenge: Brown bear eyes Project: Animal attack",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "bonus resizing variables using math expressions js resizing shapes variable expressions using variable expressions challenge brown bear eyes project animal attack"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Text and strings",
+        "content_text": "Terrific Text: Part One Challenge: My Favorite Foods Terrific Text: Part Two Challenge: Mouse Tracker Review: text and strings Project: Ad design",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "text strings terrific text one challenge favorite foods terrific text two challenge mouse tracker text strings project ad design"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Functions",
+        "content_text": "Challenge: Say Your Name Function Parameters Challenge: Moles in Holes Function Return Values Challenge: Calculator Local and Global Variables Special ProcessingJS functions Review:  Project: Fish tank",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "functions challenge say name function parameters challenge moles holes function return values challenge calculator local global variables special processingjs functions project fish tank"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Logic and if Statements",
+        "content_text": "If Statements Challenge: Bouncy Ball More Mouse Interaction Challenge: Your First Painting App Booleans Challenge: Number Analyzer Logical Operators Challenge: Your First Button Challenge: Smarter Button If/Else - Part 1 Challenge: Flashy Flash Card If/Else - Part 2 Review:  Random numbers Project: Magic 8-Ball",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "logic statements statements challenge bouncy ball mouse interaction challenge first painting app booleans challenge number analyzer logical operators challenge first button challenge smarter button ifelse challenge flashy flash card ifelse random numbers project magic ball"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Debugging programs",
+        "content_text": "Debugging with println()s More debugging tips",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "debugging programs debugging printlns debugging tips"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Looping",
+        "content_text": "Intro to While Loops Using while loops Challenge: A Loopy Ruler More While Loops: Balloon Hopper Challenge: A Loopy Landscape For Loops! A New Kind of Loop Challenge: Lined Paper Nested For Loops Review:  Project: Build-a-House",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "looping intro loops using loops challenge loopy ruler loops balloon hopper challenge loopy landscape loops new kind loop challenge lined paper nested loops project buildahouse"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Writing clean code",
+        "content_text": "Readable Code Clarifying with Comments",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "writing clean code readable code clarifying comments"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Objects",
+        "content_text": "Intro to  Challenge: Recipe Card Modifying  Challenge: Picture Painter Arrays of  Challenge: Movie Reviews Review:  Project: Bookshelf",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "objects intro challenge recipe card modifying challenge picture painter arrays challenge movie reviews project bookshelf"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Object-Oriented Design",
+        "content_text": "Object Types Challenge: Double Rainbow Object Methods Challenge: SmileyFace Object Inheritance Challenge: Flower Grower Review:",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "objectoriented design object types challenge double rainbow object methods challenge smileyface object inheritance challenge flower grower"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Becoming a better programmer",
+        "content_text": "Planning a programming project Planning with pseudo-code What to learn next",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "becoming better programmer planning programming project planning pseudocode learn next"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Intro to HTML",
+        "content_text": "Welcome to the web! HTML basics Quick tip: HTML tags Challenge: Write a Poem HTML: Text emphasis Challenge: You can learn text tags HTML: Lists Challenge: Wishlist HTML: Images Challenge: A picture-perfect trip",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "intro html welcome web html basics quick tip html tags challenge write poem html text emphasis challenge learn text tags html lists challenge wishlist html images challenge pictureperfect trip"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Intro to CSS",
+        "content_text": "CSS Basics Quick tip: Selecting by tag name Challenge: Colorful creature CSS: Selecting by id Challenge: Seasonal ids CSS: Selecting by class Challenge: Apples and bananas classes Using simple CSS selectors Project: Travel webpage",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "intro css css basics quick tip selecting tag name challenge colorful creature css selecting id challenge seasonal ids css selecting challenge apples bananas classes using simple css selectors project travel webpage"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "More HTML tags",
+        "content_text": "HTML links Challenge: Links for learning HTML internal links Challenge: Jump around HTML tables Challenge: The dinner table HTML comments Project: Recipe book",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "html tags html links challenge links html internal links challenge jump around html tables challenge dinner table html comments project recipe book"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "CSS text properties",
+        "content_text": "CSS Zen Garden CSS font-family property Challenge: Fancy font families CSS font-size property Challenge: Great big font sizes CSS font styles and shorthand Challenge: Famous font formats More  Using  CSS inheritance Project: Blog",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "css text properties css zen garden css fontfamily property challenge fancy font families css fontsize property challenge great big font sizes css font styles shorthand challenge famous font formats using css inheritance project blog"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Web development tools",
+        "content_text": "Using the browser developer tools Developing webpages outside of Khan Academy Hosting your website on a server Hosting your website on Github",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "web development tools using browser developer tools developing webpages outside khan academy hosting website server hosting website github"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "CSS layout",
+        "content_text": "CSS grouping elements Challenge: Group the groupers CSS width, height, and overflow Challenge: The overflowing ocean CSS box model Challenge: The boxer model CSS position Challenge: Position planet CSS in the wild: Google Maps CSS floating elements Challenge: Floating clouds Using  properties Planning your webpage Project: Event invite",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "css layout css grouping elements challenge group groupers css width height overflow challenge overflowing ocean css box model challenge boxer model css position challenge position planet css wild google maps css floating elements challenge floating clouds using properties planning webpage project event invite"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "More CSS selectors",
+        "content_text": "Using multiple CSS classes Challenge: A classy gallery Combining CSS class and element selectors Challenge: Classes of elements CSS descendant selectors Challenge: Descendants of Khan Grouping CSS selectors CSS dynamic pseudo-classes Challenge: Grouped animals CSS specificity CSS specificity rules",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "css selectors using multiple css classes challenge classy gallery combining css element selectors challenge classes elements css descendant selectors challenge descendants khan grouping css selectors css dynamic pseudoclasses challenge grouped animals css specificity css specificity rules"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Other ways to embed CSS",
+        "content_text": "Using inline CSS styles Using external stylesheets",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "ways embed css using inline css styles using external stylesheets"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Further learning",
+        "content_text": "Webpage design HTML validation Validating HTML What to learn next",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "webpage design html validation validating html learn next"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "SQL basics",
+        "content_text": "Welcome to SQL Creating a table and inserting data Challenge: Book list database Querying the table Challenge: Box office hits database Aggregating data Challenge: TODO list database stats S-Q-L or SEQUEL? Project: Design a store database",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "sql basics welcome sql creating table inserting data challenge book list database querying table challenge box office hits database aggregating data challenge todo list database stats sql sequel project design store database"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "More advanced SQL queries",
+        "content_text": "More complex queries with AND/OR Challenge: Karaoke song selector Querying IN subqueries Challenge: Playlist maker Restricting grouped results with HAVING Challenge: The wordiest author Who issues SQL queries? Calculating results with CASE Challenge: Gradebook Project: Data dig",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "advanced sql queries complex queries andor challenge karaoke song selector querying subqueries challenge playlist maker restricting grouped results challenge wordiest author issues sql queries calculating results case challenge gradebook project data dig"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Relational queries in SQL",
+        "content_text": "Splitting data into related tables JOINing related tables Challenge: Bobby's Hobbies Joining related tables with left outer joins Challenge: Customer's orders Joining tables to themselves with self-joins Challenge: Sequels in SQL Combining multiple joins Challenge: FriendBook Project: Famous people More efficient SQL with query planning and optimization",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "relational queries sql splitting data related tables joining related tables challenge bobbys hobbies joining related tables left outer joins challenge customers orders joining tables selfjoins challenge sequels sql combining multiple joins challenge friendbook project famous people efficient sql query planning optimization"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Modifying databases with SQL",
+        "content_text": "Using SQL to update a database Changing rows with UPDATE and DELETE Challenge: Dynamic Documents Altering tables after creation Challenge: Clothing alterations Make your SQL safer Project: App impersonator",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "modifying databases sql using sql update database changing rows update delete challenge dynamic documents altering tables creation challenge clothing alterations make sql safer project app impersonator"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Further learning in SQL",
+        "content_text": "What to learn next",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "sql learn next"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Intro to Games & Visualizations",
+        "content_text": "Intro to Games and Visualizations",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "intro games visualizations intro games visualizations"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Scene management",
+        "content_text": "What are scenes? Simple scene changes Challenge: Story teller Animated scenes Interactive scenes Button-controlled scene changes",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "scene management scenes simple scene changes challenge story teller animated scenes interactive scenes buttoncontrolled scene changes"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Buttons",
+        "content_text": "What are buttons? A button function A Button object type Challenge: Rabbit Racer",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "buttons buttons button function button object type challenge rabbit racer"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Making a side scroller: Hoppy Beaver",
+        "content_text": "Intro to Hoppy Beaver Beaver character Forest environment Challenge: Pong Stick collisions Scoring and winning Project: Hoppy Beaver Extreme",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "making side scroller hoppy beaver intro hoppy beaver beaver character forest environment challenge pong stick collisions scoring winning project hoppy beaver extreme"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Making a memory game",
+        "content_text": "Intro to \"Memory\" Memory game: Drawing a grid of tiles Memory game: Flipping tiles Memory game: Scoring and winning Challenge: Tic-Tac-Toe Project: Memory++",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "making memory game intro memory memory game drawing grid tiles memory game flipping tiles memory game scoring winning challenge tictactoe project memory"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Transformations",
+        "content_text": "Translation Challenge: Translation salvation Rotation Challenge: Rotation Scaling Challenge: Optical illusion Multiple transformations Challenge: Shining scaling sun",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "transformations translation challenge translation salvation rotation challenge rotation scaling challenge optical illusion multiple transformations challenge shining scaling sun"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "3D shapes",
+        "content_text": "What are ? Describing  Drawing  Rotating  Generating",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "shapes describing drawing rotating generating"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Advanced development tools",
+        "content_text": "Using ProcessingJS outside Khan Academy Using different code editors",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "advanced development tools using processingjs outside khan academy using different code editors"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Intro to Natural Simulations",
+        "content_text": "Welcome to Natural Simulations",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "intro natural simulations welcome natural simulations"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Randomness",
+        "content_text": "Random walks Challenge: Random blobber Probability & non-uniform distributions Challenge: Up walker Normal distribution of random numbers Challenge: Gaussian walk Custom distribution of random numbers Challenge: L\u00e9vy walker Project: Paint splatter",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "randomness random walks challenge random blobber probability nonuniform distributions challenge walker normal distribution random numbers challenge gaussian walk custom distribution random numbers challenge lvy walker project paint splatter"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Vectors",
+        "content_text": "Intro to vectors Challenge: Vector walker More vector math Challenge: Lightsaber Vector magnitude & normalization Challenge: Magnitude visualizer Vector motion Challenge: Braking car Static functions vs. instance methods Challenge: Static functions Interactive vector motion Challenge: Mouse stalker Project: Computational creatures",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "vectors intro vectors challenge vector walker vector math challenge lightsaber vector magnitude normalization challenge magnitude visualizer vector motion challenge braking car static functions vs instance methods challenge static functions interactive vector motion challenge mouse stalker project computational creatures"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Angular Movement",
+        "content_text": "Angles and units Challenge: Spinning baton Angular velocity Challenge: Falling boulder Trigonometry Trigonometric ratios in right triangles Pointing towards movement Challenge: Turning car Polar coordinates Challenge: Spiral drawer Project: Asteroids spaceship",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "angular movement angles units challenge spinning baton angular velocity challenge falling boulder trigonometry trigonometric ratios right triangles pointing towards movement challenge turning car polar coordinates challenge spiral drawer project asteroids spaceship"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Oscillations",
+        "content_text": "Oscillation amplitude and period Challenge: Rainbow slinky Oscillation with angular velocity Challenge: Spaceship ride Waves Challenge: Many waves Trig and forces: the pendulum Challenge: Pendulum puppet Spring forces Project: Curling, crawling, circling creatures",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "oscillations oscillation amplitude period challenge rainbow slinky oscillation angular velocity challenge spaceship ride waves challenge many waves trig forces pendulum challenge pendulum puppet spring forces project curling crawling circling creatures"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Particle Systems",
+        "content_text": "Intro to particle systems A single particle Challenge: Falling leaves A particle system Challenge: Fish bubbles Systems of particle systems Challenge: Fire starter Particle types Challenge: Magical cauldron Particle systems with forces Challenge: River rocks Project: Creature Colonies",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "particle systems intro particle systems single particle challenge falling leaves particle system challenge fish bubbles systems particle systems challenge fire starter particle types challenge magical cauldron particle systems forces challenge river rocks project creature colonies"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Get ready to make your webpages interactive",
+        "content_text": "Welcome to making webpages interactive Review HTML/CSS HTML/CSS recap Review JavaScript JavaScript recap",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "get ready make webpages interactive welcome making webpages interactive htmlcss htmlcss recap javascript javascript recap"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "JS and the DOM",
+        "content_text": "Putting JS in a webpage Challenge: A scripted script tag The DOM (Document Object Model) Understanding the DOM Debugging webpages with the browser console",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "js dom putting js webpage challenge scripted script tag dom document object model understanding dom debugging webpages browser console"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM access methods",
+        "content_text": "Finding elements by ID Challenge: ID changer Finding multiple DOM elements by tag or class name Challenge: Custom name tags Finding elements by CSS selector Challenge: Query modernizer Summary:",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom access methods finding elements id challenge id changer finding multiple dom elements tag name challenge custom name tags finding elements css selector challenge query modernizer summary"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM modification",
+        "content_text": "Changing attributes Challenge: Avatar attributes Changing styles Challenge: Style guide Changing CSS classes Challenge: Classification Setting innerHTML and textContent Challenge: The inside story Creating elements from scratch Challenge: Create a solar system Summary:  techniques",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom modification changing attributes challenge avatar attributes changing styles challenge style guide changing css classes challenge classification setting innerhtml textcontent challenge inside story creating elements scratch challenge create solar system summary techniques"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM events",
+        "content_text": "Making webpages interactive with events Adding an event listener Challenge: Cat Clicker DOM event types Using the event properties Challenge: Cat-stache Processing forms with events Challenge: Mad Libs Preventing default behavior of events Summary:",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom events making webpages interactive events adding event listener challenge cat clicker dom event types using event properties challenge catstache processing forms events challenge mad libs preventing default behavior events summary"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM animation",
+        "content_text": "The window object Animating DOM with setInterval Challenge: Stopwatch Animating styles with requestAnimationFrame Challenge: Catwalk Animating styles with CSS animations What  technique should you use?",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom animation window object animating dom setinterval challenge stopwatch animating styles requestanimationframe challenge catwalk animating styles css animations technique use"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Using JS libraries in your webpage",
+        "content_text": "What's a JS library? Using a JS library: Slideshow library Where are JS libraries hosted? Using JS libraries The world of JS libraries Which JS library should you use?",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "using js libraries webpage whats js library using js library slideshow library js libraries hosted using js libraries world js libraries js library use"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Welcome to jQuery",
+        "content_text": "From the inventor: Welcome! What is jQuery? Get ready to learn jQuery Getting started with jQuery Challenge: Your first jQuery",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "welcome jquery inventor welcome jquery get ready learn jquery getting started jquery challenge first jquery"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM access with jQuery",
+        "content_text": "Finding elements with jQuery Challenge: Unicorn-ify a page with jQuery Debugging webpages with the browser console Getting info on elements with jQuery Challenge: Famous discoveries Review:  Project: DOM detective History break: How did John build jQuery?",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom access jquery finding elements jquery challenge unicornify page jquery debugging webpages browser console getting info elements jquery challenge famous discoveries project dom detective history break john build jquery"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM modification with jQuery",
+        "content_text": "Modifying elements with jQuery Challenge: The changing caterpillar Creating elements with jQuery Challenge: Creature creator Review:  Project: Extreme Makeover, Webpage Edition",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom modification jquery modifying elements jquery challenge changing caterpillar creating elements jquery challenge creature creator project extreme makeover webpage edition"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "jQuery techniques",
+        "content_text": "jQuery Collections vs. DOM Nodes Using jQuery variables Looping through jQuery collections Challenge: Loopy language Review: jQuery collections & looping Chaining jQuery methods Challenge: Daisy chain Behind the scenes: Browse the jQuery source code",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "jquery techniques jquery collections vs dom nodes using jquery variables looping jquery collections challenge loopy language jquery collections looping chaining jquery methods challenge daisy chain behind scenes browse jquery source code"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM events with jQuery",
+        "content_text": "Adding event listeners with jQuery Challenge: Croc Clicker Using event properties in jQuery Challenge: Spot the Dog What DOM events and properties are there? Checking DOM readiness with jQuery Review: DOM events in jQuery Project: Scene change",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom events jquery adding event listeners jquery challenge croc clicker using event properties jquery challenge spot dog dom events properties checking dom readiness jquery dom events jquery project scene change"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "Form processing with jQuery",
+        "content_text": "Why process forms with jQuery? Processing a quiz with jQuery Challenge: jQuery trivia quiz More form processing with jQuery Challenge: Donut Calculator Review: Processing forms with jQuery Project: Word game",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "form processing jquery process forms jquery processing quiz jquery challenge jquery trivia quiz form processing jquery challenge donut calculator processing forms jquery project word game"
+    },
+    {
+        "provider": "Khan Academy",
+        "title": "DOM animation & effects with jQuery",
+        "content_text": "Animating visibility with jQuery Challenge: Sliding Snake Animating numeric properties with jQuery Challenge: Animated Avatar Review: DOM animation in jQuery Project: Interactive slideshow",
+        "url": "https://www.khanacademy.org/computing/computer-programming",
+        "indexed_string": "dom animation effects jquery animating visibility jquery challenge sliding snake animating numeric properties jquery challenge animated avatar dom animation jquery project interactive slideshow"
+    }
+]
