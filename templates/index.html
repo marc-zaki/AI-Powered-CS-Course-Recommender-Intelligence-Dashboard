@@ -5,34 +5,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS Course Recommender | AI Powered Learning Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
 
     <nav>
         <a href="/" class="logo">
-            <span>🧠</span> AI Powered CS Course Recommender
-
+            <span>🧠</span> AI CS Recommender
         </a>
         <div style="display: flex; align-items: center; gap: 1rem;">
             <div class="stats-badge">
                 {{ total_courses }} Courses Indexed
             </div>
             <button id="scraper-btn" onclick="startScraper()" class="btn btn-outline"
-                style="padding: 0.25rem 0.75rem; font-size: 0.875rem; border-color: var(--primary); color: var(--primary);">🚀
-                Run Live Scraper</button>
+                style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">🚀 Live Scraper</button>
+            <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-outline"
+                style="padding: 0.35rem 0.65rem; font-size: 1.15rem; line-height: 1;" title="Toggle Light/Dark Theme">🌓</button>
         </div>
     </nav>
 
     <!-- Progress Bar Container -->
     <div id="progress-container"
-        style="display: none; background: white; padding: 1rem 2rem; border-bottom: 1px solid var(--border);">
+        style="display: none; background: white; padding: 1rem 2rem; border-bottom: 1.5px solid var(--mint-pastel);">
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
             <span id="progress-text"
                 style="font-size: 0.875rem; font-weight: 600; color: var(--text-main);">Initializing...</span>
-            <span id="progress-percent" style="font-size: 0.875rem; font-weight: 600; color: var(--primary);">0%</span>
+            <span id="progress-percent" style="font-size: 0.875rem; font-weight: 700; color: var(--primary);">0%</span>
         </div>
         <div style="width: 100%; background-color: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden;">
             <div id="progress-bar"
@@ -40,108 +41,219 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 
     <section class="hero">
         <h1>Master Your Future</h1>
         <p>Intelligence-powered course recommendations tailored to your learning path.</p>
-
-        <div class="search-container">
-            <form action="/search" method="GET" class="search-form">
-                <input type="text" name="q" class="search-input" placeholder="Search for subjects, skills, or tracks..."
-                    value="{{ query }}">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        </div>
     </section>
 
-    <main class="container">
-        <div class="section-header">
-            <h2>
-                {% if is_search %}
-                Results for "{{ query }}"
-                {% elif show_all %}
-                All Courses
-                {% else %}
-                ⭐ Featured Courses
-                {% endif %}
-            </h2>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
-                {% if is_search %}
-                <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
-                {% elif show_all %}
-                <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Featured</a>
-                {% else %}
-                <a href="/all" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Browse All Courses →</a>
-                {% endif %}
-            </div>
-        </div>
+    <!-- Dashboard Tabs Switcher -->
+    <div class="tabs-navigation">
+        <button id="tab-btn-catalog" class="tab-btn active" onclick="switchTab('catalog')">📚 Course Catalog</button>
+        <button id="tab-btn-ai-path" class="tab-btn" onclick="switchTab('ai-path')">🪄 AI Study Plan Generator</button>
+        <button id="tab-btn-skill-map" class="tab-btn" onclick="switchTab('skill-map')">📊 Interactive Skill Map</button>
+    </div>
 
-        {% if courses|length == 0 %}
-        <div class="empty-state">
-            <h3>No courses found</h3>
-            <p>Try searching for a different keyword like "Python" or "AI".</p>
-        </div>
-        {% else %}
-        <div class="course-grid">
-            {% for course in courses %}
-            <div class="course-card">
-                <div class="card-content">
-                    <div class="card-category">{{ course.provider }}</div>
-                    <div class="card-title">{{ course.title }}</div>
-                    <div class="card-description">
-                        {{ course.content_text[:140] + '...' if course.content_text|length > 140 else
-                        course.content_text }}
-                    </div>
-                    {% if course.review_summary %}
-                    <div class="review-summary">
-                        <span style="margin-right: 4px;">💬</span>
-                        <i>{{ course.review_summary }}</i>
-                    </div>
+    <div class="container">
+        
+        <!-- Tab 1: Course Catalog -->
+        <div id="tab-pane-catalog" class="tab-pane active">
+            <!-- Search Container inside Catalog Tab -->
+            <div class="search-container">
+                <form action="/search" method="GET" class="search-form">
+                    <input type="text" name="q" class="search-input" placeholder="Search for subjects, skills, or tracks..."
+                        value="{{ query }}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+
+            <div class="section-header">
+                <h2>
+                    {% if is_search %}
+                    Results for "{{ query }}"
+                    {% elif show_all %}
+                    All Courses
+                    {% else %}
+                    ⭐ Featured Courses
                     {% endif %}
-                    <div class="card-footer">
-                        <div class="rating">
-                            {% for _ in range(course.stars) %}⭐{% endfor %}
-                            <span style="margin-left: 0.25rem; color: var(--text-muted)">{{ course.stars }}.0</span>
-                        </div>
-                        <a href="{{ course.url }}" target="_blank" class="btn-view">
-                            View Course ↗
-                        </a>
-                    </div>
+                </h2>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    {% if is_search %}
+                    <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
+                    {% elif show_all %}
+                    <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Featured</a>
+                    {% else %}
+                    <a href="/all" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Browse All Courses →</a>
+                    {% endif %}
                 </div>
             </div>
-            {% endfor %}
-        </div>
 
-        {% if show_all and total_pages > 1 %}
-        <div class="pagination">
-            {% if page > 1 %}
-            <a href="/all?page={{ page - 1 }}" class="btn btn-outline page-btn">← Previous</a>
-            {% endif %}
-            
-            {% for p in range(1, total_pages + 1) %}
-                {% if p == page %}
-                <span class="btn btn-primary page-btn page-active">{{ p }}</span>
-                {% elif p <= 3 or p >= total_pages - 1 or (p >= page - 1 and p <= page + 1) %}
-                <a href="/all?page={{ p }}" class="btn btn-outline page-btn">{{ p }}</a>
-                {% elif p == 4 or p == total_pages - 2 %}
-                <span class="page-dots">...</span>
+            {% if courses|length == 0 %}
+            <div class="empty-state">
+                <h3>No courses found</h3>
+                <p>Try searching for a different keyword like "Python" or "AI".</p>
+            </div>
+            {% else %}
+            <div class="course-grid">
+                {% for course in courses %}
+                <div class="course-card" 
+                     data-title="{{ course.title|escape }}" 
+                     data-provider="{{ course.provider|escape }}" 
+                     data-stars="{{ course.stars }}" 
+                     data-ratings-count="{{ course.ratings_count }}" 
+                     data-url="{{ course.url|escape }}" 
+                     data-desc="{{ course.content_text[:250]|replace('\n', ' ')|replace('\r', '')|escape }}">
+                    <div class="card-content">
+                        <div class="card-category">{{ course.provider }}</div>
+                        <div class="card-title">{{ course.title }}</div>
+                        <div class="card-description">
+                            {{ course.content_text[:140] + '...' if course.content_text|length > 140 else
+                            course.content_text }}
+                        </div>
+                        {% if course.review_summary %}
+                        <div class="review-summary">
+                            <span style="margin-right: 4px;">💬</span>
+                            <i>{{ course.review_summary }}</i>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Compare option -->
+                        <label class="compare-checkbox-container">
+                            <input type="checkbox" class="compare-check" onchange="handleCompareChange(this)">
+                            <span class="compare-checkbox-custom"></span>
+                            <span>Compare Course</span>
+                        </label>
+
+                        <div class="card-footer">
+                            <div class="rating">
+                                {% for _ in range(course.stars_int) %}⭐{% endfor %}
+                                <span style="margin-left: 0.25rem; font-weight: 700; color: var(--primary);">{{ "%.1f"|format(course.stars) }}</span>
+                                {% if course.ratings_count and course.ratings_count > 0 %}
+                                <span style="margin-left: 0.35rem; color: var(--text-muted); font-size: 0.775rem; font-weight: 500;">
+                                    ({{ "{:,}".format(course.ratings_count) }} reviews)
+                                </span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ course.url }}" target="_blank" class="btn-view view-course-btn">
+                                View Course ↗
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if show_all and total_pages > 1 %}
+            <div class="pagination">
+                {% if page > 1 %}
+                <a href="/all?page={{ page - 1 }}" class="btn btn-outline page-btn">← Previous</a>
                 {% endif %}
-            {% endfor %}
-            
-            {% if page < total_pages %}
-            <a href="/all?page={{ page + 1 }}" class="btn btn-outline page-btn">Next →</a>
+                
+                {% for p in range(1, total_pages + 1) %}
+                    {% if p == page %}
+                    <span class="btn btn-primary page-btn page-active">{{ p }}</span>
+                    {% elif p <= 3 or p >= total_pages - 1 or (p >= page - 1 and p <= page + 1) %}
+                    <a href="/all?page={{ p }}" class="btn btn-outline page-btn">{{ p }}</a>
+                    {% elif p == 4 or p == total_pages - 2 %}
+                    <span class="page-dots">...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page < total_pages %}
+                <a href="/all?page={{ page + 1 }}" class="btn btn-outline page-btn">Next →</a>
+                {% endif %}
+            </div>
+            {% endif %}
+
             {% endif %}
         </div>
-        {% endif %}
 
-        {% endif %}
-    </main>
+        <!-- Tab 2: AI Study Plan Generator -->
+        <div id="tab-pane-ai-path" class="tab-pane">
+            <div class="ai-card">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <span style="font-size: 2.25rem;">🪄</span>
+                    <h2 class="ai-card-title">AI Study Plan Generator</h2>
+                </div>
+                <p class="ai-card-desc">
+                    Define your professional target or class goal (e.g., "Full-Stack Web Dev" or "Data Scientist") and watch the advisor map out your ideal weekly path using courses from our curated database.
+                </p>
+                
+                <div style="display: flex; gap: 1rem; max-width: 800px; width: 100%;">
+                    <input type="text" id="ai-goal-input" class="ai-input" placeholder="What is your career target or learning goal?">
+                    <button onclick="generateAIPath()" id="ai-generate-btn" class="btn btn-primary btn-ai">Generate Plan</button>
+                </div>
+
+                <!-- Loader -->
+                <div id="ai-loader" style="display: none; align-items: center; gap: 1rem; margin-top: 2rem;">
+                    <div class="spinner" style="width: 32px; height: 32px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <span style="color: var(--secondary); font-weight: 600; font-size: 1.05rem;">Designing your personalized study path from our database...</span>
+                </div>
+
+                <!-- Path Output Container -->
+                <div id="ai-path-output" class="ai-output-container">
+                    <h4 class="ai-output-title">Your Custom Weekly Curriculum:</h4>
+                    <div id="ai-path-content" class="ai-rendered-path"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Tab 3: Interactive Skill Map -->
+        <div id="tab-pane-skill-map" class="tab-pane">
+            <div class="glass-panel" style="padding: 2.5rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;">
+                <h2 style="margin-bottom: 0.75rem; color: var(--primary); font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;">Interactive CS Skill Relationship Map</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 800px; font-size: 1.05rem;">
+                    Explore how computer science courses and fields are clustered in our database based on their structural NLP similarities. Hover over nodes to see ratings, drag to reorganize, and click nodes to highlight immediate recommendations!
+                </p>
+                <div class="map-container">
+                    <div class="map-sidebar">
+                        <h3>Select a Course Node</h3>
+                        <p id="sidebar-instruction" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted);">Click on any course node in the network to inspect its full recommendation profiles and get instant links!</p>
+                        <div id="sidebar-details" style="display: none;">
+                            <h4 id="sidebar-title" style="font-weight: 800; color: var(--text-main); margin-bottom: 0.85rem; font-size: 1.15rem; line-height: 1.4; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;"></h4>
+                            <p style="margin-bottom: 0.65rem; font-size: 0.95rem;"><strong style="color: var(--secondary);">Provider:</strong> <span id="sidebar-provider"></span></p>
+                            <p style="margin-bottom: 1.25rem; font-size: 0.95rem;"><strong style="color: #FBBF24;">AI Rating:</strong> <span id="sidebar-rating"></span></p>
+                            <a id="sidebar-link" href="#" target="_blank" class="btn btn-primary" style="width: 100%; text-align: center; text-decoration: none; padding: 0.75rem; font-size: 0.9rem;">View Course ↗</a>
+                        </div>
+                    </div>
+                    <svg id="map-svg"></svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Comparison Drawer -->
+    <div id="compare-bar" class="compare-bar">
+        <div class="compare-bar-info">
+            <span class="compare-bar-count" id="compare-count">0</span>
+            <span style="font-weight: 700;">Courses Selected to Compare</span>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-outline" onclick="clearCompareSelection()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Clear All</button>
+            <button class="btn btn-primary" onclick="launchCompareModal()" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);">Compare Now ⚖️</button>
+        </div>
+    </div>
+
+    <!-- Fullscreen Comparison Modal -->
+    <div id="compare-modal" class="compare-modal">
+        <div class="compare-modal-content">
+            <button class="compare-modal-close" onclick="closeCompareModal()">✕</button>
+            <h2 style="font-size: 2.25rem; font-weight: 800; text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.03em;">Course Comparison Matrix</h2>
+            <div id="compare-grid" class="compare-grid-layout">
+                <!-- Comparison columns will be dynamically injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 
     <footer>
         &copy; AI Powered CS Course Recommender. All rights reserved.
     </footer>
 
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
 </html>

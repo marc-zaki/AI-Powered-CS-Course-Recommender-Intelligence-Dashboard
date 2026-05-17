@@ -12,11 +12,18 @@ import os
 import time
 import json
 import urllib.robotparser
+import urllib.parse
 from urllib.parse import urlparse, urljoin
+import requests
 import threading
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
+from serpapi import GoogleSearch
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+load_dotenv()  # Load API keys from .env file
 
 scrape_status = {
     "is_running": False,
@@ -24,8 +31,13 @@ scrape_status = {
     "total": 0,
     "message": ""
 }
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
+
+# Configuration loaded from .env file
+SERPAPI_KEY = os.environ.get("SERPAPI_KEY", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 try:
     _create_unverified_https_context = ssl._create_unverified_context
@@ -89,9 +101,20 @@ def load_and_train_model():
         print(f"Error loading dataset: {e}")
         return
 
-    # Calculate 1-5 Stars using Sentiment + Platform Prestige
+    # Parse Stars and Ratings directly if they exist
+    if 'ratings_count' not in df.columns:
+        df['ratings_count'] = 0
+    else:
+        df['ratings_count'] = df['ratings_count'].fillna(0).astype(int)
+
+    # Calculate 1-5 Stars using Sentiment + Platform Prestige if missing or 0
     sia = SentimentIntensityAnalyzer()
     def calculate_ai_rating(row):
+        # If the row already has a real star rating from Kaggle or scraping, preserve the decimal!
+        existing_stars = row.get('stars')
+        if pd.notnull(existing_stars) and float(existing_stars) > 0:
+            return float(existing_stars)
+
         text = str(row.get('content_text', ''))
         raw_reviews = row.get('raw_reviews', [])
         
@@ -103,7 +126,6 @@ def load_and_train_model():
         if isinstance(raw_reviews, list) and raw_reviews:
             review_scores = [sia.polarity_scores(str(r))['compound'] for r in raw_reviews]
             review_sentiment = sum(review_scores) / len(review_scores)
-            # Heavy weighting towards actual reviews
             sentiment = (desc_sentiment * 0.3) + (review_sentiment * 0.7)
         else:
             sentiment = desc_sentiment
@@ -111,9 +133,12 @@ def load_and_train_model():
         stars = (sentiment + 1) * 1.0 + 2.5
         if any(p in str(row.get('provider', '')).lower() for p in ['mit', 'google', 'stanford', 'coursera']):
             stars += 0.8
-        return min(max(round(stars), 1), 5)
+        return min(max(round(stars, 1), 1.0), 5.0)
 
     df['stars'] = df.apply(calculate_ai_rating, axis=1)
+    
+    # Calculate stars_int specifically for Jinja range loop rendering (1 to 5)
+    df['stars_int'] = df['stars'].apply(lambda x: min(max(round(float(x)), 1), 5))
 
     # Train TF-IDF
     def build_search_profile(row):
@@ -149,6 +174,98 @@ def check_robots_txt(url, user_agent="*"):
     except Exception:
         return True
 
+def serpapi_fetch_courses():
+    """Fetch CS courses from Google via SerpApi across multiple topics."""
+    if not SERPAPI_KEY:
+        print("SerpApi: No API key set. Skipping. Set SERPAPI_KEY env variable.")
+        return []
+
+    topics = [
+        "computer science online course",
+        "python programming course",
+        "machine learning course",
+        "artificial intelligence course",
+        "data science course",
+        "cybersecurity course",
+        "web development course",
+        "algorithms and data structures course",
+        "cloud computing course",
+        "database management course",
+        "software engineering course",
+        "deep learning course",
+        "computer networking course",
+        "operating systems course",
+        "blockchain course",
+    ]
+
+    all_courses = []
+    for i, topic in enumerate(topics):
+        scrape_status["message"] = f"SerpApi: Searching '{topic}' ({i+1}/{len(topics)})..."
+        print(scrape_status["message"])
+        scrape_status["progress"] += 1
+
+        try:
+            params = {
+                "engine": "google",
+                "q": topic,
+                "api_key": SERPAPI_KEY,
+                "gl": "us",
+                "hl": "en",
+                "num": 20,
+            }
+            search = GoogleSearch(params)
+            results = search.get_dict()
+
+            # Extract from organic results that look like courses
+            for result in results.get("organic_results", []):
+                title = result.get("title", "")
+                snippet = result.get("snippet", "")
+                link = result.get("link", "")
+                source = result.get("source", "")
+
+                # Filter: only keep results from known course platforms
+                course_platforms = [
+                    "coursera", "edx", "udemy", "udacity", "futurelearn",
+                    "pluralsight", "linkedin learning", "skillshare",
+                    "codecademy", "datacamp", "brilliant", "stanford",
+                    "mit", "harvard", "class central", "classcentral",
+                    "freecodecamp", "kaggle", "google", "microsoft learn",
+                ]
+                source_lower = source.lower() if source else ""
+                link_lower = link.lower() if link else ""
+                is_course = any(
+                    p in source_lower or p in link_lower
+                    for p in course_platforms
+                )
+
+                if title and is_course:
+                    # Determine provider from source or URL
+                    provider = source if source else "Online"
+                    for p_name in ["Coursera", "edX", "Udemy", "Udacity",
+                                   "FutureLearn", "Pluralsight", "Codecademy",
+                                   "DataCamp", "Kaggle", "Brilliant"]:
+                        if p_name.lower() in link_lower:
+                            provider = p_name
+                            break
+
+                    all_courses.append({
+                        "provider": provider,
+                        "title": title,
+                        "content_text": snippet if snippet else "No description provided.",
+                        "url": link,
+                        "raw_reviews": [],
+                        "review_summary": "",
+                    })
+
+            # Respect rate limits
+            time.sleep(1)
+
+        except Exception as e:
+            print(f"SerpApi error for '{topic}': {e}")
+
+    print(f"SerpApi: Fetched {len(all_courses)} courses total.")
+    return all_courses
+
 def background_scraper():
     global scrape_status
     scrape_status["is_running"] = True
@@ -180,7 +297,9 @@ def background_scraper():
         {"name": "Khan Academy", "url": "https://www.khanacademy.org/computing/computer-programming"}
     ])
 
-    scrape_status["total"] = len(targets)
+    # Total includes Selenium targets + 15 SerpApi topic searches
+    serpapi_topic_count = 15 if SERPAPI_KEY else 0
+    scrape_status["total"] = len(targets) + serpapi_topic_count
     driver = setup_browser()
     
     for site in targets:
@@ -333,6 +452,11 @@ def background_scraper():
         scrape_status["progress"] += 1
             
     driver.quit()
+
+    # ── Phase 2: SerpApi ─────────────────────────────────────────────
+    scrape_status["message"] = "Starting SerpApi phase..."
+    serpapi_courses = serpapi_fetch_courses()
+    all_data.extend(serpapi_courses)
     
     if all_data:
         scrape_status["message"] = "Saving and retraining AI model..."
@@ -351,7 +475,9 @@ def background_scraper():
             pass
             
         load_and_train_model() # Reload global model
-        scrape_status["message"] = f"Complete! Indexed {len(df_new)} scraped courses."
+
+        selenium_count = len(df_new) - len(serpapi_courses)
+        scrape_status["message"] = f"Complete! Indexed {selenium_count} scraped + {len(serpapi_courses)} API courses."
     else:
         scrape_status["message"] = "Complete! No new courses found."
         
@@ -433,6 +559,202 @@ def search():
     results = recs.head(20).to_dict('records')
 
     return render_template('index.html', courses=results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
+
+@app.route('/validate_link')
+def validate_link():
+    url = request.args.get('url', '').strip()
+    title = request.args.get('title', '').strip()
+    provider = request.args.get('provider', '').strip()
+    
+    if not url:
+        return jsonify({"valid": False, "fallback_url": "/"})
+        
+    # Generate foolproof search fallback URLs
+    fallback_url = url
+    if provider.lower() == 'udemy':
+        fallback_url = f"https://www.udemy.com/courses/search/?q={urllib.parse.quote(title)}"
+    elif provider.lower() == 'coursera':
+        fallback_url = f"https://www.coursera.org/search?query={urllib.parse.quote(title)}"
+    elif provider.lower() == 'edx':
+        fallback_url = f"https://www.edx.org/search?q={urllib.parse.quote(title)}"
+        
+    # We do a quick check
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        # Use HEAD request for speed, follow redirects, timeout of 2.0s
+        res = requests.head(url, headers=headers, timeout=2.0, allow_redirects=True)
+        # If HEAD fails or is not allowed, try GET
+        if res.status_code == 404 or res.status_code == 403:
+            res = requests.get(url, headers=headers, timeout=2.0, allow_redirects=True)
+            
+        if res.status_code == 404:
+            return jsonify({"valid": False, "fallback_url": fallback_url})
+        return jsonify({"valid": True, "fallback_url": url})
+    except Exception as e:
+        # On connection errors or timeout, fallback to the search page just to be safe!
+        return jsonify({"valid": False, "fallback_url": fallback_url})
+
+@app.route('/graph_data')
+def graph_data():
+    if df is None or len(df) == 0:
+        return jsonify({"nodes": [], "links": []})
+    
+    # Select the top 25 courses for each unique provider to ensure fair representation in the network
+    sample_df = df.copy()
+    provider_samples = []
+    unique_providers = sample_df['provider'].unique()
+    for provider in unique_providers:
+        p_sample = sample_df[sample_df['provider'] == provider].sort_values(
+            by=['stars', 'ratings_count'], ascending=[False, False]
+        ).head(25)
+        provider_samples.append(p_sample)
+        
+    if provider_samples:
+        combined_sample = pd.concat(provider_samples).drop_duplicates(subset=['title'])
+    else:
+        combined_sample = pd.DataFrame()
+    
+    # If we don't have enough total nodes, fallback to the top 100 overall
+    if len(combined_sample) < 50:
+        combined_sample = sample_df.sort_values(by=['stars', 'ratings_count'], ascending=[False, False]).head(100)
+        
+    combined_sample = combined_sample.reset_index(drop=True)
+    
+    # Construct nodes
+    nodes = []
+    for idx, row in combined_sample.iterrows():
+        # Assign category group based on keywords (prioritize Web/Security/Software first to prevent character overlaps like 'html' matching 'ml')
+        title = row['title'].lower()
+        group = "General CS"
+        if any(w in title for w in ['web', 'html', 'css', 'react', 'js', 'javascript', 'node', 'django', 'flask', 'angular', 'vue']):
+            group = "Web Development"
+        elif any(w in title for w in ['security', 'cyber', 'network', 'firewall', 'attack', 'cryptography', 'penetration', 'ethical hacking']):
+            group = "Cybersecurity"
+        elif any(w in title for w in ['java', 'c++', 'c#', 'programming', 'code', 'coding', 'kotlin', 'swift', 'go', 'rust', 'typescript']):
+            group = "Software Engineering"
+        elif any(w in title for w in ['python', 'machine learning', 'deep learning', 'intelligence', 'ai', 'data science', 'neural', 'nlp', 'pytorch', 'tensorflow']) or re.search(r'\bml\b', title):
+            group = "AI & Data Science"
+            
+        nodes.append({
+            "id": int(idx),
+            "title": row['title'],
+            "provider": row['provider'],
+            "stars": float(row['stars']),
+            "url": row['url'],
+            "group": group
+        })
+        
+    # Construct links based on similarity threshold
+    sample_profiles = combined_sample.apply(
+        lambda r: f"{r.get('title', '')} {r.get('content_text', '')}".lower(), axis=1
+    )
+    sample_vec = vectorizer.transform(sample_profiles)
+    sim_matrix = cosine_similarity(sample_vec)
+    
+    links = []
+    for i in range(len(combined_sample)):
+        for j in range(i + 1, len(combined_sample)):
+            sim = float(sim_matrix[i, j])
+            # Link if similarity is strong (0.13 provides a beautifully clustered network map)
+            if sim > 0.13:
+                links.append({
+                    "source": i,
+                    "target": j,
+                    "value": sim
+                })
+                
+    return jsonify({"nodes": nodes, "links": links})
+
+@app.route('/generate_path', methods=['POST'])
+def generate_path():
+    if df is None:
+        return jsonify({"success": False, "error": "Dataset is not loaded."}), 500
+
+    if not GEMINI_API_KEY:
+        return jsonify({
+            "success": False, 
+            "error": "Gemini API Key is missing. Please set GEMINI_API_KEY in your .env file."
+        }), 400
+
+    data = request.get_json() or {}
+    user_goal = data.get('goal', '').strip()
+    if not user_goal:
+        return jsonify({"success": False, "error": "Please enter a learning goal or career target."}), 400
+
+    # 1. Use TF-IDF to retrieve top 12 relevant courses
+    query_vector = vectorizer.transform([user_goal.lower()])
+    search_df = df.copy()
+    search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+    matched_courses = search_df.sort_values(by='match_score', ascending=False).head(12).to_dict('records')
+
+    if not matched_courses:
+        return jsonify({"success": False, "error": "No related courses found in our database to build a path."}), 404
+
+    # 2. Format the courses data to pass to the LLM (including stars & ratings)
+    courses_context = []
+    for c in matched_courses:
+        courses_context.append({
+            "title": c.get('title'),
+            "provider": c.get('provider'),
+            "description": c.get('content_text', '')[:200],
+            "url": c.get('url', '#'),
+            "stars": c.get('stars', 4.0),
+            "ratings_count": int(c.get('ratings_count', 0))
+        })
+
+    # 3. Create the SYSTEM PROMPT and USER PROMPT
+    system_prompt = (
+        "You are an elite Computer Science Academic Advisor and curriculum planner.\n"
+        "Your task is to organize a highly customized, logical, week-by-week learning syllabus "
+        "tailored specifically to the student's career or learning goal.\n\n"
+        "CRITICAL RULES:\n"
+        "1. You MUST ONLY recommend courses from the provided list of Available Courses.\n"
+        "2. Do NOT recommend any external, made-up, or imaginary courses.\n"
+        "3. You must construct a timeline (e.g., Week 1, Week 2, Week 3, etc.) explaining why "
+        "each course was selected, what the student will learn, and a quick practical exercise recommendation.\n"
+        "4. Structure your response in clean, premium HTML using only standard CSS classes. "
+        "Use <h3> for weekly headings, <p> for descriptions, <div class='path-step'> for wrappers, "
+        "and <a class='path-link' target='_blank'> for course links.\n"
+        "5. CRITICAL: For every course listed, you MUST write its exact star rating and review count right next to its name "
+        "in the bullet point list in parentheses. Example: 'Course Title (Udemy) - ⭐ 4.7 (15,230 ratings)'. "
+        "Ensure you pull the exact 'stars' and 'ratings_count' values provided in the data.\n"
+        "6. Start directly with the syllabus layout. Do not include introductory conversational fluff or markdown code blocks like ```html."
+    )
+
+    user_prompt = f"""
+    Student Goal: "{user_goal}"
+    
+    Available Courses in Database (with Ratings):
+    {json.dumps(courses_context, indent=2)}
+    
+    Please build a premium week-by-week curriculum using these courses.
+    """
+
+    try:
+        # Define the model — we use gemini-2.5-flash which is extremely fast and free
+        model = genai.GenerativeModel(
+            model_name='gemini-2.5-flash',
+            system_instruction=system_prompt
+        )
+
+        response = model.generate_content(user_prompt)
+        path_html = response.text.strip()
+        
+        # Clean any accidental markdown code fences
+        path_html = re.sub(r"^```html\n", "", path_html)
+        path_html = re.sub(r"\n```$", "", path_html)
+
+        return jsonify({
+            "success": True,
+            "goal": user_goal,
+            "path_html": path_html
+        })
+
+    except Exception as e:
+        print(f"Gemini generation error: {e}")
+        return jsonify({"success": False, "error": f"Failed to generate roadmap: {str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
