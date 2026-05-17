@@ -385,9 +385,29 @@ def index():
     if df is None:
         return "Error: Dataset not loaded. Please ensure CS_Dataset_Phase2.json exists.", 500
 
-    # Show first 50 courses by default to keep page load fast
-    courses = df.head(50).to_dict('records')
-    return render_template('index.html', courses=courses, query="", is_search=False, total_courses=len(df))
+    # Featured = top 12 highest-rated courses, preferring those with review summaries
+    featured_df = df.copy()
+    featured_df['has_review'] = featured_df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
+    featured = featured_df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+    courses = featured.to_dict('records')
+    return render_template('index.html', courses=courses, query="", is_search=False, show_all=False, total_courses=len(df), page=1, total_pages=1)
+
+@app.route('/all')
+def all_courses():
+    if df is None:
+        return redirect(url_for('index'))
+
+    page = request.args.get('page', 1, type=int)
+    per_page = 30
+    total_pages = max(1, -(-len(df) // per_page))  # Ceiling division
+    page = max(1, min(page, total_pages))
+    
+    sorted_df = df.sort_values(by='stars', ascending=False)
+    start = (page - 1) * per_page
+    end = start + per_page
+    courses = sorted_df.iloc[start:end].to_dict('records')
+    
+    return render_template('index.html', courses=courses, query="", is_search=False, show_all=True, total_courses=len(df), page=page, total_pages=total_pages)
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -412,7 +432,7 @@ def search():
         
     results = recs.head(20).to_dict('records')
 
-    return render_template('index.html', courses=results, query=query, is_search=True, total_courses=len(df))
+    return render_template('index.html', courses=results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

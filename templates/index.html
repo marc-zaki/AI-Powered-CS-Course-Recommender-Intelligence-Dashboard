@@ -60,13 +60,21 @@
             <h2>
                 {% if is_search %}
                 Results for "{{ query }}"
+                {% elif show_all %}
+                All Courses
                 {% else %}
-                Featured Courses
+                ⭐ Featured Courses
                 {% endif %}
             </h2>
-            {% if is_search %}
-            <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
-            {% endif %}
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                {% if is_search %}
+                <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
+                {% elif show_all %}
+                <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Featured</a>
+                {% else %}
+                <a href="/all" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Browse All Courses →</a>
+                {% endif %}
+            </div>
         </div>
 
         {% if courses|length == 0 %}
@@ -104,6 +112,29 @@
             </div>
             {% endfor %}
         </div>
+
+        {% if show_all and total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="/all?page={{ page - 1 }}" class="btn btn-outline page-btn">← Previous</a>
+            {% endif %}
+            
+            {% for p in range(1, total_pages + 1) %}
+                {% if p == page %}
+                <span class="btn btn-primary page-btn page-active">{{ p }}</span>
+                {% elif p <= 3 or p >= total_pages - 1 or (p >= page - 1 and p <= page + 1) %}
+                <a href="/all?page={{ p }}" class="btn btn-outline page-btn">{{ p }}</a>
+                {% elif p == 4 or p == total_pages - 2 %}
+                <span class="page-dots">...</span>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page < total_pages %}
+            <a href="/all?page={{ page + 1 }}" class="btn btn-outline page-btn">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
         {% endif %}
     </main>
 

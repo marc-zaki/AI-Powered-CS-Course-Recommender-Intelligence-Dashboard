@@ -271,3 +271,32 @@ footer {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
 }
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 0.5rem 0.875rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 8px;
+    min-width: 2.5rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.page-active {
+    pointer-events: none;
+}
+
+.page-dots {
+    color: var(--text-muted);
+    padding: 0 0.25rem;
+    font-weight: 600;
+}
