@@ -605,6 +605,8 @@ function switchTab(tabId) {
     
     if (tabId === 'skill-map') {
         setTimeout(initSkillMapGraph, 100);
+    } else if (tabId === 'dashboard') {
+        setTimeout(initDashboardCharts, 100);
     }
 }
 
@@ -638,6 +640,492 @@ function updateThemeToggleButton(theme) {
     if (btn) {
         btn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
         btn.setAttribute('title', `Switch to Nordic ${theme === 'dark' ? 'Light' : 'Dark'} Mode`);
+    }
+}
+
+function exportPlanToPDF() {
+    const goalInput = document.getElementById('ai-goal-input');
+    const goalText = goalInput ? goalInput.value.trim() : "Custom Learning Path";
+    const pathContent = document.getElementById('ai-path-content');
+    
+    if (!pathContent || pathContent.innerHTML.trim() === "") {
+        showToast("No generated plan found! Please generate a plan first.", "warning");
+        return;
+    }
+    
+    showToast("Preparing your premium PDF download...", "info");
+    
+    // 1. Inject temporary high-priority print styles to override dark theme colors
+    const pdfStyles = document.createElement('style');
+    pdfStyles.id = 'temp-pdf-styles';
+    pdfStyles.innerHTML = `
+        #ai-path-content {
+            color: #0F172A !important;
+            background: #FFFFFF !important;
+            padding: 20px !important;
+            border-radius: 0 !important;
+        }
+        #ai-path-content .path-step {
+            background: #F8FAFC !important;
+            border: 1px solid #E2E8F0 !important;
+            color: #0F172A !important;
+            padding: 24px !important;
+            margin-bottom: 24px !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            border-radius: 12px !important;
+            box-shadow: none !important;
+            text-align: left !important;
+        }
+        #ai-path-content h3 {
+            color: #0F4C75 !important;
+            font-size: 18px !important;
+            border-bottom: 2px solid #3282B8 !important;
+            padding-bottom: 6px !important;
+            margin-top: 0 !important;
+            margin-bottom: 12px !important;
+            font-weight: 800 !important;
+        }
+        #ai-path-content .path-checkbox {
+            display: none !important;
+        }
+        #ai-path-content h4 {
+            color: #3282B8 !important;
+            font-size: 13px !important;
+            margin-top: 15px !important;
+            font-weight: 700 !important;
+        }
+        #ai-path-content p, #ai-path-content li {
+            color: #334155 !important;
+            font-size: 13.5px !important;
+        }
+        #ai-path-content strong {
+            color: #0F172A !important;
+            font-weight: 700 !important;
+        }
+        #ai-path-content a {
+            color: #0F4C75 !important;
+            text-decoration: underline !important;
+            font-weight: 600 !important;
+        }
+    `;
+    document.head.appendChild(pdfStyles);
+    
+    // 2. Create and prepend a beautiful document header
+    const pdfHeader = document.createElement('div');
+    pdfHeader.id = 'temp-pdf-header';
+    pdfHeader.style.paddingBottom = '15px';
+    pdfHeader.style.borderBottom = '2px solid #0F4C75';
+    pdfHeader.style.marginBottom = '25px';
+    pdfHeader.style.textAlign = 'left';
+    pdfHeader.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <h1 style="margin: 0; color: #0F4C75; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">🧠 AI STUDY PATH</h1>
+                <p style="margin: 5px 0 0 0; color: #5F85A2; font-size: 14px; font-weight: 600;">Personalized CS Learning Curriculum</p>
+            </div>
+            <div style="text-align: right; font-size: 11px; color: #64748B;">
+                <strong>Date:</strong> ${new Date().toLocaleDateString()}<br/>
+                <strong>Platform:</strong> AI CS Recommender
+            </div>
+        </div>
+        <div style="background: #F8FAFC; border-left: 4px solid #3282B8; padding: 12px 18px; border-radius: 6px; margin-top: 20px; text-align: left;">
+            <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; font-weight: 700;">Target Goal / Career Focus</span>
+            <h2 style="margin: 3px 0 0 0; color: #0F172A; font-size: 18px; font-weight: 700; text-transform: capitalize;">${goalText}</h2>
+        </div>
+    `;
+    pathContent.prepend(pdfHeader);
+    
+    // 3. Create and append a beautiful document footer
+    const pdfFooter = document.createElement('div');
+    pdfFooter.id = 'temp-pdf-footer';
+    pdfFooter.style.borderTop = '1px solid #E2E8F0';
+    pdfFooter.style.marginTop = '40px';
+    pdfFooter.style.paddingTop = '15px';
+    pdfFooter.style.textAlign = 'center';
+    pdfFooter.style.fontSize = '11px';
+    pdfFooter.style.color = '#94A3B8';
+    pdfFooter.innerHTML = `AI-Powered CS Course Recommender Intelligence Dashboard &bull; Curated and Structured with Gemini 2.5-Flash`;
+    pathContent.appendChild(pdfFooter);
+    
+    // 4. PDF Generation Options
+    const opt = {
+        margin:       12,
+        filename:     `AI_Study_Plan_${goalText.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            letterRendering: true,
+            scrollY: 0,
+            scrollX: 0
+        },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    // 5. Run html2pdf directly on the fully painted DOM container
+    html2pdf().set(opt).from(pathContent).save().then(() => {
+        // Clean up immediately!
+        pdfHeader.remove();
+        pdfFooter.remove();
+        pdfStyles.remove();
+        showToast("PDF Export Complete!", "success");
+    }).catch(err => {
+        console.error("PDF Export Error: ", err);
+        pdfHeader.remove();
+        pdfFooter.remove();
+        pdfStyles.remove();
+        showToast("Failed to generate PDF.", "error");
+    });
+}
+
+let dashboardCharts = {};
+
+function initDashboardCharts() {
+    // If charts already exist, destroy them to support clean re-rendering
+    Object.keys(dashboardCharts).forEach(key => {
+        if (dashboardCharts[key]) {
+            dashboardCharts[key].destroy();
+        }
+    });
+    
+    fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                console.error("Failed to load statistics:", data.error);
+                return;
+            }
+            
+            // 1. Update Metrics Cards
+            document.getElementById('stat-total-courses').innerText = data.metrics.total_courses.toLocaleString();
+            document.getElementById('stat-avg-rating').innerText = data.metrics.avg_rating.toFixed(2) + " ⭐";
+            document.getElementById('stat-total-reviews').innerText = data.metrics.total_reviews.toLocaleString();
+            
+            // Check active theme to customize text/axes colors dynamically!
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const labelColor = currentTheme === 'dark' ? '#BBE1FA' : '#334155';
+            const gridColor = currentTheme === 'dark' ? 'rgba(187, 225, 250, 0.1)' : 'rgba(15, 23, 42, 0.08)';
+            
+            // 2. Chart 1: Course Provider Distribution (Doughnut)
+            const providerCtx = document.getElementById('chart-provider').getContext('2d');
+            const providers = Object.keys(data.provider_distribution);
+            const providerValues = Object.values(data.provider_distribution);
+            
+            dashboardCharts.provider = new Chart(providerCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: providers,
+                    datasets: [{
+                        data: providerValues,
+                        backgroundColor: [
+                            '#3282B8',
+                            '#0F4C75',
+                            '#BBE1FA',
+                            '#10B981',
+                            '#FBBF24'
+                        ].slice(0, providers.length),
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: labelColor, font: { family: 'Inter', weight: '600' } }
+                        }
+                    }
+                }
+            });
+            
+            // 3. Chart 2: Keyword Frequency statistics (Bar Chart)
+            const keywordCtx = document.getElementById('chart-keywords').getContext('2d');
+            // Sort keywords descending
+            const sortedKeywords = Object.entries(data.keyword_frequencies)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+                
+            dashboardCharts.keywords = new Chart(keywordCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedKeywords.map(x => x[0].toUpperCase()),
+                    datasets: [{
+                        label: 'Term Counts',
+                        data: sortedKeywords.map(x => x[1]),
+                        backgroundColor: 'rgba(50, 130, 184, 0.85)',
+                        borderColor: '#3282B8',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: { color: labelColor, font: { family: 'Inter', weight: '600', size: 10 } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: { color: labelColor },
+                            grid: { color: gridColor }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            
+            // 4. Chart 3: Difficulty ratio (Pie)
+            const difficultyCtx = document.getElementById('chart-difficulty').getContext('2d');
+            const diffLabels = Object.keys(data.difficulty_distribution);
+            const diffValues = Object.values(data.difficulty_distribution);
+            
+            // Re-order to green-yellow-red sequence: Beginner, Intermediate, Advanced
+            const order = ["Beginner", "Intermediate", "Advanced"];
+            const orderedLabels = [];
+            const orderedValues = [];
+            
+            order.forEach(level => {
+                const idx = diffLabels.indexOf(level);
+                if (idx !== -1) {
+                    orderedLabels.push(level);
+                    orderedValues.push(diffValues[idx]);
+                }
+            });
+            
+            dashboardCharts.difficulty = new Chart(difficultyCtx, {
+                type: 'pie',
+                data: {
+                    labels: orderedLabels,
+                    datasets: [{
+                        data: orderedValues,
+                        backgroundColor: [
+                            '#10B981', // green
+                            '#FBBF24', // yellow/gold
+                            '#EF4444'  // red
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: labelColor, font: { family: 'Inter', weight: '600' } }
+                        }
+                    }
+                }
+            });
+            
+            // 5. Chart 4: Ratings Distribution Histogram (Bar)
+            const ratingCtx = document.getElementById('chart-ratings').getContext('2d');
+            const ratingsBins = Object.keys(data.ratings_distribution);
+            const ratingsValues = Object.values(data.ratings_distribution);
+            
+            dashboardCharts.ratings = new Chart(ratingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ratingsBins,
+                    datasets: [{
+                        label: 'Course Counts',
+                        data: ratingsValues,
+                        backgroundColor: 'rgba(15, 76, 117, 0.85)',
+                        borderColor: '#0F4C75',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: { color: labelColor, font: { family: 'Inter', weight: '600' } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: { color: labelColor },
+                            grid: { color: gridColor }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            console.error("Error loading dashboard data:", err);
+        });
+}
+
+// 🎰 Course Discovery Roulette Implementation
+function openRouletteModal() {
+    const modal = document.getElementById('roulette-modal');
+    modal.classList.add('active');
+    
+    // Reset modal state
+    document.getElementById('roulette-result-card').style.display = 'none';
+    const inner = document.getElementById('roulette-spinner-inner');
+    inner.innerHTML = '<span class="roulette-spinner-placeholder">Ready to Spin!</span>';
+    
+    const spinBtn = document.getElementById('roulette-spin-btn');
+    spinBtn.disabled = false;
+    spinBtn.innerText = '✨ Spin the Wheel!';
+}
+
+function closeRouletteModal() {
+    document.getElementById('roulette-modal').classList.remove('active');
+}
+
+function startRouletteSpin() {
+    const spinBtn = document.getElementById('roulette-spin-btn');
+    const container = document.querySelector('.roulette-spinner-container');
+    const inner = document.getElementById('roulette-spinner-inner');
+    const resultCard = document.getElementById('roulette-result-card');
+    
+    // Disable inputs and reset state
+    spinBtn.disabled = true;
+    spinBtn.innerText = '🎰 Spinning...';
+    resultCard.style.display = 'none';
+    container.classList.add('spinning');
+    
+    // Rapidly cycle intermediate CS terms to simulate slot machine reel!
+    const placeholderTerms = [
+        "Advanced Neural Networks",
+        "Python Data Science 101",
+        "Cybersecurity Pentesting",
+        "Algorithmic Data Structures",
+        "Full-Stack Web Dev Bootcamp",
+        "Database Architecture & SQL",
+        "Introduction to AI Models",
+        "Cloud DevOps with Docker",
+        "Framer Motion Animations",
+        "Pairwise Cosine Similarity",
+        "TF-IDF Term Weighting",
+        "Graph Search Traversals",
+        "MongoDB Ingestion Pipeline"
+    ];
+    
+    let cycleIdx = 0;
+    const spinInterval = setInterval(() => {
+        inner.innerHTML = `<span>${placeholderTerms[cycleIdx]}</span>`;
+        cycleIdx = (cycleIdx + 1) % placeholderTerms.length;
+    }, 75);
+    
+    // Fetch random course in the background
+    fetch('/api/random_course')
+        .then(response => response.json())
+        .then(data => {
+            setTimeout(() => {
+                // Stop spinning
+                clearInterval(spinInterval);
+                container.classList.remove('spinning');
+                
+                if (!data.success) {
+                    inner.innerHTML = '<span class="roulette-spinner-placeholder">Spin Failed! Try Again.</span>';
+                    spinBtn.disabled = false;
+                    spinBtn.innerText = '✨ Spin the Wheel!';
+                    return;
+                }
+                
+                const course = data.course;
+                
+                // Set snapped visual title
+                inner.innerHTML = `<span style="color: var(--accent-emerald); font-size: 1.45rem;">🎉 MATCH FOUND! 🎉</span>`;
+                
+                // Populate Result Card
+                document.getElementById('roulette-res-provider').innerText = course.provider;
+                document.getElementById('roulette-res-title').innerText = course.title;
+                
+                // Formulate stars
+                const starCount = Math.min(Math.max(Math.round(course.stars), 1), 5);
+                document.getElementById('roulette-res-stars').innerText = '⭐'.repeat(starCount);
+                document.getElementById('roulette-res-reviews').innerText = `(${course.ratings_count.toLocaleString()} student reviews)`;
+                
+                // Formulate description
+                let desc = course.content_text || "No description provided.";
+                if (desc.length > 200) {
+                    desc = desc.substring(0, 197) + '...';
+                }
+                document.getElementById('roulette-res-desc').innerText = desc;
+                
+                // Formulate links & actions
+                const linkBtn = document.getElementById('roulette-res-link');
+                linkBtn.href = course.url && course.url !== '#' ? `/verify_link?url=${encodeURIComponent(course.url)}&title=${encodeURIComponent(course.title)}&provider=${encodeURIComponent(course.provider)}` : '#';
+                
+                // Compare binding
+                const compareBtn = document.getElementById('roulette-add-compare-btn');
+                compareBtn.onclick = () => {
+                    addToCompare({
+                        title: course.title,
+                        provider: course.provider,
+                        stars: course.stars,
+                        ratings_count: course.ratings_count,
+                        url: course.url,
+                        desc: course.content_text
+                    });
+                    showToast(`Added ${course.title.substring(0, 25)}... to Comparison!`, "success");
+                };
+                
+                // Render Result Card
+                resultCard.style.display = 'block';
+                
+                // Enable button for spin again
+                spinBtn.disabled = false;
+                spinBtn.innerText = '🔄 Spin Again!';
+                
+                // TRIPLE NEON CONFETTI BURST!
+                triggerConfettiExplosion();
+            }, 1800); // Perfect duration to build slot-machine suspense!
+        })
+        .catch(err => {
+            console.error("Roulette search failure: ", err);
+            clearInterval(spinInterval);
+            container.classList.remove('spinning');
+            inner.innerHTML = '<span class="roulette-spinner-placeholder">Error! Try Again.</span>';
+            spinBtn.disabled = false;
+            spinBtn.innerText = '✨ Spin the Wheel!';
+        });
+}
+
+function triggerConfettiExplosion() {
+    if (typeof confetti === 'function') {
+        const duration = 2.5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1100 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 50 * (timeLeft / duration);
+            // double bottom-corner bursts!
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+        
+        // Single heavy center burst
+        confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            zIndex: 1100
+        });
     }
 }
 

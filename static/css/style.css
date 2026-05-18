@@ -757,6 +757,11 @@ nav {
     to { transform: scale(1); opacity: 1; }
 }
 
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 .compare-modal-close {
     position: absolute;
     top: 1.5rem;
@@ -957,4 +962,233 @@ footer {
     padding: 3rem 2rem;
     border-top: 1px solid var(--border-glass);
     color: var(--text-muted);
+}
+
+/* 🎰 Course Discovery Roulette Styling */
+.btn-roulette {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    transition: var(--transition-premium);
+}
+
+.btn-roulette:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.roulette-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roulette-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.roulette-modal-content {
+    background: var(--bg-modal);
+    border: 1px solid var(--border-glass-active);
+    box-shadow: var(--shadow-glass);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 580px;
+    padding: 2.5rem;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.roulette-modal.active .roulette-modal-content {
+    transform: scale(1);
+}
+
+.roulette-modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-premium);
+}
+
+.roulette-modal-close:hover {
+    color: var(--text-main);
+    transform: rotate(90deg);
+}
+
+.roulette-modal-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.roulette-modal-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Slot Machine Spinner */
+.roulette-spinner-container {
+    background: rgba(15, 23, 42, 0.25);
+    border: 2px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roulette-spinner-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.roulette-spinner-container.spinning .roulette-spinner-border {
+    border-color: var(--secondary);
+    animation: borderPulse 1.2s infinite alternate;
+}
+
+@keyframes borderPulse {
+    0% { box-shadow: inset 0 0 10px rgba(50, 130, 184, 0.2); }
+    100% { box-shadow: inset 0 0 25px rgba(50, 130, 184, 0.6); }
+}
+
+.roulette-spinner-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.roulette-spinner-inner span {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--secondary);
+    transition: transform 0.05s ease-in-out;
+}
+
+.roulette-spinner-placeholder {
+    color: var(--text-muted) !important;
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+}
+
+/* Result Card */
+.roulette-result-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glass-active);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.roulette-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    border-radius: 20px;
+    background: var(--primary);
+    color: white;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+}
+
+.roulette-course-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.roulette-rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.roulette-rating-row .stars-display {
+    color: #FBBF24;
+}
+
+.roulette-rating-row .reviews-display {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.roulette-course-desc {
+    font-size: 0.925rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.roulette-actions-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-roulette-spin {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%) !important;
+    color: white !important;
+    font-weight: 800 !important;
+    padding: 0.75rem 2rem !important;
+    font-size: 1.05rem !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(50, 130, 184, 0.3) !important;
+    transition: var(--transition-premium) !important;
+    border: none !important;
+}
+
+.btn-roulette-spin:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(50, 130, 184, 0.5) !important;
+}
+
+.btn-roulette-spin:disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }

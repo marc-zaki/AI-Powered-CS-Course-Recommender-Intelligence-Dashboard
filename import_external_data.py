@@ -33,8 +33,9 @@ def import_csv(file_path, provider_name, title_col, desc_col, url_col, default_u
     """
     Parses an external CSV, strictly filters for CS-related courses, and merges them.
     """
-    db_path = "CS_Dataset_Phase2.json"
-    xlsx_path = "CS_Dataset_Phase2.xlsx"
+    os.makedirs("datasets", exist_ok=True)
+    db_path = "datasets/CS_Dataset_Phase2.json"
+    xlsx_path = "datasets/CS_Dataset_Phase2.xlsx"
     
     if not os.path.exists(file_path):
         print(f"Error: External file '{file_path}' not found.")
@@ -109,8 +110,17 @@ def import_csv(file_path, provider_name, title_col, desc_col, url_col, default_u
                 except:
                     pass
 
+        # Determine actual provider dynamically from row keys if available (e.g. University, Site, School)
+        actual_provider = provider_name
+        if 'University' in row and pd.notnull(row.get('University')) and str(row.get('University')).strip():
+            actual_provider = str(row.get('University')).strip()
+        elif 'Site' in row and pd.notnull(row.get('Site')) and str(row.get('Site')).strip():
+            actual_provider = str(row.get('Site')).strip()
+        elif 'School' in row and pd.notnull(row.get('School')) and str(row.get('School')).strip():
+            actual_provider = str(row.get('School')).strip()
+
         new_courses.append({
-            "provider": provider_name,
+            "provider": actual_provider,
             "title": title,
             "content_text": desc,
             "url": url,
@@ -160,6 +170,23 @@ def import_csv(file_path, provider_name, title_col, desc_col, url_col, default_u
         pd.DataFrame(deduped).to_excel(xlsx_path, index=False)
         print(f"Saved Excel backup to '{xlsx_path}'")
         
+        # Sync to MongoDB if available
+        try:
+            import pymongo
+            mongo_uri = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
+            print(f"Syncing updated dataset to MongoDB ({mongo_uri})...")
+            client = pymongo.MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
+            client.server_info()
+            db = client["cs_recommender"]
+            col = db["courses"]
+            
+            # Clear old records and write new ones to ensure perfect sync
+            col.delete_many({})
+            col.insert_many(deduped)
+            print(f"Successfully synced {len(deduped)} courses to MongoDB collection 'cs_recommender.courses'!")
+        except Exception as db_err:
+            print(f"MongoDB Sync Warning: Could not write to MongoDB ({db_err}). Dataset was saved to local JSON/Excel files.")
+            
         print("\n🎉 Success! Restart your Flask server to load the new courses.")
     except Exception as e:
         print(f"Failed to save database: {e}")
@@ -168,10 +195,19 @@ if __name__ == "__main__":
     print("--- Kaggle / External CS CSV Importer Utility ---")
     print("This utility will automatically FILTER OUT non-CS courses (e.g. music, finance, cooking).")
     
+    # Helper to resolve dataset path inside datasets/ folder or root directory
+    def get_valid_path(filename):
+        if os.path.exists(filename):
+            return filename
+        datasets_path = os.path.join("datasets", filename)
+        if os.path.exists(datasets_path):
+            return datasets_path
+        return None
+        
     # Import Udemy Tech CSV if present
-    udemy_file = 'udemy_tech.csv'
-    if os.path.exists(udemy_file):
-        print(f"\nDetected '{udemy_file}' in workspace! Starting auto-import...")
+    udemy_file = get_valid_path('udemy_tech.csv')
+    if udemy_file:
+        print(f"\nDetected '{udemy_file}'! Starting auto-import...")
         import_csv(
             file_path=udemy_file,
             provider_name='Udemy',
@@ -180,12 +216,12 @@ if __name__ == "__main__":
             url_col='Link'
         )
     else:
-        print(f"\nCould not find '{udemy_file}' in the root directory.")
+        print(f"\nCould not find 'udemy_tech.csv' in root or datasets/ directory.")
         
     # Import Coursera English CSV if present
-    coursera_file = 'courses_en.csv'
-    if os.path.exists(coursera_file):
-        print(f"\nDetected '{coursera_file}' in workspace! Starting auto-import...")
+    coursera_file = get_valid_path('courses_en.csv')
+    if coursera_file:
+        print(f"\nDetected '{coursera_file}'! Starting auto-import...")
         import_csv(
             file_path=coursera_file,
             provider_name='Coursera',
@@ -194,12 +230,12 @@ if __name__ == "__main__":
             url_col='url'
         )
     else:
-        print(f"\nCould not find '{coursera_file}' in the root directory.")
+        print(f"\nCould not find 'courses_en.csv' in root or datasets/ directory.")
 
     # Import EdX CSV if present
-    edx_file = 'EdX.csv'
-    if os.path.exists(edx_file):
-        print(f"\nDetected '{edx_file}' in workspace! Starting auto-import...")
+    edx_file = get_valid_path('EdX.csv')
+    if edx_file:
+        print(f"\nDetected '{edx_file}'! Starting auto-import...")
         import_csv(
             file_path=edx_file,
             provider_name='EdX',
@@ -208,12 +244,12 @@ if __name__ == "__main__":
             url_col='Link'
         )
     else:
-        print(f"\nCould not find '{edx_file}' in the root directory.")
+        print(f"\nCould not find 'EdX.csv' in root or datasets/ directory.")
 
     # Import Online Courses CSV if present
-    online_file = 'Online_Courses.csv'
-    if os.path.exists(online_file):
-        print(f"\nDetected '{online_file}' in workspace! Starting auto-import...")
+    online_file = get_valid_path('Online_Courses.csv')
+    if online_file:
+        print(f"\nDetected '{online_file}'! Starting auto-import...")
         import_csv(
             file_path=online_file,
             provider_name='Online Courses',
@@ -222,4 +258,4 @@ if __name__ == "__main__":
             url_col='URL'
         )
     else:
-        print(f"\nCould not find '{online_file}' in the root directory.")
+        print(f"\nCould not find 'Online_Courses.csv' in root or datasets/ directory.")
