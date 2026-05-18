@@ -36,6 +36,7 @@ scrape_status = {
 # Configuration loaded from .env file
 SERPAPI_KEY = os.environ.get("SERPAPI_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 
 if GEMINI_API_KEY:
@@ -670,6 +671,35 @@ def validate_link():
         # On connection errors or timeout, fallback to the search page just to be safe!
         return jsonify({"valid": False, "fallback_url": fallback_url})
 
+@app.route('/verify_link')
+def verify_link():
+    url = request.args.get('url', '').strip()
+    title = request.args.get('title', '').strip()
+    provider = request.args.get('provider', '').strip()
+    
+    if not url:
+        return redirect('/')
+        
+    fallback_url = url
+    if provider.lower() == 'udemy':
+        fallback_url = f"https://www.udemy.com/courses/search/?q={urllib.parse.quote(title)}"
+    elif provider.lower() == 'coursera':
+        fallback_url = f"https://www.coursera.org/search?query={urllib.parse.quote(title)}"
+    elif provider.lower() == 'edx':
+        fallback_url = f"https://www.edx.org/search?q={urllib.parse.quote(title)}"
+        
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        # Use HEAD request for maximum speed, timeout of 1.5s
+        res = requests.head(url, headers=headers, timeout=1.5, allow_redirects=True)
+        if res.status_code == 404:
+            return redirect(fallback_url)
+        return redirect(url)
+    except Exception:
+        return redirect(fallback_url)
+
 @app.route('/api/stats')
 def api_stats():
     if df is None or len(df) == 0:
@@ -731,7 +761,16 @@ def api_stats():
 
 @app.route('/api/random_course')
 def api_random_course():
+    global df
     try:
+        # Dynamic loader failover
+        if df is None or df.empty:
+            for db_file in ["datasets/CS_Dataset_Phase2.json", "CS_Dataset_Phase2.json"]:
+                if os.path.exists(db_file):
+                    df = pd.read_json(db_file)
+                    print(f"Dynamically loaded database from {db_file}")
+                    break
+        
         if df is not None and not df.empty:
             random_row = df.sample(n=1).iloc[0]
             
@@ -822,16 +861,100 @@ def graph_data():
                 
     return jsonify({"nodes": nodes, "links": links})
 
+def generate_local_fallback_path(user_goal, matched_courses):
+    """
+    Generates a beautifully structured, highly customized, and comprehensive 6-week
+    academic syllabus from the matched courses when Gemini API rate limits/quotas are exceeded.
+    """
+    import urllib.parse
+    
+    html = []
+    
+    # 1. Graceful API notice banner
+    html.append(
+        '<div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); '
+        'border-radius: 10px; padding: 1.15rem; margin-bottom: 2rem; display: flex; align-items: center; '
+        'gap: 0.85rem; color: #F59E0B; font-size: 0.925rem; font-weight: 600; line-height: 1.55;">'
+        '<span style="font-size: 1.25rem;">⚠️</span>'
+        '<span><strong>Gemini Free-Tier Rate Limit Exceeded:</strong> Your intelligence dashboard has automatically '
+        'rerouted to your local high-fidelity VSM Academic Planner to preserve system operational integrity and deliver '
+        'your study plan immediately without errors.</span>'
+        '</div>'
+    )
+    
+    html.append(f'<h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em;">6-Week Academic Curriculum</h2>')
+    html.append(f'<p style="color: var(--text-muted); line-height: 1.65; margin-bottom: 2rem; font-size: 0.95rem;">This tailored syllabus has been synthesized using vector space TF-IDF cosine-similarity rankings matching your career target: <strong style="color: var(--text-main);">"{user_goal}"</strong>. It arranges your target courses in logical developmental order from fundamental theory to final advanced mastery.</p>')
+    
+    weeks_info = [
+        {"title": "Week 1: Foundational Core & Groundwork", "focus": "Establishing essential concepts, introductory structures, and theoretical principles."},
+        {"title": "Week 2: Intermediate Implementation & Systems", "focus": "Stepping into core programming structures, systems development, and data pipelines."},
+        {"title": "Week 3: Advanced Architectures & Methodology", "focus": "Deepening methodology, scaling applications, and studying critical algorithms."},
+        {"title": "Week 4: Practical Deployments & Integration", "focus": "Bringing concepts together through practical tooling, APIs, and real-world system interfaces."},
+        {"title": "Week 5: Enterprise Scaling & Deep Specialization", "focus": "Covering expert topics, performance optimizations, and domain-level complexities."},
+        {"title": "Week 6: Capstone Optimization & Full Mastery", "focus": "Synthesizing your skills into an advanced final portfolio project to demonstrate professional competence."}
+    ]
+    
+    for i, week in enumerate(weeks_info):
+        c1_idx = i * 2
+        c2_idx = i * 2 + 1
+        
+        if c1_idx >= len(matched_courses):
+            break
+            
+        c1 = matched_courses[c1_idx]
+        c2 = matched_courses[c2_idx] if c2_idx < len(matched_courses) else None
+        
+        html.append(f'<div class="path-step" style="background: var(--card-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.75rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-glass);">')
+        html.append(f'<h3 style="color: var(--secondary); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">{week["title"]}</h3>')
+        html.append(f'<p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem; font-style: italic;">Focus Area: {week["focus"]}</p>')
+        
+        html.append('<ul style="padding-left: 1.2rem; margin-bottom: 1.25rem; list-style-type: square; color: var(--text-muted);">')
+        
+        # Course 1
+        c1_stars = float(c1.get('stars', 4.5))
+        c1_reviews = int(c1.get('ratings_count', 1500))
+        c1_url = c1.get('url', '#')
+        c1_redirect = f"/verify_link?url={urllib.parse.quote(c1_url)}&title={urllib.parse.quote(c1.get('title'))}&provider={urllib.parse.quote(c1.get('provider'))}" if c1_url != '#' else '#'
+        
+        html.append(f'<li style="margin-bottom: 0.75rem; line-height: 1.6;">')
+        html.append(f'<strong style="color: var(--text-main); font-weight: 700;">{c1.get("title")}</strong> ')
+        html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c1.get("provider")}) — ⭐ {c1_stars:.1f} ({c1_reviews:,} ratings)</span>')
+        html.append(f'<br><span style="color: var(--text-muted); font-size: 0.9rem; display:block; margin: 0.35rem 0; line-height: 1.5;">{c1.get("content_text")[:200]}...</span>')
+        if c1_url != '#':
+            html.append(f'<a class="path-link" href="{c1_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;">📚 View Syllabus & Lectures →</a>')
+        html.append('</li>')
+        
+        # Course 2 (if present)
+        if c2:
+            c2_stars = float(c2.get('stars', 4.5))
+            c2_reviews = int(c2.get('ratings_count', 1500))
+            c2_url = c2.get('url', '#')
+            c2_redirect = f"/verify_link?url={urllib.parse.quote(c2_url)}&title={urllib.parse.quote(c2.get('title'))}&provider={urllib.parse.quote(c2.get('provider'))}" if c2_url != '#' else '#'
+            
+            html.append(f'<li style="margin-bottom: 0.75rem; margin-top: 1rem; line-height: 1.6;">')
+            html.append(f'<strong style="color: var(--text-main); font-weight: 700;">{c2.get("title")}</strong> ')
+            html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c2.get("provider")}) — ⭐ {c2_stars:.1f} ({c2_reviews:,} ratings)</span>')
+            html.append(f'<br><span style="color: var(--text-muted); font-size: 0.9rem; display:block; margin: 0.35rem 0; line-height: 1.5;">{c2.get("content_text")[:200]}...</span>')
+            if c2_url != '#':
+                html.append(f'<a class="path-link" href="{c2_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;">📚 View Syllabus & Lectures →</a>')
+            html.append('</li>')
+            
+        html.append('</ul>')
+        
+        # Bespoke Recommended Practical Exercise!
+        html.append(f'<div style="background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;">')
+        html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;">🛠️ Weekly Practical Exercise:</strong>')
+        html.append(f'<span style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block;">Design and construct a modular software module incorporating the core competencies introduced this week. Focus on writing clean object-oriented logic, defining API schemas, and implementing comprehensive unit tests to validate boundaries on <strong>"{c1.get("title")}"</strong>. Commit your solution to a portfolio repository on GitHub.</span>')
+        html.append('</div>')
+        
+        html.append('</div>')
+        
+    return "".join(html)
+
 @app.route('/generate_path', methods=['POST'])
 def generate_path():
     if df is None:
         return jsonify({"success": False, "error": "Dataset is not loaded."}), 500
-
-    if not GEMINI_API_KEY:
-        return jsonify({
-            "success": False, 
-            "error": "Gemini API Key is missing. Please set GEMINI_API_KEY in your .env file."
-        }), 400
 
     data = request.get_json() or {}
     user_goal = data.get('goal', '').strip()
@@ -846,6 +969,17 @@ def generate_path():
 
     if not matched_courses:
         return jsonify({"success": False, "error": "No related courses found in our database to build a path."}), 404
+
+    # Fallback instantly if Gemini API Key is missing
+    if not GEMINI_API_KEY:
+        print("Gemini API key not found. Seamlessly generating local academic study plan fallback.")
+        path_html = generate_local_fallback_path(user_goal, matched_courses)
+        return jsonify({
+            "success": True,
+            "goal": user_goal,
+            "path_html": path_html,
+            "fallback": True
+        })
 
     # 2. Format the courses data to pass to the LLM (including stars & ratings)
     courses_context = []
@@ -887,29 +1021,84 @@ def generate_path():
     Please build a premium week-by-week curriculum using these courses.
     """
 
+    # ── Multi-Tier Study Plan Generator ──────────────────────────────
+    # Tier 1: Groq Cloud API (Llama-3.1-70b-versatile) — Extremely fast, generous 30 RPM free limit!
+    if GROQ_API_KEY:
+        try:
+            print("Querying Groq Cloud API for study plan...")
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "llama-3.1-70b-versatile",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.3,
+                "max_tokens": 2048
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=12.0)
+            if res.status_code == 200:
+                res_data = res.json()
+                path_html = res_data["choices"][0]["message"]["content"].strip()
+                
+                path_html = re.sub(r"^```html\n", "", path_html)
+                path_html = re.sub(r"\n```$", "", path_html)
+                
+                print("Successfully generated study plan using Groq Cloud API!")
+                return jsonify({
+                    "success": True,
+                    "goal": user_goal,
+                    "path_html": path_html,
+                    "engine": "groq"
+                })
+            else:
+                print(f"Groq API returned error status {res.status_code}. Routing to Tier 2 (Gemini)...")
+        except Exception as groq_err:
+            print(f"Groq Cloud connection error: {groq_err}. Routing to Tier 2 (Gemini)...")
+
+    # Tier 2: Gemini Cloud API (gemini-2.5-flash) — Standard Google cloud endpoint
+    if GEMINI_API_KEY:
+        try:
+            print("Querying Gemini Cloud API for study plan...")
+            model = genai.GenerativeModel(
+                model_name='gemini-2.5-flash',
+                system_instruction=system_prompt
+            )
+
+            response = model.generate_content(user_prompt)
+            path_html = response.text.strip()
+            
+            path_html = re.sub(r"^```html\n", "", path_html)
+            path_html = re.sub(r"\n```$", "", path_html)
+
+            print("Successfully generated study plan using Gemini Cloud API!")
+            return jsonify({
+                "success": True,
+                "goal": user_goal,
+                "path_html": path_html,
+                "engine": "gemini"
+            })
+        except Exception as gemini_err:
+            print(f"Gemini API returned error: {gemini_err}. Routing to Tier 3 (Local VSM Academic Planner)...")
+
+    # Tier 3: Local VSM Academic Planner — Robust, instant, offline-capable fallback
     try:
-        # Define the model — we use gemini-2.5-flash which is extremely fast and free
-        model = genai.GenerativeModel(
-            model_name='gemini-2.5-flash',
-            system_instruction=system_prompt
-        )
-
-        response = model.generate_content(user_prompt)
-        path_html = response.text.strip()
-        
-        # Clean any accidental markdown code fences
-        path_html = re.sub(r"^```html\n", "", path_html)
-        path_html = re.sub(r"\n```$", "", path_html)
-
+        print("Routing to local high-fidelity VSM Academic Planner fallback...")
+        path_html = generate_local_fallback_path(user_goal, matched_courses)
         return jsonify({
             "success": True,
             "goal": user_goal,
-            "path_html": path_html
+            "path_html": path_html,
+            "fallback": True,
+            "engine": "local"
         })
-
-    except Exception as e:
-        print(f"Gemini generation error: {e}")
-        return jsonify({"success": False, "error": f"Failed to generate roadmap: {str(e)}"}), 500
+    except Exception as fallback_err:
+        print(f"Fallback generation error: {fallback_err}")
+        return jsonify({"success": False, "error": f"Failed to generate study plan: {str(fallback_err)}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

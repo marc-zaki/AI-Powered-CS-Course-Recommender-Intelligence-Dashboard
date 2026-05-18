@@ -133,6 +133,36 @@ function clearCompareSelection() {
     showToast("Comparison queue cleared.", "info");
 }
 
+function addToCompare(course) {
+    const exists = comparedCourses.some(c => c.title === course.title);
+    if (exists) {
+        showToast("This course is already in your comparison queue.", "info");
+        return;
+    }
+    if (comparedCourses.length >= 3) {
+        showToast("You can compare a maximum of 3 courses at once.", "warning");
+        return;
+    }
+    comparedCourses.push({
+        title: course.title,
+        provider: course.provider,
+        stars: String(course.stars),
+        ratingsCount: String(course.ratings_count),
+        url: course.url,
+        desc: course.desc || ''
+    });
+    
+    // Auto-check any matching checkboxes on the catalog page for visual sync
+    document.querySelectorAll('.course-card').forEach(card => {
+        if (card.getAttribute('data-title') === course.title) {
+            const chk = card.querySelector('.compare-check');
+            if (chk) chk.checked = true;
+        }
+    });
+    
+    updateCompareBar();
+}
+
 function launchCompareModal() {
     if (comparedCourses.length === 0) return;
     
