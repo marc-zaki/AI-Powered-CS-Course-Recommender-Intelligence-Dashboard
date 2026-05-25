@@ -1,52 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS Course Recommender | AI Powered Learning Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-</head>
-
-<body>
-
-    <nav>
-        <a href="/" class="logo">
-            <span>🧠</span> AI CS Recommender
-        </a>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <div class="stats-badge">
-                {{ total_courses }} Courses Indexed
-            </div>
-            <button id="scraper-btn" onclick="startScraper()" class="btn btn-outline"
-                style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">🚀 Live Scraper</button>
-            <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-outline"
-                style="padding: 0.35rem 0.65rem; font-size: 1.15rem; line-height: 1;" title="Toggle Light/Dark Theme">🌓</button>
-        </div>
-    </nav>
-
-    <!-- Progress Bar Container -->
-    <div id="progress-container"
-        style="display: none; background: white; padding: 1rem 2rem; border-bottom: 1.5px solid var(--mint-pastel);">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span id="progress-text"
-                style="font-size: 0.875rem; font-weight: 600; color: var(--text-main);">Initializing...</span>
-            <span id="progress-percent" style="font-size: 0.875rem; font-weight: 700; color: var(--primary);">0%</span>
-        </div>
-        <div style="width: 100%; background-color: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden;">
-            <div id="progress-bar"
-                style="height: 100%; width: 0%; background-color: var(--primary); transition: width 0.3s ease;"></div>
-        </div>
-    </div>
-
-
-
-    <section class="hero">
+{% block content %}    <section class="hero">
         <h1>Master Your Future</h1>
         <p>Intelligence-powered course recommendations tailored to your learning path.</p>
     </section>
@@ -78,6 +32,8 @@
                     Results for "{{ query }}"
                     {% elif show_all %}
                     All Courses
+                    {% elif is_personalized %}
+                    ⭐ Your Personalized Recommendations
                     {% else %}
                     ⭐ Featured Courses
                     {% endif %}
@@ -145,6 +101,15 @@
                             <a href="{{ course.url }}" target="_blank" class="btn-view view-course-btn">
                                 View Course ↗
                             </a>
+                            {% if current_user %}
+                            <button onclick="toggleTaken('{{ course.url|escape }}', this)" class="btn-outline btn" style="margin-left: 0.5rem; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px;">
+                                {% if current_user.taken_courses and course.url in current_user.taken_courses %}
+                                ✓ Taken
+                                {% else %}
+                                + Mark Taken
+                                {% endif %}
+                            </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -388,11 +353,42 @@
         </div>
     </div>
 
-    <footer>
-        &copy; AI Powered CS Course Recommender. All rights reserved.
-    </footer>
+{% endblock %}
 
+{% block extra_head %}
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+{% endblock %}
+
+{% block scripts %}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</body>
-
-</html>
+    <script>
+    function toggleTaken(url, btn) {
+        fetch('/api/toggle_taken', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({url: url})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                if(data.action === 'added') {
+                    btn.innerHTML = '✓ Taken';
+                    btn.style.backgroundColor = 'var(--mint-pastel)';
+                    btn.style.color = '#10B981';
+                    btn.style.borderColor = '#10B981';
+                } else {
+                    btn.innerHTML = '+ Mark Taken';
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.color = 'var(--text-main)';
+                    btn.style.borderColor = 'var(--border-glass)';
+                }
+            }
+        });
+    }
+    </script>
+{% endblock %}

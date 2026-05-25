@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CS Course Recommender | AI Powered Learning Dashboard{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="logo">
+            <span>🧠</span> AI CS Recommender
+        </a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            {% if total_courses is defined %}
+            <div class="stats-badge">
+                {{ total_courses }} Courses Indexed
+            </div>
+            {% endif %}
+            <button id="scraper-btn" onclick="startScraper()" class="btn btn-outline"
+                style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">🚀 Live Scraper</button>
+            <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-outline"
+                style="padding: 0.35rem 0.65rem; font-size: 1.15rem; line-height: 1;" title="Toggle Light/Dark Theme">🌓</button>
+            
+            <div class="nav-links" style="display: flex; gap: 1rem; margin-left: 1rem; border-left: 1px solid var(--border-glass); padding-left: 1rem;">
+                {% if current_user %}
+                    <a href="{{ url_for('profile') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">👤 {{ current_user.name }}</a>
+                    {% if current_user.role == 'admin' %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">🛡️ Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Login</a>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Progress Bar Container -->
+    <div id="progress-container"
+        style="display: none; background: white; padding: 1rem 2rem; border-bottom: 1.5px solid var(--mint-pastel);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span id="progress-text"
+                style="font-size: 0.875rem; font-weight: 600; color: var(--text-main);">Initializing...</span>
+            <span id="progress-percent" style="font-size: 0.875rem; font-weight: 700; color: var(--primary);">0%</span>
+        </div>
+        <div style="width: 100%; background-color: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden;">
+            <div id="progress-bar"
+                style="height: 100%; width: 0%; background-color: var(--primary); transition: width 0.3s ease;"></div>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    <div class="container" style="margin-top: 2rem;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="padding: 1rem; border-radius: 8px; margin-bottom: 1rem; background-color: var(--bg-card); border: 1px solid var(--border-glass);">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        &copy; AI Powered CS Course Recommender. All rights reserved.
+    </footer>
+
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

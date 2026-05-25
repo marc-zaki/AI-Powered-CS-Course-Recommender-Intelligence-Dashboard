@@ -362,13 +362,9 @@ function initSkillMapGraph() {
                 
             // Draw nodes
             const node = g.append("g")
-                .selectAll("circle")
+                .selectAll("g")
                 .data(data.nodes)
-                .join("circle")
-                .attr("r", 10)
-                .attr("fill", d => colorScale(d.group))
-                .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)")
-                .attr("stroke-width", 1.5)
+                .join("g")
                 .style("cursor", "pointer")
                 .call(d3.drag()
                     .on("start", dragstarted)
@@ -376,12 +372,33 @@ function initSkillMapGraph() {
                     .on("end", dragended)
                 );
                 
+            node.append("circle")
+                .attr("r", 10)
+                .attr("fill", d => colorScale(d.group))
+                .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)")
+                .attr("stroke-width", 1.5);
+                
+            node.append("text")
+                .text(d => d.title.length > 20 ? d.title.substring(0, 20) + "..." : d.title)
+                .attr("x", 14)
+                .attr("y", 4)
+                .style("font-size", "10px")
+                .style("font-weight", "600")
+                .style("fill", currentTheme === 'dark' ? "rgba(255,255,255,0.9)" : "rgba(15,23,42,0.9)")
+                .style("pointer-events", "none")
+                .style("text-shadow", currentTheme === 'dark' ? "0px 1px 3px rgba(0,0,0,0.8)" : "0px 1px 3px rgba(255,255,255,0.8)");
+                
             // Node Interactions
             node.on("mouseover", (event, d) => {
-                d3.select(event.currentTarget)
+                const current = d3.select(event.currentTarget);
+                current.select("circle")
                     .transition().duration(200)
                     .attr("r", 14)
                     .attr("stroke", currentTheme === 'dark' ? "#FFF" : "var(--primary)");
+                    
+                current.select("text")
+                    .transition().duration(200)
+                    .style("font-size", "12px");
                     
                 tooltip.transition().duration(200).style("opacity", 0.95);
                 tooltip.html(`
@@ -393,10 +410,15 @@ function initSkillMapGraph() {
                 .style("top", (event.pageY - 28) + "px");
             })
             .on("mouseout", (event, d) => {
-                d3.select(event.currentTarget)
+                const current = d3.select(event.currentTarget);
+                current.select("circle")
                     .transition().duration(200)
                     .attr("r", 10)
                     .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)");
+                    
+                current.select("text")
+                    .transition().duration(200)
+                    .style("font-size", "10px");
                     
                 tooltip.transition().duration(200).style("opacity", 0);
             })
@@ -413,7 +435,9 @@ function initSkillMapGraph() {
                 });
                 
                 node.transition().duration(300)
-                    .attr("opacity", n => neighbors.has(n.id) ? 1.0 : 0.15)
+                    .attr("opacity", n => neighbors.has(n.id) ? 1.0 : 0.15);
+                
+                node.selectAll("circle").transition().duration(300)
                     .attr("r", n => n.id === d.id ? 15 : 10);
                     
                 link.transition().duration(300)
@@ -447,7 +471,8 @@ function initSkillMapGraph() {
             
             // Double-click SVG background to reset filters
             svg.on("click", () => {
-                node.transition().duration(300).attr("opacity", 1.0).attr("r", 10);
+                node.transition().duration(300).attr("opacity", 1.0);
+                node.selectAll("circle").transition().duration(300).attr("r", 10);
                 link.transition().duration(300)
                     .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.06)" : "rgba(15,76,117,0.1)")
                     .attr("stroke-width", l => Math.max(l.value * 3.5, 1.2));
@@ -462,9 +487,7 @@ function initSkillMapGraph() {
                     .attr("x2", d => d.target.x)
                     .attr("y2", d => d.target.y);
                     
-                node
-                    .attr("cx", d => d.x)
-                    .attr("cy", d => d.y);
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
             });
             
             function dragstarted(event, d) {

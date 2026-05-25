@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: 4rem auto;">
+    <div class="glass-panel" style="padding: 2.5rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass);">
+        <h2 style="text-align: center; color: var(--primary); font-weight: 800; font-size: 2rem; margin-bottom: 0.5rem;">Welcome Back</h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Log in to access your personalized recommendations and dashboard.</p>
+        
+        <form action="{{ url_for('login') }}" method="POST">
+            <div style="margin-bottom: 1.25rem;">
+                <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Email Address</label>
+                <input type="email" id="email" name="email" required class="search-input" style="width: 100%;" placeholder="you@example.com">
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Password</label>
+                <input type="password" id="password" name="password" required class="search-input" style="width: 100%;" placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Log In</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Don't have an account? <a href="{{ url_for('register') }}" style="color: var(--secondary); font-weight: 600; text-decoration: none;">Sign up here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+import hashlib
 import pandas as pd
 import re
 import nltk
@@ -89,11 +91,27 @@ def extract_review_summary(reviews_list):
         return f"Based on {len(reviews_list)} positive reviews."
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24))
 
 # Global variables for AI model
 df = None
 vectorizer = None
 tfidf_matrix = None
+mongo_client = None
+mongo_db = None
+
+def get_db():
+    global mongo_client, mongo_db
+    if mongo_db is not None:
+        return mongo_db
+    try:
+        mongo_client = pymongo.MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+        mongo_client.server_info()
+        mongo_db = mongo_client["cs_recommender"]
+        return mongo_db
+    except Exception as e:
+        print(f"MongoDB connection failed: {e}")
+        return None
 
 def load_and_train_model():
     global df, vectorizer, tfidf_matrix
@@ -105,10 +123,9 @@ def load_and_train_model():
     
     print(f"Connecting to MongoDB at {MONGO_URI}...")
     try:
-        client = pymongo.MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
-        # Verify connection
-        client.server_info()
-        db = client[db_name]
+        db = get_db()
+        if db is None:
+            raise Exception("Could not connect to MongoDB")
         collection = db[collection_name]
         
         # If collection is empty, auto-seed it from JSON
@@ -586,12 +603,37 @@ def index():
     if df is None:
         return "Error: Dataset not loaded. Please ensure datasets/CS_Dataset_Phase2.json exists.", 500
 
-    # Featured = top 12 highest-rated courses, preferring those with review summaries
+    user = None
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+
     featured_df = df.copy()
-    featured_df['has_review'] = featured_df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
-    featured = featured_df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+    is_personalized = False
+    
+    if user:
+        taken_courses = user.get('taken_courses', [])
+        query_terms = [user.get('track', ''), user.get('career_goals', '')]
+        query = " ".join([t for t in query_terms if t]).strip()
+        
+        if len(query) > 5:
+            query_vector = vectorizer.transform([query.lower()])
+            search_df = df.copy()
+            search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+            search_df = search_df[~search_df['url'].isin(taken_courses)]
+            featured = search_df.sort_values(by=['match_score', 'stars'], ascending=[False, False]).head(12)
+            is_personalized = True
+        else:
+            featured_df = featured_df[~featured_df['url'].isin(taken_courses)]
+            featured_df['has_review'] = featured_df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
+            featured = featured_df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+    else:
+        featured_df['has_review'] = featured_df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
+        featured = featured_df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+
     courses = featured.to_dict('records')
-    return render_template('index.html', courses=courses, query="", is_search=False, show_all=False, total_courses=len(df), page=1, total_pages=1)
+    return render_template('index.html', courses=courses, query="", is_search=False, show_all=False, total_courses=len(df), page=1, total_pages=1, is_personalized=is_personalized)
 
 @app.route('/all')
 def all_courses():
@@ -1099,6 +1141,230 @@ def generate_path():
     except Exception as fallback_err:
         print(f"Fallback generation error: {fallback_err}")
         return jsonify({"success": False, "error": f"Failed to generate study plan: {str(fallback_err)}"}), 500
+
+# --- User Authentication and Profile Management ---
+from functools import wraps
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash("Please log in to access this page.", "warning")
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash("Please log in to access this page.", "warning")
+            return redirect(url_for('login', next=request.url))
+        db = get_db()
+        user = db.users.find_one({"_id": session['user_id']})
+        if not user or user.get('role') != 'admin':
+            flash("Admin access required.", "danger")
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.context_processor
+def inject_user():
+    user = None
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+    return dict(current_user=user)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        db = get_db()
+        if db is None:
+            flash("Database connection error.", "danger")
+            return redirect(url_for('register'))
+            
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        track = request.form.get('track', '').strip()
+        career_goals = request.form.get('career_goals', '').strip()
+        skill_level = request.form.get('skill_level', 'Beginner')
+        
+        if not name or not email or not password:
+            flash("Name, email, and password are required.", "danger")
+            return redirect(url_for('register'))
+            
+        if db.users.find_one({"email": email}):
+            flash("Email already registered.", "danger")
+            return redirect(url_for('register'))
+            
+        hashed_password = generate_password_hash(password)
+        
+        user_id = str(hashlib.sha256(email.encode()).hexdigest())[:16]
+        
+        user_doc = {
+            "_id": user_id,
+            "name": name,
+            "email": email,
+            "password_hash": hashed_password,
+            "track": track,
+            "career_goals": career_goals,
+            "current_skill_level": skill_level,
+            "role": "user",
+            "taken_courses": [],
+            "onboarding_preferences": {}
+        }
+        
+        db.users.insert_one(user_doc)
+        session['user_id'] = user_id
+        flash("Registration successful! Please complete your onboarding.", "success")
+        return redirect(url_for('onboarding'))
+        
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        db = get_db()
+        if db is None:
+            flash("Database connection error.", "danger")
+            return redirect(url_for('login'))
+            
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        
+        user = db.users.find_one({"email": email})
+        
+        if user and check_password_hash(user['password_hash'], password):
+            session['user_id'] = user['_id']
+            flash(f"Welcome back, {user['name']}!", "success")
+            next_url = request.args.get('next')
+            return redirect(next_url or url_for('index'))
+        else:
+            flash("Invalid email or password.", "danger")
+            
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash("You have been logged out.", "success")
+    return redirect(url_for('index'))
+
+@app.route('/onboarding', methods=['GET', 'POST'])
+@login_required
+def onboarding():
+    db = get_db()
+    if request.method == 'POST':
+        # Save preferences
+        preferences = {}
+        for key, value in request.form.items():
+            if key.startswith('course_'):
+                course_id = key.replace('course_', '')
+                # value could be interest level or skill level depending on form structure
+                preferences[course_id] = value
+                
+        # Simplify: just save the raw form data to onboarding_preferences
+        db.users.update_one(
+            {"_id": session['user_id']},
+            {"$set": {"onboarding_preferences": dict(request.form)}}
+        )
+        flash("Onboarding complete! Your recommendations are now personalized.", "success")
+        return redirect(url_for('index'))
+        
+    # GET: fetch 5 random courses
+    global df
+    if df is not None and not df.empty:
+        random_courses = df.sample(n=5).to_dict('records')
+        # generate a simple ID for them if they don't have one
+        for i, c in enumerate(random_courses):
+            c['temp_id'] = f"course_{i}"
+    else:
+        random_courses = []
+        
+    return render_template('onboarding.html', courses=random_courses)
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    db = get_db()
+    user = db.users.find_one({"_id": session['user_id']})
+    
+    if request.method == 'POST':
+        updates = {
+            "name": request.form.get('name', user.get('name')),
+            "track": request.form.get('track', user.get('track')),
+            "career_goals": request.form.get('career_goals', user.get('career_goals')),
+            "current_skill_level": request.form.get('current_skill_level', user.get('current_skill_level'))
+        }
+        db.users.update_one({"_id": session['user_id']}, {"$set": updates})
+        flash("Profile updated successfully.", "success")
+        return redirect(url_for('profile'))
+        
+    # Get user's taken courses details from df
+    taken_courses_info = []
+    global df
+    if df is not None and not df.empty and user.get('taken_courses'):
+        taken_urls = user.get('taken_courses', [])
+        # We store url as the unique identifier for now
+        taken_df = df[df['url'].isin(taken_urls)]
+        taken_courses_info = taken_df.to_dict('records')
+        
+    return render_template('profile.html', user=user, taken_courses=taken_courses_info)
+
+@app.route('/api/toggle_taken', methods=['POST'])
+@login_required
+def toggle_taken():
+    data = request.get_json() or {}
+    course_url = data.get('url')
+    
+    if not course_url:
+        return jsonify({"success": False, "error": "No course URL provided"}), 400
+        
+    db = get_db()
+    user = db.users.find_one({"_id": session['user_id']})
+    taken = user.get('taken_courses', [])
+    
+    if course_url in taken:
+        taken.remove(course_url)
+        action = "removed"
+    else:
+        taken.append(course_url)
+        action = "added"
+        
+    db.users.update_one({"_id": session['user_id']}, {"$set": {"taken_courses": taken}})
+    return jsonify({"success": True, "action": action, "taken_courses": taken})
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    db = get_db()
+    users = list(db.users.find({}))
+    # load courses from DB directly
+    courses = list(db.courses.find({}, {'_id': 0}))
+    return render_template('admin.html', users=users, courses=courses)
+
+@app.route('/api/delete_course', methods=['POST'])
+@admin_required
+def delete_course():
+    data = request.get_json() or {}
+    course_url = data.get('url')
+    
+    if not course_url:
+        return jsonify({"success": False, "error": "No course URL provided"}), 400
+        
+    db = get_db()
+    result = db.courses.delete_one({"url": course_url})
+    
+    if result.deleted_count > 0:
+        # Reload model asynchronously so we don't block the UI
+        thread = threading.Thread(target=load_and_train_model)
+        thread.start()
+        return jsonify({"success": True, "message": "Course deleted successfully"})
+    else:
+        return jsonify({"success": False, "error": "Course not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
