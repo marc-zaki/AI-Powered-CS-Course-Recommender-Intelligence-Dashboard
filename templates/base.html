@@ -14,10 +14,11 @@
     <div class="app-layout">
         <!-- Sidebar -->
         <aside class="app-sidebar" id="app-sidebar">
-            <div class="app-sidebar-header">
-                <a href="/" class="logo" style="justify-content: center; font-size: 1.25rem;">
+            <div class="app-sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="/" class="logo" style="font-size: 1.25rem;">
                     <i data-lucide="brain"></i> AI Recommender
                 </a>
+                <button class="mobile-close-btn" onclick="document.getElementById('app-sidebar').classList.remove('mobile-open')" style="display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
             </div>
             
             <nav class="app-sidebar-nav">
