@@ -509,59 +509,6 @@ function initSkillMapGraph() {
         });
 }
 
-// Scraper background trigger
-function startScraper() {
-    const btn = document.getElementById('scraper-btn');
-    const container = document.getElementById('progress-container');
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const progressPercent = document.getElementById('progress-percent');
-    
-    if (btn) btn.disabled = true;
-    if (btn) btn.textContent = 'Scraping in background...';
-    if (container) container.style.display = 'block';
-    
-    fetch('/scrape', { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success || data.message === "Scraper is already running") {
-                pollProgress();
-            } else {
-                alert(data.message);
-                if (btn) btn.disabled = false;
-                if (btn) btn.textContent = '🚀 Live Scraper';
-            }
-        })
-        .catch(err => {
-            alert('Error starting scraper.');
-            if (btn) btn.disabled = false;
-            if (btn) btn.textContent = '🚀 Live Scraper';
-        });
-        
-    function pollProgress() {
-        const interval = setInterval(() => {
-            fetch('/scrape_status')
-                .then(response => response.json())
-                .then(status => {
-                    if (status.total > 0) {
-                        const percent = Math.round((status.progress / status.total) * 100);
-                        if (progressBar) progressBar.style.width = percent + '%';
-                        if (progressPercent) progressPercent.textContent = percent + '%';
-                    }
-                    if (progressText) progressText.textContent = status.message;
-                    
-                    if (!status.is_running && status.total > 0 && status.progress === status.total) {
-                        clearInterval(interval);
-                        if (progressBar) progressBar.style.width = '100%';
-                        if (progressPercent) progressPercent.textContent = '100%';
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 3000);
-                    }
-                });
-        }, 1000);
-    }
-}
 
 // AI Study Path Generator
 function generateAIPath() {
@@ -647,12 +594,19 @@ function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
+    document.querySelectorAll('.app-sidebar-link').forEach(link => {
+        if (link.id && link.id.startsWith('side-link-')) {
+            link.classList.remove('active');
+        }
+    });
 
     const activePane = document.getElementById(`tab-pane-${tabId}`);
     const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+    const activeSideLink = document.getElementById(`side-link-${tabId}`);
     
     if (activePane) activePane.classList.add('active');
     if (activeBtn) activeBtn.classList.add('active');
+    if (activeSideLink) activeSideLink.classList.add('active');
 
     localStorage.setItem('activeDashboardTab', tabId);
     

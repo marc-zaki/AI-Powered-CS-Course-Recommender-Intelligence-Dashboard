@@ -109,19 +109,120 @@ body {
     box-shadow: var(--shadow-glass);
 }
 
-/* Navbar */
-nav {
+/* Layout Architecture */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    width: 280px;
     background: var(--bg-nav);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    padding: 1.25rem 2rem;
+    border-right: 1px solid var(--border-glass);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.app-sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.app-sidebar-nav {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+.app-sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: var(--transition-premium);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.app-sidebar-link:hover {
+    color: var(--text-main);
+    background: var(--primary-glow);
+}
+
+.app-sidebar-link.active {
+    color: var(--text-dark);
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.app-main-content {
+    flex: 1;
+    margin-left: 280px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--bg-main);
+}
+
+.app-header {
+    background: var(--bg-nav);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    padding: 1rem 2rem;
     border-bottom: 1px solid var(--border-glass);
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 50;
+    height: 72px;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+    }
+    .app-sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    .app-main-content {
+        margin-left: 0;
+    }
+    .app-header {
+        justify-content: space-between;
+    }
+    .mobile-menu-btn {
+        display: block;
+    }
 }
 
 .logo {
@@ -184,49 +285,7 @@ nav {
     font-weight: 500;
 }
 
-/* Dashboard Tabs Navigation */
-.tabs-navigation {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin: 1rem auto 3.5rem;
-    max-width: 750px;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    padding: 0.45rem;
-    border-radius: 99px;
-    box-shadow: var(--shadow-glass);
-    border: 1px solid var(--border-glass);
-}
-
-.tab-btn {
-    flex: 1;
-    padding: 0.85rem 1.75rem;
-    border-radius: 99px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: var(--transition-premium);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.tab-btn:hover {
-    color: var(--text-main);
-    background: var(--primary-glow);
-}
-
-.tab-btn.active {
-    color: var(--text-dark);
-    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-    box-shadow: 0 4px 15px var(--primary-glow);
-}
+/* Removed horizontal tabs navigation styles */
 
 /* Tabs Content Pane */
 .tab-pane {

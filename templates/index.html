@@ -1,17 +1,10 @@
 {% extends "base.html" %}
 
-{% block content %}    <section class="hero">
-        <h1>Master Your Future</h1>
-        <p>Intelligence-powered course recommendations tailored to your learning path.</p>
+{% block content %}    
+    <section class="hero" style="padding: 2rem 2rem 3rem;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Master Your Future</h1>
+        <p style="font-size: 1.1rem;">Intelligence-powered course recommendations tailored to your learning path.</p>
     </section>
-
-    <!-- Dashboard Tabs Switcher -->
-    <div class="tabs-navigation">
-        <button id="tab-btn-catalog" class="tab-btn active" onclick="switchTab('catalog')">📚 Course Catalog</button>
-        <button id="tab-btn-ai-path" class="tab-btn" onclick="switchTab('ai-path')">🪄 AI Study Plan Generator</button>
-        <button id="tab-btn-skill-map" class="tab-btn" onclick="switchTab('skill-map')">📊 Interactive Skill Map</button>
-        <button id="tab-btn-dashboard" class="tab-btn" onclick="switchTab('dashboard')">📈 Intelligence Dashboard & EDA</button>
-    </div>
 
     <div class="container">
         
