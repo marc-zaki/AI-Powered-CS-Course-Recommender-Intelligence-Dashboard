@@ -13,6 +13,8 @@ import ssl
 import os
 import time
 import json
+import threading
+from bson.objectid import ObjectId
 
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -569,7 +571,7 @@ def generate_local_fallback_path(user_goal, matched_courses):
         '<div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); '
         'border-radius: 10px; padding: 1.15rem; margin-bottom: 2rem; display: flex; align-items: center; '
         'gap: 0.85rem; color: #F59E0B; font-size: 0.925rem; font-weight: 600; line-height: 1.55;">'
-        '<span style="font-size: 1.25rem;">⚠️</span>'
+        '<span style="font-size: 1.25rem;"><i data-lucide="alert-triangle" style="width: 20px; height: 20px; display: inline-block;"></i></span>'
         '<span><strong>Gemini Free-Tier Rate Limit Exceeded:</strong> Your intelligence dashboard has automatically '
         'rerouted to your local high-fidelity VSM Academic Planner to preserve system operational integrity and deliver '
         'your study plan immediately without errors.</span>'
@@ -612,10 +614,10 @@ def generate_local_fallback_path(user_goal, matched_courses):
         
         html.append(f'<li style="margin-bottom: 0.75rem; line-height: 1.6;">')
         html.append(f'<strong style="color: var(--text-main); font-weight: 700;">{c1.get("title")}</strong> ')
-        html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c1.get("provider")}) — ⭐ {c1_stars:.1f} ({c1_reviews:,} ratings)</span>')
+        html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c1.get("provider")}) — <i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; fill: currentColor;"></i> {c1_stars:.1f} ({c1_reviews:,} ratings)</span>')
         html.append(f'<br><span style="color: var(--text-muted); font-size: 0.9rem; display:block; margin: 0.35rem 0; line-height: 1.5;">{c1.get("content_text")[:200]}...</span>')
         if c1_url != '#':
-            html.append(f'<a class="path-link" href="{c1_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;">📚 View Syllabus & Lectures →</a>')
+            html.append(f'<a class="path-link" href="{c1_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;"><i data-lucide="book-open" style="width: 14px; height: 14px; display: inline-block;"></i> View Syllabus & Lectures →</a>')
         html.append('</li>')
         
         # Course 2 (if present)
@@ -627,17 +629,17 @@ def generate_local_fallback_path(user_goal, matched_courses):
             
             html.append(f'<li style="margin-bottom: 0.75rem; margin-top: 1rem; line-height: 1.6;">')
             html.append(f'<strong style="color: var(--text-main); font-weight: 700;">{c2.get("title")}</strong> ')
-            html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c2.get("provider")}) — ⭐ {c2_stars:.1f} ({c2_reviews:,} ratings)</span>')
+            html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c2.get("provider")}) — <i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; fill: currentColor;"></i> {c2_stars:.1f} ({c2_reviews:,} ratings)</span>')
             html.append(f'<br><span style="color: var(--text-muted); font-size: 0.9rem; display:block; margin: 0.35rem 0; line-height: 1.5;">{c2.get("content_text")[:200]}...</span>')
             if c2_url != '#':
-                html.append(f'<a class="path-link" href="{c2_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;">📚 View Syllabus & Lectures →</a>')
+                html.append(f'<a class="path-link" href="{c2_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;"><i data-lucide="book-open" style="width: 14px; height: 14px; display: inline-block;"></i> View Syllabus & Lectures →</a>')
             html.append('</li>')
             
         html.append('</ul>')
         
         # Bespoke Recommended Practical Exercise!
         html.append(f'<div style="background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;">')
-        html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;">🛠️ Weekly Practical Exercise:</strong>')
+        html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;"><i data-lucide="tool" style="width: 14px; height: 14px; display: inline-block;"></i> Weekly Practical Exercise:</strong>')
         html.append(f'<span style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block;">Design and construct a modular software module incorporating the core competencies introduced this week. Focus on writing clean object-oriented logic, defining API schemas, and implementing comprehensive unit tests to validate boundaries on <strong>"{c1.get("title")}"</strong>. Commit your solution to a portfolio repository on GitHub.</span>')
         html.append('</div>')
         
@@ -986,6 +988,38 @@ def profile():
         
     return render_template('profile.html', user=user, taken_courses=taken_courses_info)
 
+@app.route('/submit_course', methods=['POST'])
+def submit_course():
+    if 'user_id' not in session:
+        return jsonify({"success": False, "error": "Not logged in"}), 401
+    
+    title = request.form.get('title')
+    provider = request.form.get('provider')
+    url = request.form.get('url')
+    description = request.form.get('description')
+    rating = request.form.get('rating')
+    
+    if not title or not provider or not url:
+        return jsonify({"success": False, "error": "Missing required fields"}), 400
+        
+    db = get_db()
+    
+    # Store in a separate collection for unverified courses
+    submitted_course = {
+        "title": title,
+        "provider": provider,
+        "url": url,
+        "content_text": description,
+        "stars": float(rating) if rating else 5.0,
+        "ratings_count": 1,
+        "status": "pending",
+        "submitted_by": session['user_id'],
+        "submitted_at": time.time()
+    }
+    
+    db.submitted_courses.insert_one(submitted_course)
+    return jsonify({"success": True, "message": "Course submitted successfully and is pending admin approval!"})
+
 @app.route('/delete_account', methods=['POST'])
 @login_required
 def delete_account():
@@ -1046,7 +1080,62 @@ def admin_dashboard():
     
     # load courses from DB directly with pagination
     courses = list(db.courses.find({}, {'_id': 0}).skip((page - 1) * per_page).limit(per_page))
-    return render_template('admin.html', users=users, courses=courses, page=page, total_pages=total_pages)
+    
+    # load pending courses
+    pending_courses = list(db.submitted_courses.find({"status": "pending"}))
+    
+    return render_template('admin.html', users=users, courses=courses, page=page, total_pages=total_pages, pending_courses=pending_courses)
+
+@app.route('/api/admin/approve_course', methods=['POST'])
+@admin_required
+def approve_course():
+    data = request.get_json() or {}
+    course_id = data.get('course_id')
+    
+    if not course_id:
+        return jsonify({"success": False, "error": "No course ID provided"}), 400
+        
+    db = get_db()
+    pending = db.submitted_courses.find_one({"_id": ObjectId(course_id)})
+    
+    if not pending:
+        return jsonify({"success": False, "error": "Pending course not found"}), 404
+        
+    # Remove MongoDB specific fields before inserting into main dataset
+    course_to_insert = pending.copy()
+    course_to_insert.pop('_id', None)
+    course_to_insert.pop('status', None)
+    course_to_insert.pop('submitted_by', None)
+    course_to_insert.pop('submitted_at', None)
+    
+    # Insert into main courses DB
+    db.courses.insert_one(course_to_insert)
+    
+    # Delete from pending
+    db.submitted_courses.delete_one({"_id": ObjectId(course_id)})
+    
+    # Reload model asynchronously
+    thread = threading.Thread(target=load_and_train_model)
+    thread.start()
+    
+    return jsonify({"success": True, "message": "Course approved and added to catalog!"})
+
+@app.route('/api/admin/reject_course', methods=['POST'])
+@admin_required
+def reject_course():
+    data = request.get_json() or {}
+    course_id = data.get('course_id')
+    
+    if not course_id:
+        return jsonify({"success": False, "error": "No course ID provided"}), 400
+        
+    db = get_db()
+    result = db.submitted_courses.delete_one({"_id": ObjectId(course_id)})
+    
+    if result.deleted_count > 0:
+        return jsonify({"success": True, "message": "Course rejected and deleted"})
+    else:
+        return jsonify({"success": False, "error": "Course not found"}), 404
 
 @app.route('/api/delete_course', methods=['POST'])
 @admin_required

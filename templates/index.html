@@ -1,390 +1,530 @@
 {% extends "base.html" %}
 
-{% block content %}    
-    <section class="hero" style="padding: 2rem 2rem 3rem;">
-        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Master Your Future</h1>
-        <p style="font-size: 1.1rem;">Intelligence-powered course recommendations tailored to your learning path.</p>
-    </section>
+{% block content %}
+<section class="hero" style="padding: 2rem 2rem 3rem;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Master Your Future</h1>
+    <p style="font-size: 1.1rem;">Intelligence-powered course recommendations tailored to your learning path.</p>
+</section>
 
-    <div class="container">
-        
-        <!-- Tab 1: Course Catalog -->
-        <div id="tab-pane-catalog" class="tab-pane active">
-            <!-- Search Container inside Catalog Tab -->
-            <div class="search-container">
-                <form action="/search" method="GET" class="search-form">
-                    <input type="text" name="q" class="search-input" placeholder="Search for subjects, skills, or tracks..."
-                        value="{{ query }}">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
+<div class="container">
+
+    <!-- Tab 1: Course Catalog -->
+    <div id="tab-pane-catalog" class="tab-pane active">
+        <!-- Search Container inside Catalog Tab -->
+        <div class="search-container">
+            <form action="/search" method="GET" class="search-form">
+                <input type="text" name="q" class="search-input" placeholder="Search for subjects, skills, or tracks..."
+                    value="{{ query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+        <div class="section-header">
+            <h2>
+                {% if is_search %}
+                Results for "{{ query }}"
+                {% elif show_all %}
+                All Courses
+                {% elif is_personalized %}
+                <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>
+                Your Personalized Recommendations
+                {% else %}
+                <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>
+                Featured Courses
+                {% endif %}
+            </h2>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                <button class="btn btn-outline" onclick="openSubmitCourseModal()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.35rem; font-weight: 700;">
+                    <i data-lucide="plus-circle"></i> Submit Course
+                </button>
+                <button class="btn btn-roulette" onclick="openRouletteModal()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.35rem; font-weight: 700;">
+                    <i data-lucide="dices"></i> Course Roulette
+                </button>
+                {% if is_search %}
+                <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
+                {% elif show_all %}
+                <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Featured</a>
+                {% else %}
+                <a href="/all" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Browse All
+                    Courses →</a>
+                {% endif %}
             </div>
+        </div>
 
-            <div class="section-header">
-                <h2>
-                    {% if is_search %}
-                    Results for "{{ query }}"
-                    {% elif show_all %}
-                    All Courses
-                    {% elif is_personalized %}
-                    <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Your Personalized Recommendations
-                    {% else %}
-                    <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Featured Courses
+        {% if courses|length == 0 %}
+        <div class="empty-state">
+            <h3>No courses found</h3>
+            <p>Try searching for a different keyword like "Python" or "AI".</p>
+        </div>
+        {% else %}
+        <div class="course-grid">
+            {% for course in courses %}
+            <div class="course-card" data-title="{{ course.title|escape }}" data-provider="{{ course.provider|escape }}"
+                data-stars="{{ course.stars }}" data-ratings-count="{{ course.ratings_count }}"
+                data-url="{{ course.url|escape }}"
+                data-desc="{{ course.content_text[:250]|replace('\n', ' ')|replace('\r', '')|escape }}">
+                <div class="card-content">
+                    <div class="card-category">{{ course.provider }}</div>
+                    <div class="card-title">{{ course.title }}</div>
+                    <div class="card-description">
+                        {{ course.content_text[:140] + '...' if course.content_text|length > 140 else
+                        course.content_text }}
+                    </div>
+                    {% if course.review_summary %}
+                    <div class="review-summary">
+                        <span style="margin-right: 4px;"><i data-lucide="message-square"></i></span>
+                        <i>{{ course.review_summary }}</i>
+                    </div>
                     {% endif %}
-                </h2>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn btn-roulette" onclick="openRouletteModal()" style="padding: 0.5rem 1rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.35rem; font-weight: 700;">
-                        <i data-lucide="dices"></i> Course Roulette
-                    </button>
-                    {% if is_search %}
-                    <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
-                    {% elif show_all %}
-                    <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">← Featured</a>
-                    {% else %}
-                    <a href="/all" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Browse All Courses →</a>
-                    {% endif %}
-                </div>
-            </div>
 
-            {% if courses|length == 0 %}
-            <div class="empty-state">
-                <h3>No courses found</h3>
-                <p>Try searching for a different keyword like "Python" or "AI".</p>
-            </div>
-            {% else %}
-            <div class="course-grid">
-                {% for course in courses %}
-                <div class="course-card" 
-                     data-title="{{ course.title|escape }}" 
-                     data-provider="{{ course.provider|escape }}" 
-                     data-stars="{{ course.stars }}" 
-                     data-ratings-count="{{ course.ratings_count }}" 
-                     data-url="{{ course.url|escape }}" 
-                     data-desc="{{ course.content_text[:250]|replace('\n', ' ')|replace('\r', '')|escape }}">
-                    <div class="card-content">
-                        <div class="card-category">{{ course.provider }}</div>
-                        <div class="card-title">{{ course.title }}</div>
-                        <div class="card-description">
-                            {{ course.content_text[:140] + '...' if course.content_text|length > 140 else
-                            course.content_text }}
-                        </div>
-                        {% if course.review_summary %}
-                        <div class="review-summary">
-                            <span style="margin-right: 4px;"><i data-lucide="message-square"></i></span>
-                            <i>{{ course.review_summary }}</i>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Compare option -->
-                        <label class="compare-checkbox-container">
-                            <input type="checkbox" class="compare-check" onchange="handleCompareChange(this)">
-                            <span class="compare-checkbox-custom"></span>
-                            <span>Compare Course</span>
-                        </label>
+                    <!-- Compare option -->
+                    <label class="compare-checkbox-container">
+                        <input type="checkbox" class="compare-check" onchange="handleCompareChange(this)">
+                        <span class="compare-checkbox-custom"></span>
+                        <span>Compare Course</span>
+                    </label>
 
-                        <div class="card-footer">
+                    <div class="card-footer">
+                        <div class="card-footer-rating">
                             <div class="rating">
-                                {% for _ in range(course.stars_int) %}<i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>{% endfor %}
+                                {% for _ in range(course.stars_int) %}<i data-lucide="star"
+                                    style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>{%
+                                endfor %}
                                 <span style="margin-left: 0.25rem; font-weight: 700; color: var(--primary);">{{ "%.1f"|format(course.stars) }}</span>
-                                {% if course.ratings_count and course.ratings_count > 0 %}
-                                <span style="margin-left: 0.35rem; color: var(--text-muted); font-size: 0.775rem; font-weight: 500;">
-                                    ({{ "{:,}".format(course.ratings_count) }} reviews)
-                                </span>
-                                {% endif %}
                             </div>
-                            <a href="{{ course.url }}" target="_blank" class="btn-view view-course-btn">
-                                View Course ↗
+                            {% if course.ratings_count and course.ratings_count > 0 %}
+                            <span class="card-reviews-count">
+                                ({{ "{:,}".format(course.ratings_count) }} reviews)
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer-actions">
+                            <a href="{{ course.url }}" target="_blank" class="btn btn-primary card-action-btn">
+                                <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View Course
                             </a>
                             {% if current_user %}
-                            <button onclick="toggleTaken('{{ course.url|escape }}', this)" class="btn-outline btn" style="margin-left: 0.5rem; padding: 0.4rem 0.8rem; font-size: 0.8rem; border-radius: 6px;">
+                            <button onclick="toggleTaken('{{ course.url|escape }}', this)" class="btn btn-outline card-action-btn card-taken-btn">
                                 {% if current_user.taken_courses and course.url in current_user.taken_courses %}
-                                ✓ Taken
+                                <i data-lucide="check" style="width: 14px; height: 14px;"></i> Taken
                                 {% else %}
-                                + Mark Taken
+                                <i data-lucide="bookmark-plus" style="width: 14px; height: 14px;"></i> Mark Taken
                                 {% endif %}
                             </button>
                             {% endif %}
                         </div>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
+        </div>
 
-            {% if show_all and total_pages > 1 %}
-            <div class="pagination">
-                {% if page > 1 %}
-                <a href="/all?page={{ page - 1 }}" class="btn btn-outline page-btn">← Previous</a>
-                {% endif %}
-                
-                {% for p in range(1, total_pages + 1) %}
-                    {% if p == page %}
-                    <span class="btn btn-primary page-btn page-active">{{ p }}</span>
-                    {% elif p <= 3 or p >= total_pages - 1 or (p >= page - 1 and p <= page + 1) %}
-                    <a href="/all?page={{ p }}" class="btn btn-outline page-btn">{{ p }}</a>
+        {% if show_all and total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="/all?page={{ page - 1 }}" class="btn btn-outline page-btn">← Previous</a>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+            <span class="btn btn-primary page-btn page-active">{{ p }}</span>
+            {% elif p <= 3 or p>= total_pages - 1 or (p >= page - 1 and p <= page + 1) %} <a href="/all?page={{ p }}"
+                    class="btn btn-outline page-btn">{{ p }}</a>
                     {% elif p == 4 or p == total_pages - 2 %}
                     <span class="page-dots">...</span>
                     {% endif %}
-                {% endfor %}
-                
-                {% if page < total_pages %}
-                <a href="/all?page={{ page + 1 }}" class="btn btn-outline page-btn">Next →</a>
-                {% endif %}
-            </div>
-            {% endif %}
+                    {% endfor %}
 
-            {% endif %}
+                    {% if page < total_pages %} <a href="/all?page={{ page + 1 }}" class="btn btn-outline page-btn">Next
+                        →</a>
+                        {% endif %}
         </div>
+        {% endif %}
 
-        <!-- Tab 2: AI Study Plan Generator -->
-        <div id="tab-pane-ai-path" class="tab-pane">
-            <div class="ai-card">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
-                    <span style="font-size: 2.25rem;"><i data-lucide="wand-2"></i></span>
-                    <h2 class="ai-card-title">AI Study Plan Generator</h2>
-                </div>
-                <p class="ai-card-desc">
-                    Define your professional target or class goal (e.g., "Full-Stack Web Dev" or "Data Scientist") and watch the advisor map out your ideal weekly path using courses from our curated database.
-                </p>
-                
-                <div style="display: flex; gap: 1rem; max-width: 800px; width: 100%;">
-                    <input type="text" id="ai-goal-input" class="ai-input" placeholder="What is your career target or learning goal?">
-                    <button onclick="generateAIPath()" id="ai-generate-btn" class="btn btn-primary btn-ai">Generate Plan</button>
-                </div>
-
-                <!-- Loader -->
-                <div id="ai-loader" style="display: none; align-items: center; gap: 1rem; margin-top: 2rem;">
-                    <div class="spinner" style="width: 32px; height: 32px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                    <span style="color: var(--secondary); font-weight: 600; font-size: 1.05rem;">Designing your personalized study path from our database...</span>
-                </div>
-
-                <!-- Path Output Container -->
-                <div id="ai-path-output" class="ai-output-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1.5px solid var(--border-glass); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-                        <h4 class="ai-output-title" style="margin: 0; padding: 0;">Your Custom Weekly Curriculum:</h4>
-                        <button onclick="exportPlanToPDF()" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px;">
-                            <i data-lucide="download"></i> Export PDF
-                        </button>
-                    </div>
-                    <div id="ai-path-content" class="ai-rendered-path"></div>
-                </div>
-            </div>
-        </div>
-        <!-- Tab 3: Interactive Skill Map -->
-        <div id="tab-pane-skill-map" class="tab-pane">
-            <div class="glass-panel" style="padding: 2.5rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;">
-                <h2 style="margin-bottom: 0.75rem; color: var(--primary); font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;">Interactive CS Skill Relationship Map</h2>
-                <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 800px; font-size: 1.05rem;">
-                    Explore how computer science courses and fields are clustered in our database based on their structural NLP similarities. Hover over nodes to see ratings, drag to reorganize, and click nodes to highlight immediate recommendations!
-                </p>
-                <div class="map-container">
-                    <div class="map-sidebar">
-                        <h3>Select a Course Node</h3>
-                        <div style="margin: 1rem 0;">
-                            <input type="text" id="skill-map-search-input" placeholder="Search for courses..." class="search-input" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-glass); background: var(--bg-main); color: var(--text-main); font-size: 0.9rem;">
-                        </div>
-                        <p id="sidebar-instruction" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted);">Click on any course node in the network to inspect its full recommendation profiles and get instant links!</p>
-                        <div id="sidebar-details" style="display: none;">
-                            <h4 id="sidebar-title" style="font-weight: 800; color: var(--text-main); margin-bottom: 0.85rem; font-size: 1.15rem; line-height: 1.4; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;"></h4>
-                            <p style="margin-bottom: 0.65rem; font-size: 0.95rem;"><strong style="color: var(--secondary);">Provider:</strong> <span id="sidebar-provider"></span></p>
-                            <p style="margin-bottom: 1.25rem; font-size: 0.95rem;"><strong style="color: #FBBF24;">AI Rating:</strong> <span id="sidebar-rating"></span></p>
-                            <a id="sidebar-link" href="#" target="_blank" class="btn btn-primary" style="width: 100%; text-align: center; text-decoration: none; padding: 0.75rem; font-size: 0.9rem;">View Course ↗</a>
-                        </div>
-                    </div>
-                    <svg id="map-svg"></svg>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tab 4: Intelligence Dashboard & EDA -->
-        <div id="tab-pane-dashboard" class="tab-pane">
-            <!-- Metrics Row -->
-            <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                <div class="glass-panel" style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
-                    <div style="font-size: 2.25rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;" id="stat-total-courses">-</div>
-                    <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Courses Indexed</div>
-                </div>
-                <div class="glass-panel" style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
-                    <div style="font-size: 2.25rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.25rem;" id="stat-avg-rating">-</div>
-                    <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Average Quality Rating</div>
-                </div>
-                <div class="glass-panel" style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
-                    <div style="font-size: 2.25rem; font-weight: 800; color: #10B981; margin-bottom: 0.25rem;" id="stat-total-reviews">-</div>
-                    <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">Total Student Reviews</div>
-                </div>
-            </div>
-
-            <!-- Charts Grid -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-                <!-- Chart 1: Provider Share -->
-                <div class="glass-panel" style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">📚 Course Provider Distribution</h3>
-                    <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
-                        <canvas id="chart-provider"></canvas>
-                    </div>
-                </div>
-                
-                <!-- Chart 2: Keyword Statistics -->
-                <div class="glass-panel" style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;"><i data-lucide="search"></i> Top CS Terms (IR Frequency Statistics)</h3>
-                    <div style="height: 300px;">
-                        <canvas id="chart-keywords"></canvas>
-                    </div>
-                </div>
-
-                <!-- Chart 3: Difficulty Ratio -->
-                <div class="glass-panel" style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">🟡 Curriculum Difficulty Ratio</h3>
-                    <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
-                        <canvas id="chart-difficulty"></canvas>
-                    </div>
-                </div>
-
-                <!-- Chart 4: Ratings Histogram -->
-                <div class="glass-panel" style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;"><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Course Quality Score Distribution</h3>
-                    <div style="height: 300px;">
-                        <canvas id="chart-ratings"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- EDA & Methodology Panel -->
-            <div class="glass-panel" style="padding: 2.5rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); text-align: left; line-height: 1.7; margin-bottom: 2rem;">
-                <h2 style="color: var(--primary); font-weight: 800; font-size: 2rem; margin-bottom: 1.5rem; letter-spacing: -0.03em;">Exploratory Data Analysis & Project Workflow</h2>
-                
-                <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">1. Data Collection & Processing</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                    To support robust recommendations, we collected and integrated external datasets spanning major professional educational platforms (including Udemy, Coursera, EdX, and Online Courses) with a total dataset repository of <strong>thousands of computer science courses</strong>. The data ingestion engine filters courses using descriptive heuristics to eliminate unrelated fields (such as cooking or finance) and stores unified records in a local dataset.
-                </p>
-
-                <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">2. Information Retrieval (IR) Framework</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                    The recommendation engine uses a mathematical <strong>TF-IDF Vector Space Model</strong> combined with <strong>Cosine Similarity Ranking</strong>. When a student inputs a search query, it is dynamically tokenized and transformed into a term-frequency vector. Cosine similarity coefficients are calculated across the entire document corpus to return highly relevant course results.
-                </p>
-
-                <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">3. Neural Network & Visualizations</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                    Course-to-course relationships are built using pairwise cosine similarity vectors. Pairs with similarity weights exceeding a threshold of <code>0.13</code> are compiled into a D3-based force-directed networking graph. This enables organic node-clustering of computer science topics (like Web Dev, AI/ML, and Cybersecurity) in an interactive visual interface.
-                </p>
-
-                <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">4. LLM Study Plan Orchestrator</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                    The generative path planner uses <strong>Gemini-2.5-Flash</strong> acting as an expert academic advisor. It maps the IR search findings directly to the student's career target, composing a highly customized week-by-week learning syllabus, complete with descriptive explanations and weekly hands-on practical exercises.
-                </p>
-            </div>
-        </div>
-
+        {% endif %}
     </div>
 
-    <!-- Floating Comparison Drawer -->
-    <div id="compare-bar" class="compare-bar">
-        <div class="compare-bar-info">
-            <span class="compare-bar-count" id="compare-count">0</span>
-            <span style="font-weight: 700;">Courses Selected to Compare</span>
-        </div>
-        <div style="display: flex; gap: 0.75rem;">
-            <button class="btn btn-outline" onclick="clearCompareSelection()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Clear All</button>
-            <button class="btn btn-primary" onclick="launchCompareModal()" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);">Compare Now ⚖️</button>
+    <!-- Tab 2: AI Study Plan Generator -->
+    <div id="tab-pane-ai-path" class="tab-pane">
+        <div class="ai-card">
+            <div class="ai-card-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                <span style="font-size: 2.25rem;"><i data-lucide="wand-2"></i></span>
+                <h2 class="ai-card-title">AI Study Plan Generator</h2>
+            </div>
+            <p class="ai-card-desc">
+                Define your professional target or class goal (e.g., "Full-Stack Web Dev" or "Data Scientist") and watch
+                the advisor map out your ideal weekly path using courses from our curated database.
+            </p>
+
+            <div class="ai-input-group">
+                <input type="text" id="ai-goal-input" class="ai-input"
+                    placeholder="What is your career target or learning goal?">
+                <button onclick="generateAIPath()" id="ai-generate-btn" class="btn btn-primary btn-ai">Generate
+                    Plan</button>
+            </div>
+
+            <!-- Loader -->
+            <div id="ai-loader" style="display: none; align-items: center; gap: 1rem; margin-top: 2rem;">
+                <div class="spinner"
+                    style="width: 32px; height: 32px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite;">
+                </div>
+                <span style="color: var(--secondary); font-weight: 600; font-size: 1.05rem;">Designing your personalized
+                    study path from our database...</span>
+            </div>
+
+            <!-- Path Output Container -->
+            <div id="ai-path-output" class="ai-output-container">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1.5px solid var(--border-glass); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                    <h4 class="ai-output-title" style="margin: 0; padding: 0;">Your Custom Weekly Curriculum:</h4>
+                    <button onclick="exportPlanToPDF()" class="btn btn-outline"
+                        style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px;">
+                        <i data-lucide="download"></i> Export PDF
+                    </button>
+                </div>
+                <div id="ai-path-content" class="ai-rendered-path"></div>
+            </div>
         </div>
     </div>
-
-    <!-- Fullscreen Comparison Modal -->
-    <div id="compare-modal" class="compare-modal">
-        <div class="compare-modal-content">
-            <button class="compare-modal-close" onclick="closeCompareModal()">✕</button>
-            <h2 style="font-size: 2.25rem; font-weight: 800; text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.03em;">Course Comparison Matrix</h2>
-            <div id="compare-grid" class="compare-grid-layout">
-                <!-- Comparison columns will be dynamically injected here -->
+    <!-- Tab 3: Interactive Skill Map -->
+    <div id="tab-pane-skill-map" class="tab-pane">
+        <div class="glass-panel"
+            style="padding: 2.5rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;">
+            <h2
+                style="margin-bottom: 0.75rem; color: var(--primary); font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;">
+                Interactive CS Skill Relationship Map</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 800px; font-size: 1.05rem;">
+                Explore how computer science courses and fields are clustered in our database based on their structural
+                NLP similarities. Hover over nodes to see ratings, drag to reorganize, and click nodes to highlight
+                immediate recommendations!
+            </p>
+            <div class="map-container">
+                <div class="map-sidebar">
+                    <h3>Select a Course Node</h3>
+                    <div style="margin: 1rem 0;">
+                        <input type="text" id="skill-map-search-input" placeholder="Search for courses..."
+                            class="search-input"
+                            style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-glass); background: var(--bg-main); color: var(--text-main); font-size: 0.9rem;">
+                    </div>
+                    <p id="sidebar-instruction" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted);">
+                        Click on any course node in the network to inspect its full recommendation profiles and get
+                        instant links!</p>
+                    <div id="sidebar-details" style="display: none;">
+                        <h4 id="sidebar-title"
+                            style="font-weight: 800; color: var(--text-main); margin-bottom: 0.85rem; font-size: 1.15rem; line-height: 1.4; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                        </h4>
+                        <p style="margin-bottom: 0.65rem; font-size: 0.95rem;"><strong
+                                style="color: var(--secondary);">Provider:</strong> <span id="sidebar-provider"></span>
+                        </p>
+                        <p style="margin-bottom: 1.25rem; font-size: 0.95rem;"><strong style="color: #FBBF24;">AI
+                                Rating:</strong> <span id="sidebar-rating"></span></p>
+                        <a id="sidebar-link" href="#" target="_blank" class="btn btn-primary"
+                            style="width: 100%; text-align: center; text-decoration: none; padding: 0.75rem; font-size: 0.9rem;">View
+                            Course <i data-lucide="arrow-up-right" style="width: 14px; height: 14px; display: inline-block;"></i></a>
+                    </div>
+                </div>
+                <svg id="map-svg"></svg>
             </div>
         </div>
     </div>
 
-    <!-- Floating Toast Notifications -->
-    <div id="toast-container" class="toast-container"></div>
-
-    <!-- <i data-lucide="dices"></i> Course Roulette Modal -->
-    <div id="roulette-modal" class="roulette-modal">
-        <div class="roulette-modal-content">
-            <button class="roulette-modal-close" onclick="closeRouletteModal()">✕</button>
-            
-            <h2 class="roulette-modal-title"><i data-lucide="dices"></i> Course Discovery Roulette</h2>
-            <p class="roulette-modal-subtitle">Spin the slot machine to discover highly curated, elite computer science courses!</p>
-            
-            <!-- Spinning Reel Area -->
-            <div class="roulette-spinner-container">
-                <div class="roulette-spinner-border"></div>
-                <div id="roulette-spinner" class="roulette-spinner">
-                    <div id="roulette-spinner-inner" class="roulette-spinner-inner">
-                        <!-- Dynamic spinning title will flash here -->
-                        <span class="roulette-spinner-placeholder">Ready to Spin!</span>
-                    </div>
-                </div>
+    <!-- Tab 4: Intelligence Dashboard & EDA -->
+    <div id="tab-pane-dashboard" class="tab-pane">
+        <!-- Metrics Row -->
+        <div class="metrics-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="glass-panel"
+                style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
+                <div style="font-size: 2.25rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;"
+                    id="stat-total-courses">-</div>
+                <div
+                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">
+                    Courses Indexed</div>
             </div>
-            
-            <!-- Curated Result Card (Initially Hidden) -->
-            <div id="roulette-result-card" class="roulette-result-card" style="display: none;">
-                <div class="roulette-badge" id="roulette-res-provider">UDEMY</div>
-                <h3 class="roulette-course-title" id="roulette-res-title">Course Title</h3>
-                
-                <div class="roulette-rating-row">
-                    <span class="stars-display" id="roulette-res-stars"><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i></span>
-                    <span class="reviews-display" id="roulette-res-reviews">(12,450 student reviews)</span>
-                </div>
-                
-                <p class="roulette-course-desc" id="roulette-res-desc">
-                    Course Description
-                </p>
-                
-                <div class="roulette-actions-row">
-                    <button class="btn btn-outline" id="roulette-add-compare-btn" style="flex: 1; padding: 0.65rem 1rem;"><i data-lucide="target"></i> Compare Course</button>
-                    <a href="#" target="_blank" class="btn btn-primary" id="roulette-res-link" style="flex: 1; padding: 0.65rem 1rem; text-align: center; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); line-height: 1.5; font-size: 0.9rem; font-weight: 700; border-radius: 8px;">🔗 View Official Page</a>
-                </div>
+            <div class="glass-panel"
+                style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
+                <div style="font-size: 2.25rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.25rem;"
+                    id="stat-avg-rating">-</div>
+                <div
+                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">
+                    Average Quality Rating</div>
             </div>
-            
-            <!-- Spin Control Button -->
-            <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
-                <button id="roulette-spin-btn" class="btn btn-roulette-spin" onclick="startRouletteSpin()">
-                    <i data-lucide="sparkles"></i> Spin the Wheel!
-                </button>
+            <div class="glass-panel"
+                style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
+                <div style="font-size: 2.25rem; font-weight: 800; color: #10B981; margin-bottom: 0.25rem;"
+                    id="stat-total-reviews">-</div>
+                <div
+                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">
+                    Total Student Reviews</div>
             </div>
         </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Chart 1: Provider Share -->
+            <div class="glass-panel"
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                <h3
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
+                    <i data-lucide="pie-chart" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Course Provider Distribution</h3>
+                <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="chart-provider"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Keyword Statistics -->
+            <div class="glass-panel"
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                <h3
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
+                    <i data-lucide="search"></i> Top CS Terms (IR Frequency Statistics)</h3>
+                <div style="height: 300px;">
+                    <canvas id="chart-keywords"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Difficulty Ratio -->
+            <div class="glass-panel"
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                <h3
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
+                    <i data-lucide="bar-chart-2" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Curriculum Difficulty Ratio</h3>
+                <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="chart-difficulty"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Ratings Histogram -->
+            <div class="glass-panel"
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                <h3
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
+                    <i data-lucide="star"
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Course
+                    Quality Score Distribution</h3>
+                <div style="height: 300px;">
+                    <canvas id="chart-ratings"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDA & Methodology Panel -->
+        <div class="glass-panel"
+            style="padding: 2.5rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); text-align: left; line-height: 1.7; margin-bottom: 2rem;">
+            <h2
+                style="color: var(--primary); font-weight: 800; font-size: 2rem; margin-bottom: 1.5rem; letter-spacing: -0.03em;">
+                Exploratory Data Analysis & Project Workflow</h2>
+
+            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">1. Data
+                Collection & Processing</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                To support robust recommendations, we collected and integrated external datasets spanning major
+                professional educational platforms (including Udemy, Coursera, EdX, and Online Courses) with a total
+                dataset repository of <strong>thousands of computer science courses</strong>. The data ingestion engine
+                filters courses using descriptive heuristics to eliminate unrelated fields (such as cooking or finance)
+                and stores unified records in a local dataset.
+            </p>
+
+            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">2.
+                Information Retrieval (IR) Framework</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                The recommendation engine uses a mathematical <strong>TF-IDF Vector Space Model</strong> combined with
+                <strong>Cosine Similarity Ranking</strong>. When a student inputs a search query, it is dynamically
+                tokenized and transformed into a term-frequency vector. Cosine similarity coefficients are calculated
+                across the entire document corpus to return highly relevant course results.
+            </p>
+
+            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">3. Neural
+                Network & Visualizations</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                Course-to-course relationships are built using pairwise cosine similarity vectors. Pairs with similarity
+                weights exceeding a threshold of <code>0.13</code> are compiled into a D3-based force-directed
+                networking graph. This enables organic node-clustering of computer science topics (like Web Dev, AI/ML,
+                and Cybersecurity) in an interactive visual interface.
+            </p>
+
+            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">4. LLM Study
+                Plan Orchestrator</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                The generative path planner uses <strong>Gemini-2.5-Flash</strong> acting as an expert academic advisor.
+                It maps the IR search findings directly to the student's career target, composing a highly customized
+                week-by-week learning syllabus, complete with descriptive explanations and weekly hands-on practical
+                exercises.
+            </p>
+        </div>
     </div>
+
+</div>
+
+<!-- Floating Comparison Drawer -->
+<div id="compare-bar" class="compare-bar">
+    <div class="compare-bar-info">
+        <span class="compare-bar-count" id="compare-count">0</span>
+        <span style="font-weight: 700;">Courses Selected to Compare</span>
+    </div>
+    <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="clearCompareSelection()"
+            style="padding: 0.5rem 1rem; font-size: 0.85rem;">Clear All</button>
+        <button class="btn btn-primary" onclick="launchCompareModal()"
+            style="padding: 0.5rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);">Compare
+            Now</button>
+    </div>
+</div>
+
+<!-- Fullscreen Comparison Modal -->
+<div id="compare-modal" class="compare-modal">
+    <div class="compare-modal-content">
+        <button class="compare-modal-close" onclick="closeCompareModal()">✕</button>
+        <h2
+            style="font-size: 2.25rem; font-weight: 800; text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.03em;">
+            Course Comparison Matrix</h2>
+        <div id="compare-grid" class="compare-grid-layout">
+            <!-- Comparison columns will be dynamically injected here -->
+        </div>
+    </div>
+</div>
+
+<!-- Floating Toast Notifications -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- <i data-lucide="dices"></i> Course Roulette Modal -->
+<div id="roulette-modal" class="roulette-modal">
+    <div class="roulette-modal-content">
+        <button class="roulette-modal-close" onclick="closeRouletteModal()">✕</button>
+
+        <h2 class="roulette-modal-title"><i data-lucide="dices"></i> Course Discovery Roulette</h2>
+        <p class="roulette-modal-subtitle">Spin the slot machine to discover highly curated, elite computer science
+            courses!</p>
+
+        <!-- Spinning Reel Area -->
+        <div class="roulette-spinner-container">
+            <div class="roulette-spinner-border"></div>
+            <div id="roulette-spinner" class="roulette-spinner">
+                <div id="roulette-spinner-inner" class="roulette-spinner-inner">
+                    <!-- Dynamic spinning title will flash here -->
+                    <span class="roulette-spinner-placeholder">Ready to Spin!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Curated Result Card (Initially Hidden) -->
+        <div id="roulette-result-card" class="roulette-result-card" style="display: none;">
+            <div class="roulette-badge" id="roulette-res-provider">UDEMY</div>
+            <h3 class="roulette-course-title" id="roulette-res-title">Course Title</h3>
+
+            <div class="roulette-rating-row">
+                <span class="stars-display" id="roulette-res-stars"><i data-lucide="star"
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i
+                        data-lucide="star"
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i
+                        data-lucide="star"
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i
+                        data-lucide="star"
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i
+                        data-lucide="star"
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i></span>
+                <span class="reviews-display" id="roulette-res-reviews">(12,450 student reviews)</span>
+            </div>
+
+            <p class="roulette-course-desc" id="roulette-res-desc">
+                Course Description
+            </p>
+
+            <div class="roulette-actions-row">
+                <button class="btn btn-outline" id="roulette-add-compare-btn" style="flex: 1; padding: 0.65rem 1rem;"><i
+                        data-lucide="target"></i> Compare Course</button>
+                <a href="#" target="_blank" class="btn btn-primary" id="roulette-res-link"
+                    style="flex: 1; padding: 0.65rem 1rem; text-align: center; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); line-height: 1.5; font-size: 0.9rem; font-weight: 700; border-radius: 8px;"><i data-lucide="external-link" style="width: 14px; height: 14px; display: inline-block;"></i>
+                    View Official Page</a>
+            </div>
+        </div>
+
+        <!-- Spin Control Button -->
+        <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
+            <button id="roulette-spin-btn" class="btn btn-roulette-spin" onclick="startRouletteSpin()">
+                <i data-lucide="sparkles"></i> Spin the Wheel!
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Course Modal -->
+<div id="submit-course-modal" class="roulette-modal" style="display: none; align-items: center; justify-content: center; z-index: 1000;">
+    <div class="glass-panel" style="position: relative; width: 90%; max-width: 600px; padding: 2.5rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass); text-align: center;">
+        <button onclick="closeSubmitCourseModal()" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">✕</button>
+        <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;"><i data-lucide="plus-circle" style="width: 24px; height: 24px; color: var(--primary);"></i> Submit a Course</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0 auto 1.5rem;">
+            Have you taken an incredible Computer Science course that isn't in our database? Submit it below to help others discover great learning resources. All submissions are verified by our team.
+        </p>
+        <form id="submit-course-form" onsubmit="submitCourse(event)" style="text-align: left;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Course Title</label>
+                    <input type="text" id="submit-title" name="title" class="search-input" style="width: 100%;" required placeholder="e.g. CS50x">
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Provider</label>
+                    <input type="text" id="submit-provider" name="provider" class="search-input" style="width: 100%;" required placeholder="e.g. Harvard / edX">
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Course URL</label>
+                <input type="url" id="submit-url" name="url" class="search-input" style="width: 100%;" required placeholder="https://...">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Why do you recommend this course? (Description)</label>
+                <textarea id="submit-desc" name="description" class="search-input" style="width: 100%; min-height: 80px; resize: vertical;" required placeholder="Briefly describe what you learned and why it's great..."></textarea>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 0.5rem;">Your Rating (1-5)</label>
+                <input type="number" id="submit-rating" name="rating" class="search-input" style="width: 100%;" required min="1" max="5" step="0.5" placeholder="5.0">
+            </div>
+            <button type="submit" class="btn btn-primary" id="submit-course-btn" style="width: 100%; padding: 0.85rem; font-size: 1rem; font-weight: 700;">Submit for Verification</button>
+            <div id="submit-course-status" style="margin-top: 1rem; text-align: center; font-weight: 600;"></div>
+        </form>
+    </div>
+</div>
 
 {% endblock %}
 
 {% block extra_head %}
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
     function toggleTaken(url, btn) {
         fetch('/api/toggle_taken', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({url: url})
+            body: JSON.stringify({ url: url })
         })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                if(data.action === 'added') {
-                    btn.innerHTML = '✓ Taken';
-                    btn.style.backgroundColor = 'var(--mint-pastel)';
-                    btn.style.color = '#10B981';
-                    btn.style.borderColor = '#10B981';
-                } else {
-                    btn.innerHTML = '+ Mark Taken';
-                    btn.style.backgroundColor = 'transparent';
-                    btn.style.color = 'var(--text-main)';
-                    btn.style.borderColor = 'var(--border-glass)';
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.action === 'added') {
+                        btn.innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i> Taken';
+                        btn.style.backgroundColor = 'var(--accent-emerald)';
+                        btn.style.color = '#fff';
+                        btn.style.borderColor = 'var(--accent-emerald)';
+                    } else {
+                        btn.innerHTML = '<i data-lucide="bookmark-plus" style="width: 14px; height: 14px;"></i> Mark Taken';
+                        btn.style.backgroundColor = 'transparent';
+                        btn.style.color = 'var(--text-main)';
+                        btn.style.borderColor = 'var(--border-glass)';
+                    }
+                    // Re-render lucide icons for the new elements
+                    if (window.lucide) lucide.createIcons();
                 }
-            }
-        });
+            });
     }
-    </script>
+</script>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container" style="margin: 3rem auto;">
+<div class="container admin-container" style="margin: 3rem auto;">
     <div class="glass-panel" style="padding: 2.5rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass);">
         <h2 style="color: var(--primary); font-weight: 800; font-size: 2rem; margin-bottom: 2rem;">Admin Dashboard</h2>
         
@@ -9,35 +9,37 @@
             <!-- Users Section -->
             <div style="min-width: 0; width: 100%;">
                 <h3 style="margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Users Directory</h3>
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
                         <thead>
-                            <tr style="border-bottom: 2px solid var(--border-glass);">
-                                <th style="padding: 1rem; color: var(--text-muted);">Name</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Email</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Role</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Track</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Level</th>
-                                <th style="padding: 1rem; color: var(--text-muted); white-space: nowrap;">Taken Courses</th>
-                                <th style="padding: 1rem; color: var(--text-muted); white-space: nowrap;">Actions</th>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Track</th>
+                                <th>Level</th>
+                                <th>Taken</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for u in users %}
-                            <tr style="border-bottom: 1px solid var(--border-glass);">
-                                <td style="padding: 1rem; color: var(--text-main); font-weight: 500;">{{ u.name }}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">{{ u.email }}</td>
-                                <td style="padding: 1rem; color: var(--text-main);">
-                                    <span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; background: {% if u.role == 'admin' %}#fef08a; color: #854d0e;{% else %}#e0e7ff; color: #3730a3;{% endif %}">{{ u.role|upper }}</span>
+                            <tr>
+                                <td data-label="Name">{{ u.name }}</td>
+                                <td data-label="Email">{{ u.email }}</td>
+                                <td data-label="Role">
+                                    <span class="admin-role-badge {% if u.role == 'admin' %}admin-role-admin{% else %}admin-role-user{% endif %}">{{ u.role|upper }}</span>
                                 </td>
-                                <td style="padding: 1rem; color: var(--text-muted);">{{ u.track }}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">{{ u.current_skill_level }}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">{{ u.taken_courses|length }}</td>
-                                <td style="padding: 1rem; white-space: nowrap;">
-                                    <button onclick="toggleUserRole('{{ u._id }}', '{{ u.role }}', this)" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; margin-right: 0.5rem;">
-                                        {% if u.role == 'admin' %}Demote{% else %}Make Admin{% endif %}
-                                    </button>
-                                    <button onclick="deleteUser('{{ u._id }}', this)" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; color: #ef4444; border-color: #fca5a5;">Delete</button>
+                                <td data-label="Track">{{ u.track }}</td>
+                                <td data-label="Level">{{ u.current_skill_level }}</td>
+                                <td data-label="Courses Taken">{{ u.taken_courses|length }}</td>
+                                <td data-label="Actions">
+                                    <div class="admin-actions">
+                                        <button onclick="toggleUserRole('{{ u._id }}', '{{ u.role }}', this)" class="btn btn-outline admin-action-btn">
+                                            {% if u.role == 'admin' %}Demote{% else %}Make Admin{% endif %}
+                                        </button>
+                                        <button onclick="deleteUser('{{ u._id }}', this)" class="btn btn-outline admin-action-btn admin-delete-btn">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -45,31 +47,74 @@
                     </table>
                 </div>
             </div>
-            <!-- Courses Section -->
-            <div style="margin-top: 3rem; min-width: 0; width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="color: var(--text-main); font-weight: 700; margin: 0;">Courses Management</h3>
-                    <button onclick="document.getElementById('add-course-modal').style.display='flex'" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Add Course</button>
+
+            <!-- Pending Courses Section -->
+            <div style="margin-top: 2rem; min-width: 0; width: 100%;">
+                <h3 style="margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Pending Course Submissions</h3>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Provider</th>
+                                <th>URL</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if pending_courses|length == 0 %}
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No pending submissions.</td>
+                            </tr>
+                            {% else %}
+                            {% for c in pending_courses %}
+                            <tr>
+                                <td data-label="Title">{{ c.title }}</td>
+                                <td data-label="Provider">{{ c.provider }}</td>
+                                <td data-label="URL"><a href="{{ c.url }}" target="_blank" style="color: var(--secondary); text-decoration: none;">Link <i data-lucide="external-link" style="width: 14px; height: 14px; display: inline-block;"></i></a></td>
+                                <td data-label="Description" class="admin-desc-cell" title="{{ c.content_text }}">{{ c.content_text }}</td>
+                                <td data-label="Actions">
+                                    <div class="admin-actions">
+                                        <button onclick="approveCourse('{{ c._id }}', this)" class="btn btn-primary admin-action-btn" style="background-color: #22c55e; border-color: #22c55e;">Approve</button>
+                                        <button onclick="rejectCourse('{{ c._id }}', this)" class="btn btn-outline admin-action-btn admin-delete-btn">Reject</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
                 </div>
-                <div style="overflow-x: auto; max-height: 600px; overflow-y: auto;">
-                    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+            </div>
+
+            <!-- Courses Section -->
+            <div style="margin-top: 2rem; min-width: 0; width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <h3 style="color: var(--text-main); font-weight: 700; margin: 0;">Courses Management</h3>
+                    <button onclick="document.getElementById('add-course-modal').style.display='flex'" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;"><i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Course</button>
+                </div>
+                <div class="admin-table-wrap" style="max-height: 600px; overflow-y: auto;">
+                    <table class="admin-table">
                         <thead style="position: sticky; top: 0; background: var(--bg-card); z-index: 10;">
-                            <tr style="border-bottom: 2px solid var(--border-glass);">
-                                <th style="padding: 1rem; color: var(--text-muted);">Title</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Provider</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Stars</th>
-                                <th style="padding: 1rem; color: var(--text-muted); white-space: nowrap;">Actions</th>
+                            <tr>
+                                <th>Title</th>
+                                <th>Provider</th>
+                                <th>Stars</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for c in courses %}
-                            <tr style="border-bottom: 1px solid var(--border-glass);">
-                                <td style="padding: 1rem; color: var(--text-main); font-weight: 500;">{{ c.title }}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">{{ c.provider }}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">{{ c.stars }}</td>
-                                <td style="padding: 1rem; white-space: nowrap;">
-                                    <button onclick="openEditCourseModal('{{ c.url|escape }}', '{{ c.title|escape }}', '{{ c.provider|escape }}', '{{ c.stars }}')" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; margin-right: 0.5rem;">Edit</button>
-                                    <button onclick="deleteCourse('{{ c.url|escape }}', this)" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; color: #ef4444; border-color: #fca5a5;">Delete</button>
+                            <tr>
+                                <td data-label="Title">{{ c.title }}</td>
+                                <td data-label="Provider">{{ c.provider }}</td>
+                                <td data-label="Stars">{{ c.stars }}</td>
+                                <td data-label="Actions">
+                                    <div class="admin-actions">
+                                        <button onclick="openEditCourseModal('{{ c.url|escape }}', '{{ c.title|escape }}', '{{ c.provider|escape }}', '{{ c.stars }}')" class="btn btn-outline admin-action-btn">Edit</button>
+                                        <button onclick="deleteCourse('{{ c.url|escape }}', this)" class="btn btn-outline admin-action-btn admin-delete-btn">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -77,9 +122,9 @@
                     </table>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-glass);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 0.75rem;">
                     <div style="color: var(--text-muted); font-size: 0.9rem;">
-                        Showing page <strong style="color: var(--text-main);">{{ page }}</strong> of <strong style="color: var(--text-main);">{{ total_pages }}</strong>
+                        Page <strong style="color: var(--text-main);">{{ page }}</strong> of <strong style="color: var(--text-main);">{{ total_pages }}</strong>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
                         {% if page > 1 %}
@@ -90,7 +135,8 @@
                         {% endif %}
                     </div>
                 </div>
-            </div>        </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -237,6 +283,51 @@ function submitAddCourse(e) {
             window.location.reload();
         } else {
             alert("Error: " + data.error);
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+function approveCourse(courseId, btn) {
+    if(!confirm("Approve this course and add it to the catalog?")) return;
+    btn.textContent = "Approving...";
+    btn.disabled = true;
+    fetch('/api/admin/approve_course', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({course_id: courseId})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            window.location.reload();
+        } else {
+            alert("Error: " + data.error);
+            btn.textContent = "Approve";
+            btn.disabled = false;
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+function rejectCourse(courseId, btn) {
+    if(!confirm("Are you sure you want to reject this course submission?")) return;
+    btn.textContent = "Rejecting...";
+    btn.disabled = true;
+    fetch('/api/admin/reject_course', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({course_id: courseId})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            const row = btn.closest('tr');
+            if(row) row.remove();
+        } else {
+            alert("Error: " + data.error);
+            btn.textContent = "Reject";
+            btn.disabled = false;
         }
     })
     .catch(err => console.error(err));

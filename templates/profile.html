@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container" style="max-width: 1000px; margin: 3rem auto;">
     
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <div class="profile-layout-grid">
         
         <!-- Left Column: Profile Edit -->
         <div class="glass-panel" style="padding: 2rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass); align-self: start;">
@@ -87,14 +87,14 @@
                 {% else %}
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     {% for course in taken_courses %}
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.02);">
-                        <div>
-                            <h4 style="margin: 0 0 0.25rem 0; color: var(--text-main);">{{ course.title }}</h4>
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} • <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> {{ "%.1f"|format(course.stars) }}</span>
+                    <div class="course-list-item" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.02); gap: 1rem;">
+                        <div style="flex: 1; min-width: 0;">
+                            <h4 style="margin: 0 0 0.35rem 0; color: var(--text-main); font-size: 0.95rem; line-height: 1.4;">{{ course.title }}</h4>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} <i data-lucide="star" style="width: 12px; height: 12px; fill: currentColor; display: inline-block; vertical-align: -1px; color: #FBBF24;"></i> {{ "%.1f"|format(course.stars) }}</span>
                         </div>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <a href="{{ course.url }}" target="_blank" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">View</a>
-                            <button onclick="toggleCourseTaken('{{ course.url }}', this)" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; color: #ef4444; border-color: #fca5a5;">Remove</button>
+                        <div class="course-list-actions" style="display: flex; gap: 0.5rem;">
+                            <a href="{{ course.url }}" target="_blank" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap;">View</a>
+                            <button onclick="toggleCourseTaken('{{ course.url }}', this)" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; color: #ef4444; border-color: #fca5a5; white-space: nowrap;">Remove</button>
                         </div>
                     </div>
                     {% endfor %}
@@ -120,7 +120,7 @@ function toggleCourseTaken(url, btnElement) {
     .then(res => res.json())
     .then(data => {
         if(data.success && data.action === 'removed') {
-            const row = btnElement.closest('div[style*="display: flex; justify-content: space-between"]');
+            const row = btnElement.closest('.course-list-item');
             if (row) row.remove();
         }
     })

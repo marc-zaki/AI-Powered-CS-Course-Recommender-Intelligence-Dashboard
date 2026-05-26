@@ -29,7 +29,7 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
-// 🔗 Smart Link Validator Interceptor
+// Smart Link Validator Interceptor
 document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.view-course-btn');
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ⚖️ Course Comparison Engine
+// Course Comparison Engine
 let comparedCourses = [];
 
 function handleCompareChange(checkbox) {
@@ -229,7 +229,7 @@ function launchCompareModal() {
             </div>
             <div style="margin-top:1.5rem;" class="compare-card-btn-container" 
                  data-url="${course.url}" data-title="${course.title}" data-provider="${course.provider}">
-                <button class="btn btn-primary" onclick="validateCompareLink(this)" style="width:100%; text-decoration:none;">View Course ↗</button>
+                <button class="btn btn-primary" onclick="validateCompareLink(this)" style="width:100%; text-decoration:none;">View Course <i data-lucide="arrow-up-right" style="width: 14px; height: 14px; display: inline-block;"></i></button>
             </div>
         `;
         grid.appendChild(col);
@@ -284,7 +284,7 @@ function closeCompareModal() {
     setTimeout(() => modal.style.display = 'none', 400);
 }
 
-// 📊 D3.js Force-Directed Skill Map
+// D3.js Force-Directed Skill Map
 let isGraphInitialized = false;
 
 function initSkillMapGraph() {
@@ -295,7 +295,7 @@ function initSkillMapGraph() {
     if (!container) return;
     
     const width = container.clientWidth || 960;
-    const height = 650;
+    const height = window.innerWidth <= 768 ? 400 : 650;
     
     // Create floating tooltip element in body if missing
     let tooltip = d3.select(".graph-tooltip");
@@ -449,7 +449,15 @@ function initSkillMapGraph() {
                 if (sidebarDetails) sidebarDetails.style.display = 'block';
                 if (sidebarTitle) sidebarTitle.textContent = d.title;
                 if (sidebarProvider) sidebarProvider.textContent = d.provider;
-                if (sidebarRating) sidebarRating.textContent = `<i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i> ${d.stars.toFixed(1)} / 5.0`;
+                if (sidebarRating) sidebarRating.textContent = `${d.stars.toFixed(1)} / 5.0`;
+                
+                if (window.innerWidth <= 768) {
+                    const sidebarElem = document.querySelector('.map-sidebar');
+                    if (sidebarElem) {
+                        sidebarElem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+
                 if (sidebarLink) {
                     sidebarLink.href = d.url;
                     sidebarLink.onclick = (e) => {
@@ -602,6 +610,88 @@ function generateAIPath() {
     });
 }
 
+function submitCourse(event) {
+    event.preventDefault();
+    const btn = document.getElementById('submit-course-btn');
+    const status = document.getElementById('submit-course-status');
+    const form = document.getElementById('submit-course-form');
+    
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Submitting...";
+    }
+    
+    const formData = new FormData(form);
+    
+    fetch('/submit_course', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Submit for Verification";
+        }
+        if (data.success) {
+            status.style.color = "var(--success)";
+            status.innerHTML = '<i data-lucide="check-circle" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> ' + data.message;
+            lucide.createIcons();
+            form.reset();
+            setTimeout(() => { status.textContent = ""; }, 5000);
+        } else {
+            status.style.color = "var(--danger)";
+            status.innerHTML = '<i data-lucide="x-circle" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Error: ' + data.error;
+            lucide.createIcons();
+            if (data.error === "Not logged in") {
+                window.location.href = "/login";
+            }
+        }
+    })
+    .catch(err => {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Submit for Verification";
+        }
+        status.style.color = "var(--danger)";
+        status.innerHTML = '<i data-lucide="x-circle" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i> Failed to reach server.';
+        lucide.createIcons();
+    });
+}
+
+function openSubmitCourseModal() {
+    const modal = document.getElementById('submit-course-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Force reflow
+        void modal.offsetWidth;
+        modal.classList.add('active');
+    }
+}
+
+function closeSubmitCourseModal() {
+    const modal = document.getElementById('submit-course-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300); // match transition duration
+    }
+}
+
+// Close modal when clicking outside of it
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('submit-course-modal');
+    if (modal && modal.style.display === 'flex' && e.target === modal) {
+        closeSubmitCourseModal();
+    }
+    
+    const rModal = document.getElementById('roulette-modal');
+    if (rModal && rModal.classList.contains('active') && e.target === rModal) {
+        closeRouletteModal();
+    }
+});
+
 // Tab switcher
 function switchTab(tabId) {
     document.querySelectorAll('.tab-pane').forEach(pane => {
@@ -624,6 +714,12 @@ function switchTab(tabId) {
     if (activeBtn) activeBtn.classList.add('active');
     if (activeSideLink) activeSideLink.classList.add('active');
 
+    // Auto-close mobile sidebar if open
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar && sidebar.classList.contains('mobile-open')) {
+        sidebar.classList.remove('mobile-open');
+    }
+
     localStorage.setItem('activeDashboardTab', tabId);
     
     if (tabId === 'skill-map') {
@@ -633,7 +729,7 @@ function switchTab(tabId) {
     }
 }
 
-// 🌓 Nordic Light/Dark Theme Switcher
+// Nordic Light/Dark Theme Switcher
 function initTheme() {
     const savedTheme = localStorage.getItem('nordicTheme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);

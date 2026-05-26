@@ -18,7 +18,7 @@
                 <a href="/" class="logo" style="font-size: 1.25rem;">
                     <i data-lucide="brain"></i> AI Recommender
                 </a>
-                <button class="mobile-close-btn" onclick="document.getElementById('app-sidebar').classList.remove('mobile-open')" style="display: none; background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
+                <button class="mobile-close-btn" onclick="document.getElementById('app-sidebar').classList.remove('mobile-open')" style="background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
             </div>
             
             <nav class="app-sidebar-nav">
@@ -71,7 +71,7 @@
                 </div>
             </header>
 
-            <main style="padding: 2rem;">
+            <main class="app-main-body">
                 <!-- Flash Messages -->
                 <div class="container" style="margin-top: 1rem;">
                     {% with messages = get_flashed_messages(with_categories=true) %}
