@@ -255,7 +255,7 @@ body {
         padding-left: 0.5rem !important;
         margin-left: 0.25rem !important;
         flex-wrap: nowrap;
-        overflow-x: auto;
+        overflow: visible !important;
     }
     .nav-links .btn {
         padding: 0.3rem 0.55rem !important;
@@ -1699,3 +1699,112 @@ footer {
         width: 100%;
     }
 }
+
+/* User Dropdown Premium Styling */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    width: 220px;
+    background: var(--bg-modal);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    box-shadow: var(--shadow-glass);
+    padding: 0.5rem 0;
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.user-dropdown-menu.open {
+    display: flex;
+    animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-dropdown-header {
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.user-dropdown-fullname {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.875rem;
+}
+
+.user-dropdown-email {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    word-break: break-all;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: var(--border-glass);
+    margin: 0.4rem 0;
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.6rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-premium);
+}
+
+.user-dropdown-item:hover {
+    color: var(--text-main);
+    background: var(--primary-glow);
+}
+
+.user-dropdown-item i {
+    color: var(--text-muted);
+    transition: var(--transition-premium);
+    flex-shrink: 0;
+}
+
+.user-dropdown-item:hover i {
+    color: var(--primary);
+}
+
+.user-dropdown-item.user-dropdown-logout {
+    color: #ef4444;
+}
+
+.user-dropdown-item.user-dropdown-logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+}
+
+.user-dropdown-item.user-dropdown-logout i {
+    color: #ef4444;
+}
+
+.user-dropdown-item.user-dropdown-logout:hover i {
+    color: #f87171;
+}
+

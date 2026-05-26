@@ -45,8 +45,13 @@
         <!-- Main Content -->
         <div class="app-main-content">
             <header class="app-header">
-                <button class="mobile-menu-btn" onclick="document.getElementById('app-sidebar').classList.toggle('mobile-open')">☰</button>
-                <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <button class="mobile-menu-btn" onclick="document.getElementById('app-sidebar').classList.toggle('mobile-open')">☰</button>
+                    <a href="/" class="logo header-logo">
+                        <i data-lucide="brain"></i> <span class="header-logo-text">AI Recommender</span>
+                    </a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
                     {% if total_courses is defined %}
                     <div class="stats-badge" style="display: none;">
                         {{ total_courses }} Indexed
@@ -58,11 +63,33 @@
                     
                     <div class="nav-links" style="display: flex; gap: 0.75rem; margin-left: 0.5rem; border-left: 1px solid var(--border-glass); padding-left: 1rem;">
                         {% if current_user %}
-                            <a href="{{ url_for('profile') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="user" style="width: 16px; height: 16px;"></i> Profile</a>
-                            {% if current_user.role == 'admin' %}
-                                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="shield" style="width: 16px; height: 16px;"></i> Admin</a>
-                            {% endif %}
-                            <a href="{{ url_for('logout') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Logout</a>
+                            <!-- User Dropdown -->
+                            <div class="user-dropdown" id="user-dropdown">
+                                <button class="user-dropdown-trigger btn btn-outline" onclick="toggleUserDropdown(event)" style="padding: 0.35rem 0.85rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                    <span class="user-dropdown-name">{{ (current_user.name or 'User').split(' ')[0] }}</span>
+                                    <i data-lucide="chevron-down" style="width: 14px; height: 14px; opacity: 0.6;"></i>
+                                </button>
+                                <div class="user-dropdown-menu" id="user-dropdown-menu">
+                                    <div class="user-dropdown-header">
+                                        <span class="user-dropdown-fullname">{{ current_user.name or 'User' }}</span>
+                                        <span class="user-dropdown-email">{{ current_user.email or '' }}</span>
+                                    </div>
+                                    <div class="user-dropdown-divider"></div>
+                                    <a href="{{ url_for('profile') }}" class="user-dropdown-item">
+                                        <i data-lucide="settings" style="width: 15px; height: 15px;"></i> Manage
+                                    </a>
+                                    {% if current_user.role == 'admin' %}
+                                    <a href="{{ url_for('admin_dashboard') }}" class="user-dropdown-item">
+                                        <i data-lucide="shield" style="width: 15px; height: 15px;"></i> Admin Dashboard
+                                    </a>
+                                    {% endif %}
+                                    <div class="user-dropdown-divider"></div>
+                                    <a href="{{ url_for('logout') }}" class="user-dropdown-item user-dropdown-logout">
+                                        <i data-lucide="log-out" style="width: 15px; height: 15px;"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
                         {% else %}
                             <a href="{{ url_for('login') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Login</a>
                             <a href="{{ url_for('register') }}" class="btn btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Sign Up</a>
@@ -103,6 +130,21 @@
             const hash = window.location.hash.substring(1);
             if (hash && (window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all')) {
                 switchTab(hash);
+            }
+        });
+
+        // User dropdown menu toggle
+        function toggleUserDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('user-dropdown-menu');
+            if (menu) menu.classList.toggle('open');
+        }
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('user-dropdown');
+            const menu = document.getElementById('user-dropdown-menu');
+            if (menu && dropdown && !dropdown.contains(e.target)) {
+                menu.classList.remove('open');
             }
         });
     </script>
