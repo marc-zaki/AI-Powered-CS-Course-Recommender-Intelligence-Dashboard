@@ -39,12 +39,21 @@ else:
 
 # Download NLTK data
 try:
-    nltk.download('vader_lexicon', quiet=True)
-    nltk.download('stopwords', quiet=True)
-    nltk.download('punkt', quiet=True)
-    nltk.download('punkt_tab', quiet=True)
-    nltk.download('averaged_perceptron_tagger', quiet=True)
-    nltk.download('averaged_perceptron_tagger_eng', quiet=True)
+    if os.environ.get("VERCEL") == "1":
+        nltk.data.path.append('/tmp')
+        nltk.download('vader_lexicon', download_dir='/tmp', quiet=True)
+        nltk.download('stopwords', download_dir='/tmp', quiet=True)
+        nltk.download('punkt', download_dir='/tmp', quiet=True)
+        nltk.download('punkt_tab', download_dir='/tmp', quiet=True)
+        nltk.download('averaged_perceptron_tagger', download_dir='/tmp', quiet=True)
+        nltk.download('averaged_perceptron_tagger_eng', download_dir='/tmp', quiet=True)
+    else:
+        nltk.download('vader_lexicon', quiet=True)
+        nltk.download('stopwords', quiet=True)
+        nltk.download('punkt', quiet=True)
+        nltk.download('punkt_tab', quiet=True)
+        nltk.download('averaged_perceptron_tagger', quiet=True)
+        nltk.download('averaged_perceptron_tagger_eng', quiet=True)
 except Exception:
     pass
 
@@ -109,6 +118,9 @@ def load_and_train_model():
     
     print(f"Connecting to MongoDB at {MONGO_URI}...")
     try:
+        if os.environ.get("VERCEL") == "1":
+            raise Exception("Vercel deployment detected, bypassing MongoDB load for AI model to prevent Serverless timeout.")
+            
         db = get_db()
         if db is None:
             raise Exception("Could not connect to MongoDB")
