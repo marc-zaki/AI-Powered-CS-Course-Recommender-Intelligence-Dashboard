@@ -260,10 +260,10 @@ body {
     .course-grid {
         gap: 1.25rem !important;
     }
-    .search-box {
+    .search-form {
         flex-direction: column;
     }
-    .search-box button {
+    .search-form button {
         width: 100%;
     }
 }
