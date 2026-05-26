@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -16,23 +16,23 @@
         <aside class="app-sidebar" id="app-sidebar">
             <div class="app-sidebar-header">
                 <a href="/" class="logo" style="justify-content: center; font-size: 1.25rem;">
-                    <span>🧠</span> AI Recommender
+                    <i data-lucide="brain"></i> AI Recommender
                 </a>
             </div>
             
             <nav class="app-sidebar-nav">
                 <!-- If on index page, these trigger tabs via JS. If on other pages, they go to index with a hash. -->
                 <a href="/" id="side-link-catalog" class="app-sidebar-link active" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('catalog'); event.preventDefault(); }">
-                    📚 Course Catalog
+                    <i data-lucide="book"></i> Course Catalog
                 </a>
                 <a href="/#ai-path" id="side-link-ai-path" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('ai-path'); window.history.pushState(null, '', '/#ai-path'); event.preventDefault(); }">
-                    🪄 AI Study Plan
+                    <i data-lucide="wand-2"></i> AI Study Plan
                 </a>
                 <a href="/#skill-map" id="side-link-skill-map" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('skill-map'); window.history.pushState(null, '', '/#skill-map'); event.preventDefault(); }">
-                    📊 Skill Map
+                    <i data-lucide="bar-chart-2"></i> Skill Map
                 </a>
                 <a href="/#dashboard" id="side-link-dashboard" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('dashboard'); window.history.pushState(null, '', '/#dashboard'); event.preventDefault(); }">
-                    📈 Intelligence EDA
+                    <i data-lucide="trending-up"></i> Intelligence EDA
                 </a>
             </nav>
             
@@ -53,13 +53,13 @@
                     {% endif %}
                     
                     <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-outline"
-                        style="padding: 0.35rem 0.65rem; font-size: 1.15rem; line-height: 1;" title="Toggle Light/Dark Theme">🌓</button>
+                        style="padding: 0.35rem 0.65rem; font-size: 1.15rem; line-height: 1;" title="Toggle Light/Dark Theme"><i data-lucide="moon" style="width: 20px; height: 20px;"></i></button>
                     
                     <div class="nav-links" style="display: flex; gap: 0.75rem; margin-left: 0.5rem; border-left: 1px solid var(--border-glass); padding-left: 1rem;">
                         {% if current_user %}
-                            <a href="{{ url_for('profile') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">👤 Profile</a>
+                            <a href="{{ url_for('profile') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="user" style="width: 16px; height: 16px;"></i> Profile</a>
                             {% if current_user.role == 'admin' %}
-                                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">🛡️ Admin</a>
+                                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="shield" style="width: 16px; height: 16px;"></i> Admin</a>
                             {% endif %}
                             <a href="{{ url_for('logout') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.875rem;">Logout</a>
                         {% else %}
@@ -91,6 +91,10 @@
     </div>
 
     <!-- Move main script to end for logic updates -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      lucide.createIcons();
+    </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         // Update sidebar links actively

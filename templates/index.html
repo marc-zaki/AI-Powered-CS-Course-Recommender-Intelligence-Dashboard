@@ -26,14 +26,14 @@
                     {% elif show_all %}
                     All Courses
                     {% elif is_personalized %}
-                    ⭐ Your Personalized Recommendations
+                    <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Your Personalized Recommendations
                     {% else %}
-                    ⭐ Featured Courses
+                    <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Featured Courses
                     {% endif %}
                 </h2>
                 <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <button class="btn btn-roulette" onclick="openRouletteModal()" style="padding: 0.5rem 1rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.35rem; font-weight: 700;">
-                        🎰 Course Roulette
+                        <i data-lucide="dices"></i> Course Roulette
                     </button>
                     {% if is_search %}
                     <a href="/" class="btn-outline btn" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Clear Search</a>
@@ -69,7 +69,7 @@
                         </div>
                         {% if course.review_summary %}
                         <div class="review-summary">
-                            <span style="margin-right: 4px;">💬</span>
+                            <span style="margin-right: 4px;"><i data-lucide="message-square"></i></span>
                             <i>{{ course.review_summary }}</i>
                         </div>
                         {% endif %}
@@ -83,7 +83,7 @@
 
                         <div class="card-footer">
                             <div class="rating">
-                                {% for _ in range(course.stars_int) %}⭐{% endfor %}
+                                {% for _ in range(course.stars_int) %}<i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>{% endfor %}
                                 <span style="margin-left: 0.25rem; font-weight: 700; color: var(--primary);">{{ "%.1f"|format(course.stars) }}</span>
                                 {% if course.ratings_count and course.ratings_count > 0 %}
                                 <span style="margin-left: 0.35rem; color: var(--text-muted); font-size: 0.775rem; font-weight: 500;">
@@ -138,7 +138,7 @@
         <div id="tab-pane-ai-path" class="tab-pane">
             <div class="ai-card">
                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
-                    <span style="font-size: 2.25rem;">🪄</span>
+                    <span style="font-size: 2.25rem;"><i data-lucide="wand-2"></i></span>
                     <h2 class="ai-card-title">AI Study Plan Generator</h2>
                 </div>
                 <p class="ai-card-desc">
@@ -161,7 +161,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1.5px solid var(--border-glass); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                         <h4 class="ai-output-title" style="margin: 0; padding: 0;">Your Custom Weekly Curriculum:</h4>
                         <button onclick="exportPlanToPDF()" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px;">
-                            📥 Export PDF
+                            <i data-lucide="download"></i> Export PDF
                         </button>
                     </div>
                     <div id="ai-path-content" class="ai-rendered-path"></div>
@@ -178,6 +178,9 @@
                 <div class="map-container">
                     <div class="map-sidebar">
                         <h3>Select a Course Node</h3>
+                        <div style="margin: 1rem 0;">
+                            <input type="text" id="skill-map-search-input" placeholder="Search for courses..." class="search-input" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-glass); background: var(--bg-main); color: var(--text-main); font-size: 0.9rem;">
+                        </div>
                         <p id="sidebar-instruction" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted);">Click on any course node in the network to inspect its full recommendation profiles and get instant links!</p>
                         <div id="sidebar-details" style="display: none;">
                             <h4 id="sidebar-title" style="font-weight: 800; color: var(--text-main); margin-bottom: 0.85rem; font-size: 1.15rem; line-height: 1.4; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;"></h4>
@@ -221,7 +224,7 @@
                 
                 <!-- Chart 2: Keyword Statistics -->
                 <div class="glass-panel" style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">🔍 Top CS Terms (IR Frequency Statistics)</h3>
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;"><i data-lucide="search"></i> Top CS Terms (IR Frequency Statistics)</h3>
                     <div style="height: 300px;">
                         <canvas id="chart-keywords"></canvas>
                     </div>
@@ -237,7 +240,7 @@
 
                 <!-- Chart 4: Ratings Histogram -->
                 <div class="glass-panel" style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">⭐ Course Quality Score Distribution</h3>
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;"><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Course Quality Score Distribution</h3>
                     <div style="height: 300px;">
                         <canvas id="chart-ratings"></canvas>
                     </div>
@@ -298,12 +301,12 @@
     <!-- Floating Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- 🎰 Course Roulette Modal -->
+    <!-- <i data-lucide="dices"></i> Course Roulette Modal -->
     <div id="roulette-modal" class="roulette-modal">
         <div class="roulette-modal-content">
             <button class="roulette-modal-close" onclick="closeRouletteModal()">✕</button>
             
-            <h2 class="roulette-modal-title">🎰 Course Discovery Roulette</h2>
+            <h2 class="roulette-modal-title"><i data-lucide="dices"></i> Course Discovery Roulette</h2>
             <p class="roulette-modal-subtitle">Spin the slot machine to discover highly curated, elite computer science courses!</p>
             
             <!-- Spinning Reel Area -->
@@ -323,7 +326,7 @@
                 <h3 class="roulette-course-title" id="roulette-res-title">Course Title</h3>
                 
                 <div class="roulette-rating-row">
-                    <span class="stars-display" id="roulette-res-stars">⭐⭐⭐⭐⭐</span>
+                    <span class="stars-display" id="roulette-res-stars"><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i><i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i></span>
                     <span class="reviews-display" id="roulette-res-reviews">(12,450 student reviews)</span>
                 </div>
                 
@@ -332,7 +335,7 @@
                 </p>
                 
                 <div class="roulette-actions-row">
-                    <button class="btn btn-outline" id="roulette-add-compare-btn" style="flex: 1; padding: 0.65rem 1rem;">🎯 Compare Course</button>
+                    <button class="btn btn-outline" id="roulette-add-compare-btn" style="flex: 1; padding: 0.65rem 1rem;"><i data-lucide="target"></i> Compare Course</button>
                     <a href="#" target="_blank" class="btn btn-primary" id="roulette-res-link" style="flex: 1; padding: 0.65rem 1rem; text-align: center; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); line-height: 1.5; font-size: 0.9rem; font-weight: 700; border-radius: 8px;">🔗 View Official Page</a>
                 </div>
             </div>
@@ -340,7 +343,7 @@
             <!-- Spin Control Button -->
             <div style="display: flex; justify-content: center; margin-top: 1.5rem;">
                 <button id="roulette-spin-btn" class="btn btn-roulette-spin" onclick="startRouletteSpin()">
-                    ✨ Spin the Wheel!
+                    <i data-lucide="sparkles"></i> Spin the Wheel!
                 </button>
             </div>
         </div>

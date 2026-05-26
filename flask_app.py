@@ -914,10 +914,30 @@ def onboarding():
         flash("Onboarding complete! Your recommendations are now personalized.", "success")
         return redirect(url_for('index'))
         
-    # GET: fetch 5 random courses
+    # GET: fetch 5 courses based on user track
     global df
     if df is not None and not df.empty:
-        random_courses = df.sample(n=5).to_dict('records')
+        user = db.users.find_one({"_id": session['user_id']}) if db is not None else {}
+        user_track = user.get('track', '').lower() if user else ''
+        
+        relevant_df = pd.DataFrame()
+        if user_track:
+            # Filter courses containing the track keywords in their profile or title
+            relevant_df = df[df['search_profile'].str.contains(user_track, case=False, na=False) | df['title'].str.contains(user_track, case=False, na=False)]
+            
+        if len(relevant_df) >= 5:
+            random_courses = relevant_df.sample(n=5).to_dict('records')
+        elif len(relevant_df) > 0:
+            # Pad with random courses if we have less than 5 relevant ones
+            relevant = relevant_df.to_dict('records')
+            remaining = 5 - len(relevant)
+            other_df = df[~df.index.isin(relevant_df.index)]
+            others = other_df.sample(n=min(remaining, len(other_df))).to_dict('records') if not other_df.empty else []
+            random_courses = relevant + others
+        else:
+            # Fallback to pure random if no matches or track empty
+            random_courses = df.sample(n=5).to_dict('records')
+            
         # generate a simple ID for them if they don't have one
         for i, c in enumerate(random_courses):
             c['temp_id'] = f"course_{i}"
@@ -954,6 +974,30 @@ def profile():
         
     return render_template('profile.html', user=user, taken_courses=taken_courses_info)
 
+@app.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    db = get_db()
+    if db is None:
+        flash("Database connection error.", "danger")
+        return redirect(url_for('profile'))
+        
+    password = request.form.get('password', '')
+    user_id = session.get('user_id')
+    
+    user = db.users.find_one({"_id": user_id})
+    if not user:
+        flash("User not found.", "danger")
+        return redirect(url_for('logout'))
+        
+    if not check_password_hash(user['password_hash'], password):
+        flash("Incorrect password, please try again.", "danger")
+        return redirect(url_for('profile'))
+        
+    db.users.delete_one({"_id": user_id})
+    session.clear()
+    flash("Sorry to see you leave! Your account has been permanently deleted.", "success")
+    return redirect(url_for('index'))
 @app.route('/api/toggle_taken', methods=['POST'])
 @login_required
 def toggle_taken():
@@ -982,9 +1026,15 @@ def toggle_taken():
 def admin_dashboard():
     db = get_db()
     users = list(db.users.find({}))
-    # load courses from DB directly
-    courses = list(db.courses.find({}, {'_id': 0}))
-    return render_template('admin.html', users=users, courses=courses)
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 50
+    total_courses = db.courses.count_documents({})
+    total_pages = (total_courses + per_page - 1) // per_page
+    
+    # load courses from DB directly with pagination
+    courses = list(db.courses.find({}, {'_id': 0}).skip((page - 1) * per_page).limit(per_page))
+    return render_template('admin.html', users=users, courses=courses, page=page, total_pages=total_pages)
 
 @app.route('/api/delete_course', methods=['POST'])
 @admin_required
@@ -1005,6 +1055,115 @@ def delete_course():
         return jsonify({"success": True, "message": "Course deleted successfully"})
     else:
         return jsonify({"success": False, "error": "Course not found"}), 404
+
+@app.route('/api/admin/toggle_user_role', methods=['POST'])
+@admin_required
+def toggle_user_role():
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    new_role = data.get('role')
+    
+    if not user_id or not new_role:
+        return jsonify({"success": False, "error": "Missing parameters"}), 400
+        
+    db = get_db()
+    result = db.users.update_one({"_id": user_id}, {"$set": {"role": new_role}})
+    
+    if result.modified_count > 0:
+        return jsonify({"success": True})
+    return jsonify({"success": False, "error": "User not found or role already set"}), 404
+
+@app.route('/api/admin/delete_user', methods=['POST'])
+@admin_required
+def delete_user_admin():
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    
+    if not user_id:
+        return jsonify({"success": False, "error": "Missing user ID"}), 400
+        
+    # Prevent admin from deleting themselves accidentally
+    if user_id == session.get('user_id'):
+        return jsonify({"success": False, "error": "You cannot delete your own admin account from here."}), 403
+        
+    db = get_db()
+    result = db.users.delete_one({"_id": user_id})
+    
+    if result.deleted_count > 0:
+        return jsonify({"success": True})
+    return jsonify({"success": False, "error": "User not found"}), 404
+
+@app.route('/api/admin/add_course', methods=['POST'])
+@admin_required
+def add_course():
+    data = request.get_json() or {}
+    
+    title = data.get('title')
+    provider = data.get('provider')
+    url = data.get('url')
+    stars = data.get('stars', 0.0)
+    
+    if not title or not provider or not url:
+        return jsonify({"success": False, "error": "Missing required fields"}), 400
+        
+    db = get_db()
+    
+    # Check if URL already exists
+    if db.courses.find_one({"url": url}):
+        return jsonify({"success": False, "error": "Course with this URL already exists"}), 400
+        
+    new_course = {
+        "title": title,
+        "provider": provider,
+        "url": url,
+        "stars": float(stars),
+        "track": "General CS" # Default track
+    }
+    
+    db.courses.insert_one(new_course)
+    
+    # Reload model asynchronously
+    thread = threading.Thread(target=load_and_train_model)
+    thread.start()
+    
+    return jsonify({"success": True})
+
+@app.route('/api/admin/edit_course', methods=['POST'])
+@admin_required
+def edit_course():
+    data = request.get_json() or {}
+    
+    old_url = data.get('old_url')
+    title = data.get('title')
+    provider = data.get('provider')
+    url = data.get('url')
+    stars = data.get('stars', 0.0)
+    
+    if not old_url or not title or not provider or not url:
+        return jsonify({"success": False, "error": "Missing required fields"}), 400
+        
+    db = get_db()
+    
+    # If URL is being changed, ensure new URL doesn't conflict
+    if old_url != url and db.courses.find_one({"url": url}):
+        return jsonify({"success": False, "error": "A course with the new URL already exists"}), 400
+        
+    update_data = {
+        "title": title,
+        "provider": provider,
+        "url": url,
+        "stars": float(stars)
+    }
+    
+    result = db.courses.update_one({"url": old_url}, {"$set": update_data})
+    
+    if result.modified_count > 0 or result.matched_count > 0:
+        # Reload model asynchronously
+        thread = threading.Thread(target=load_and_train_model)
+        thread.start()
+        return jsonify({"success": True})
+        
+    return jsonify({"success": False, "error": "Course not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

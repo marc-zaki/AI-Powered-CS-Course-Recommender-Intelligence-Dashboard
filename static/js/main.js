@@ -11,10 +11,10 @@ function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     
-    let icon = 'ℹ️';
-    if (type === 'success') icon = '✅';
-    else if (type === 'warning') icon = '⚠️';
-    else if (type === 'error') icon = '❌';
+    let icon = '<i data-lucide="info" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+    if (type === 'success') icon = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+    else if (type === 'warning') icon = '<i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+    else if (type === 'error') icon = '<i data-lucide="x-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
     
     toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
     container.appendChild(toast);
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const originalText = btn.innerHTML;
         btn.style.pointerEvents = 'none';
-        btn.innerHTML = '🔍 Checking...';
+        btn.innerHTML = '<i data-lucide="search" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Checking...';
         
         showToast("Verifying course URL...", "info");
         
@@ -174,7 +174,7 @@ function launchCompareModal() {
         const dText = course.desc.toLowerCase();
         const fullText = `${tText} ${dText}`;
         
-        let difficulty = "Intermediate 🟡";
+        let difficulty = "Intermediate";
         if (fullText.includes("beginner") || 
             fullText.includes("introduction") || 
             fullText.includes("intro") || 
@@ -182,13 +182,13 @@ function launchCompareModal() {
             fullText.includes("fundamental") || 
             fullText.includes("foundation") || 
             fullText.includes("101")) {
-            difficulty = "Beginner friendly 🟢";
+            difficulty = "Beginner friendly";
         } else if (fullText.includes("advanced") || 
                    fullText.includes("expert") || 
                    fullText.includes("deep dive") || 
                    fullText.includes("senior") || 
                    fullText.includes("mastery")) {
-            difficulty = "Advanced / Expert 🔴";
+            difficulty = "Advanced / Expert";
         }
 
         const col = document.createElement('div');
@@ -197,7 +197,7 @@ function launchCompareModal() {
         const starsNum = parseFloat(course.stars);
         const starsInt = Math.min(Math.max(Math.round(starsNum), 1), 5);
         let starsStr = '';
-        for (let i = 0; i < starsInt; i++) starsStr += '⭐';
+        for (let i = 0; i < starsInt; i++) starsStr += '<i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i>';
         
         const reviewsStr = parseInt(course.ratingsCount) > 0 
             ? `(${parseInt(course.ratingsCount).toLocaleString()} reviews)`
@@ -248,7 +248,7 @@ function validateCompareLink(btn) {
     
     const originalText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '🔍 Checking...';
+    btn.innerHTML = '<i data-lucide="search" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Checking...';
     
     showToast("Validating course URL...", "info");
     
@@ -404,7 +404,7 @@ function initSkillMapGraph() {
                 tooltip.html(`
                     <strong style="color:var(--secondary); font-size:0.9rem;">${d.title}</strong><br/>
                     <span style="font-size:0.8rem; color:var(--text-muted);">Group: ${d.group}</span><br/>
-                    <span style="font-size:0.8rem; color:#FBBF24;">⭐ ${d.stars.toFixed(1)} AI Score</span>
+                    <span style="font-size:0.8rem; color:#FBBF24;"><i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i> ${d.stars.toFixed(1)} AI Score</span>
                 `)
                 .style("left", (event.pageX + 15) + "px")
                 .style("top", (event.pageY - 28) + "px");
@@ -449,7 +449,7 @@ function initSkillMapGraph() {
                 if (sidebarDetails) sidebarDetails.style.display = 'block';
                 if (sidebarTitle) sidebarTitle.textContent = d.title;
                 if (sidebarProvider) sidebarProvider.textContent = d.provider;
-                if (sidebarRating) sidebarRating.textContent = `⭐ ${d.stars.toFixed(1)} / 5.0`;
+                if (sidebarRating) sidebarRating.textContent = `<i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i> ${d.stars.toFixed(1)} / 5.0`;
                 if (sidebarLink) {
                     sidebarLink.href = d.url;
                     sidebarLink.onclick = (e) => {
@@ -506,6 +506,22 @@ function initSkillMapGraph() {
                 d.fx = null;
                 d.fy = null;
             }
+            
+            // Search Functionality
+            const searchInput = document.getElementById('skill-map-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    if (!query) {
+                        node.transition().duration(200).attr("opacity", 1);
+                        link.transition().duration(200).attr("stroke-opacity", 1);
+                        return;
+                    }
+                    
+                    node.transition().duration(200).attr("opacity", d => d.title.toLowerCase().includes(query) ? 1 : 0.1);
+                    link.transition().duration(200).attr("stroke-opacity", 0.1); // Dim links to focus on matching nodes
+                });
+            }
         });
 }
 
@@ -556,17 +572,17 @@ function generateAIPath() {
                 
                 const checkbox = document.createElement('span');
                 checkbox.className = 'path-checkbox';
-                checkbox.innerHTML = '⚪';
+                checkbox.innerHTML = '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
                 checkbox.style.transition = 'all 0.2s';
                 header.prepend(checkbox);
 
                 header.addEventListener('click', () => {
-                    if (checkbox.innerHTML === '⚪') {
-                        checkbox.innerHTML = '✅';
+                    if (checkbox.innerHTML === '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>') {
+                        checkbox.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
                         header.style.textDecoration = 'line-through';
                         header.style.opacity = '0.5';
                     } else {
-                        checkbox.innerHTML = '⚪';
+                        checkbox.innerHTML = '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
                         header.style.textDecoration = 'none';
                         header.style.opacity = '1';
                     }
@@ -619,13 +635,13 @@ function switchTab(tabId) {
 
 // 🌓 Nordic Light/Dark Theme Switcher
 function initTheme() {
-    const savedTheme = localStorage.getItem('nordicTheme') || 'dark';
+    const savedTheme = localStorage.getItem('nordicTheme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeToggleButton(savedTheme);
 }
 
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
     document.documentElement.setAttribute('data-theme', newTheme);
@@ -645,7 +661,8 @@ function toggleTheme() {
 function updateThemeToggleButton(theme) {
     const btn = document.getElementById('theme-toggle-btn');
     if (btn) {
-        btn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+        btn.innerHTML = theme === 'dark' ? '<i data-lucide="sun" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"></i>' : '<i data-lucide="moon" style="width:20px;height:20px;display:inline-block;vertical-align:middle;"></i>';
+        if(window.lucide) lucide.createIcons();
         btn.setAttribute('title', `Switch to Nordic ${theme === 'dark' ? 'Light' : 'Dark'} Mode`);
     }
 }
@@ -728,7 +745,7 @@ function exportPlanToPDF() {
     pdfHeader.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
-                <h1 style="margin: 0; color: #0F4C75; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;">🧠 AI STUDY PATH</h1>
+                <h1 style="margin: 0; color: #0F4C75; font-size: 24px; font-weight: 800; letter-spacing: -0.02em;"><i data-lucide="brain" style="width:24px;height:24px;display:inline-block;vertical-align:middle;"></i> AI STUDY PATH</h1>
                 <p style="margin: 5px 0 0 0; color: #5F85A2; font-size: 14px; font-weight: 600;">Personalized CS Learning Curriculum</p>
             </div>
             <div style="text-align: right; font-size: 11px; color: #64748B;">
@@ -806,7 +823,7 @@ function initDashboardCharts() {
             
             // 1. Update Metrics Cards
             document.getElementById('stat-total-courses').innerText = data.metrics.total_courses.toLocaleString();
-            document.getElementById('stat-avg-rating').innerText = data.metrics.avg_rating.toFixed(2) + " ⭐";
+            document.getElementById('stat-avg-rating').innerHTML = data.metrics.avg_rating.toFixed(2) + ' <i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i>';
             document.getElementById('stat-total-reviews').innerText = data.metrics.total_reviews.toLocaleString();
             
             // Check active theme to customize text/axes colors dynamically!
@@ -973,7 +990,7 @@ function initDashboardCharts() {
         });
 }
 
-// 🎰 Course Discovery Roulette Implementation
+// <i data-lucide="dices" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Course Discovery Roulette Implementation
 function openRouletteModal() {
     const modal = document.getElementById('roulette-modal');
     modal.classList.add('active');
@@ -985,7 +1002,7 @@ function openRouletteModal() {
     
     const spinBtn = document.getElementById('roulette-spin-btn');
     spinBtn.disabled = false;
-    spinBtn.innerText = '✨ Spin the Wheel!';
+    spinBtn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Spin the Wheel!';
 }
 
 function closeRouletteModal() {
@@ -1000,7 +1017,7 @@ function startRouletteSpin() {
     
     // Disable inputs and reset state
     spinBtn.disabled = true;
-    spinBtn.innerText = '🎰 Spinning...';
+    spinBtn.innerHTML = '<i data-lucide="dices" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Spinning...';
     resultCard.style.display = 'none';
     container.classList.add('spinning');
     
@@ -1039,14 +1056,14 @@ function startRouletteSpin() {
                 if (!data.success) {
                     inner.innerHTML = '<span class="roulette-spinner-placeholder">Spin Failed! Try Again.</span>';
                     spinBtn.disabled = false;
-                    spinBtn.innerText = '✨ Spin the Wheel!';
+                    spinBtn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Spin the Wheel!';
                     return;
                 }
                 
                 const course = data.course;
                 
                 // Set snapped visual title
-                inner.innerHTML = `<span style="color: var(--accent-emerald); font-size: 1.45rem;">🎉 MATCH FOUND! 🎉</span>`;
+                inner.innerHTML = `<span style="color: var(--accent-emerald); font-size: 1.45rem;"><i data-lucide="party-popper" style="width:24px;height:24px;display:inline-block;vertical-align:middle;"></i> MATCH FOUND! <i data-lucide="party-popper" style="width:24px;height:24px;display:inline-block;vertical-align:middle;"></i></span>`;
                 
                 // Populate Result Card
                 document.getElementById('roulette-res-provider').innerText = course.provider;
@@ -1054,7 +1071,7 @@ function startRouletteSpin() {
                 
                 // Formulate stars
                 const starCount = Math.min(Math.max(Math.round(course.stars), 1), 5);
-                document.getElementById('roulette-res-stars').innerText = '⭐'.repeat(starCount);
+                document.getElementById('roulette-res-stars').innerHTML = '<i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i>'.repeat(starCount);
                 document.getElementById('roulette-res-reviews').innerText = `(${course.ratings_count.toLocaleString()} student reviews)`;
                 
                 // Formulate description
@@ -1087,7 +1104,7 @@ function startRouletteSpin() {
                 
                 // Enable button for spin again
                 spinBtn.disabled = false;
-                spinBtn.innerText = '🔄 Spin Again!';
+                spinBtn.innerHTML = '<i data-lucide="refresh-cw" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Spin Again!';
                 
                 // TRIPLE NEON CONFETTI BURST!
                 triggerConfettiExplosion();
@@ -1099,7 +1116,7 @@ function startRouletteSpin() {
             container.classList.remove('spinning');
             inner.innerHTML = '<span class="roulette-spinner-placeholder">Error! Try Again.</span>';
             spinBtn.disabled = false;
-            spinBtn.innerText = '✨ Spin the Wheel!';
+            spinBtn.innerHTML = '<i data-lucide="sparkles" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Spin the Wheel!';
         });
 }
 

@@ -48,8 +48,32 @@
                 
                 <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Update Profile</button>
             </form>
+            
+            <!-- Danger Zone -->
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(239, 68, 68, 0.2);">
+                <h3 style="color: #ef4444; font-weight: 800; font-size: 1.25rem; margin-bottom: 0.5rem;">Danger Zone</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Once you delete your account, there is no going back. Please be certain.</p>
+                <button type="button" onclick="document.getElementById('delete-account-modal').style.display='flex'" class="btn btn-outline" style="width: 100%; color: #ef4444; border-color: #fca5a5;">Delete Account</button>
+            </div>
         </div>
 
+        <!-- Delete Account Modal -->
+        <div id="delete-account-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+            <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 450px; width: 90%;">
+                <h3 style="color: #ef4444; font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Delete Account</h3>
+                <p style="color: var(--text-main); margin-bottom: 1.5rem;">Sorry to see you leave! Are you sure you want to delete your account? This action cannot be undone.</p>
+                <form action="{{ url_for('delete_account') }}" method="POST">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="delete_password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Confirm your password</label>
+                        <input type="password" id="delete_password" name="password" required class="search-input" style="width: 100%; background: var(--bg-main);" placeholder="Enter your password">
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" onclick="document.getElementById('delete-account-modal').style.display='none'" class="btn btn-outline" style="flex: 1;">Cancel</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1; background: #ef4444; border-color: #ef4444;">Delete Permanently</button>
+                    </div>
+                </form>
+            </div>
+        </div>
         <!-- Right Column: Taken Courses -->
         <div>
             <div class="glass-panel" style="padding: 2rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass);">
@@ -66,7 +90,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.02);">
                         <div>
                             <h4 style="margin: 0 0 0.25rem 0; color: var(--text-main);">{{ course.title }}</h4>
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} • ⭐ {{ "%.1f"|format(course.stars) }}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} • <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> {{ "%.1f"|format(course.stars) }}</span>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
                             <a href="{{ course.url }}" target="_blank" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">View</a>
