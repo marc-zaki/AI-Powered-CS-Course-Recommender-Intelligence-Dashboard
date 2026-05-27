@@ -744,7 +744,7 @@ def generate_path():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.1-70b-versatile",
+                "model": "llama-3.3-70b-versatile",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -2196,7 +2196,7 @@ def chat_assistant():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.1-70b-versatile",
+                "model": "llama-3.3-70b-versatile",
                 "messages": [{"role": "system", "content": system_prompt}] + messages,
                 "temperature": 0.5,
                 "max_tokens": 1024
@@ -2282,7 +2282,7 @@ def generate_quiz():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.1-70b-versatile",
+                "model": "llama-3.3-70b-versatile",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
