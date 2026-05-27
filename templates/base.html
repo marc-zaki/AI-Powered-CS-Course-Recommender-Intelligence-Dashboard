@@ -12,13 +12,16 @@
 
 <body>
     <div class="app-layout">
+        <!-- Sidebar Backdrop Overlay -->
+        <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleSidebar(event)"></div>
+        
         <!-- Sidebar -->
         <aside class="app-sidebar" id="app-sidebar">
             <div class="app-sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <a href="/" class="logo" style="font-size: 1.25rem;">
                     <i data-lucide="brain"></i> AI Recommender
                 </a>
-                <button class="mobile-close-btn" onclick="document.getElementById('app-sidebar').classList.remove('mobile-open')" style="background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
+                <button class="mobile-close-btn" onclick="toggleSidebar(event)" style="background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
             </div>
             
             <nav class="app-sidebar-nav">
@@ -48,7 +51,7 @@
         <div class="app-main-content">
             <header class="app-header">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <button class="mobile-menu-btn" onclick="document.getElementById('app-sidebar').classList.toggle('mobile-open')">☰</button>
+                    <button class="mobile-menu-btn" onclick="toggleSidebar(event)">☰</button>
                     <a href="/" class="logo header-logo">
                         <i data-lucide="brain"></i> <span class="header-logo-text">AI Recommender</span>
                     </a>
@@ -134,6 +137,19 @@
                 switchTab(hash);
             }
         });
+
+        // Sidebar drawer toggle
+        function toggleSidebar(e) {
+            if (e) e.stopPropagation();
+            const sidebar = document.getElementById('app-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (sidebar) {
+                const isOpen = sidebar.classList.toggle('mobile-open');
+                if (backdrop) {
+                    backdrop.classList.toggle('active', isOpen);
+                }
+            }
+        }
 
         // User dropdown menu toggle
         function toggleUserDropdown(e) {
