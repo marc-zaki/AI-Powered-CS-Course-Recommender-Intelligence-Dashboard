@@ -32,9 +32,11 @@
                 <a href="/#skill-map" id="side-link-skill-map" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('skill-map'); window.history.pushState(null, '', '/#skill-map'); event.preventDefault(); }">
                     <i data-lucide="bar-chart-2"></i> Skill Map
                 </a>
+                {% if current_user and current_user.role == 'admin' %}
                 <a href="/#dashboard" id="side-link-dashboard" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('dashboard'); window.history.pushState(null, '', '/#dashboard'); event.preventDefault(); }">
                     <i data-lucide="trending-up"></i> Intelligence EDA
                 </a>
+                {% endif %}
             </nav>
             
             <div style="padding: 1.5rem 1rem; border-top: 1px solid var(--border-glass); font-size: 0.8rem; color: var(--text-muted); text-align: center;">

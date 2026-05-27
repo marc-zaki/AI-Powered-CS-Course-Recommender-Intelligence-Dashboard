@@ -230,6 +230,7 @@
     </div>
 
     <!-- Tab 4: Intelligence Dashboard & EDA -->
+    {% if current_user and current_user.role == 'admin' %}
     <div id="tab-pane-dashboard" class="tab-pane">
         <!-- Metrics Row -->
         <div class="metrics-grid"
@@ -355,6 +356,7 @@
             </p>
         </div>
     </div>
+    {% endif %}
 
 </div>
 

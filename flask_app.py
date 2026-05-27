@@ -398,6 +398,17 @@ def verify_link():
 
 @app.route('/api/stats')
 def api_stats():
+    # Only allow admin access
+    if 'user_id' not in session:
+        return jsonify({"success": False, "error": "Unauthorized. Please log in."}), 401
+    db = get_db()
+    if db is not None:
+        user = db.users.find_one({"_id": session['user_id']})
+        if not user or user.get('role') != 'admin':
+            return jsonify({"success": False, "error": "Forbidden. Admin access required."}), 403
+    else:
+        return jsonify({"success": False, "error": "Database connection error."}), 500
+
     if df is None or len(df) == 0:
         return jsonify({"success": False, "error": "Database is not loaded."}), 500
         

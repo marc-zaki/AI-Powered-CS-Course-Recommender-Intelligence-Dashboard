@@ -694,6 +694,10 @@ document.addEventListener('click', function(e) {
 
 // Tab switcher
 function switchTab(tabId) {
+    if (tabId === 'dashboard' && !document.getElementById('tab-pane-dashboard')) {
+        tabId = 'catalog';
+        window.history.pushState(null, '', '/');
+    }
     document.querySelectorAll('.tab-pane').forEach(pane => {
         pane.classList.remove('active');
     });
@@ -902,6 +906,8 @@ function exportPlanToPDF() {
 let dashboardCharts = {};
 
 function initDashboardCharts() {
+    if (!document.getElementById('stat-total-courses')) return;
+    
     // If charts already exist, destroy them to support clean re-rendering
     Object.keys(dashboardCharts).forEach(key => {
         if (dashboardCharts[key]) {
