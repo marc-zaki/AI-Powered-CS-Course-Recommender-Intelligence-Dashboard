@@ -9,22 +9,22 @@
         <form action="{{ url_for('register') }}" method="POST">
             <div style="margin-bottom: 1.25rem;">
                 <label for="name" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Full Name</label>
-                <input type="text" id="name" name="name" required class="search-input" style="width: 100%;" placeholder="John Doe">
+                <input type="text" id="name" name="name" required class="search-input" placeholder="John Doe">
             </div>
             
             <div style="margin-bottom: 1.25rem;">
                 <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Email Address</label>
-                <input type="email" id="email" name="email" required class="search-input" style="width: 100%;" placeholder="you@example.com">
+                <input type="email" id="email" name="email" required class="search-input" placeholder="you@example.com">
             </div>
             
             <div style="margin-bottom: 1.25rem;">
                 <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Password</label>
-                <input type="password" id="password" name="password" required class="search-input" style="width: 100%;" placeholder="••••••••">
+                <input type="password" id="password" name="password" required class="search-input" placeholder="••••••••">
             </div>
 
             <div style="margin-bottom: 1.25rem;">
                 <label for="track" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Preferred Track</label>
-                <select id="track" name="track" class="search-input" style="width: 100%; background-color: var(--bg-card); color: var(--text-main);">
+                <select id="track" name="track" class="search-input">
                     <option value="Artificial Intelligence">Artificial Intelligence</option>
                     <option value="Web Development">Web Development</option>
                     <option value="Data Science">Data Science</option>
@@ -36,7 +36,7 @@
 
             <div style="margin-bottom: 1.25rem;">
                 <label for="skill_level" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Current Skill Level</label>
-                <select id="skill_level" name="skill_level" class="search-input" style="width: 100%; background-color: var(--bg-card); color: var(--text-main);">
+                <select id="skill_level" name="skill_level" class="search-input">
                     <option value="Beginner">Beginner (Little to no experience)</option>
                     <option value="Intermediate">Intermediate (Some programming knowledge)</option>
                     <option value="Advanced">Advanced (Experienced developer)</option>
@@ -45,7 +45,7 @@
 
             <div style="margin-bottom: 1.5rem;">
                 <label for="career_goals" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Career Goals</label>
-                <textarea id="career_goals" name="career_goals" class="search-input" style="width: 100%; min-height: 80px; resize: vertical;" placeholder="E.g., I want to become a machine learning engineer at a top tech company..."></textarea>
+                <textarea id="career_goals" name="career_goals" class="search-input" style="min-height: 100px; resize: vertical;" placeholder="E.g., I want to become a machine learning engineer at a top tech company..."></textarea>
             </div>
             
             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Create Account</button>

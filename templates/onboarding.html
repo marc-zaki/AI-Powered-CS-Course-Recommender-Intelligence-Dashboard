@@ -11,11 +11,10 @@
             <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
                 <h3 style="color: var(--text-main); font-weight: 700; margin-bottom: 0.25rem;">{{ course.title }}</h3>
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">{{ course.provider }}</p>
-                
-                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 200px;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main); font-size: 0.9rem;">How interested are you in this?</label>
-                        <select name="course_{{ course.temp_id }}_interest" class="search-input" style="width: 100%; padding: 0.5rem; background-color: var(--bg-card); color: var(--text-main);">
+                        <select name="course_{{ course.temp_id }}_interest" class="search-input">
                             <option value="Not Interested">Not Interested</option>
                             <option value="Somewhat Interested">Somewhat Interested</option>
                             <option value="Very Interested" selected>Very Interested</option>
@@ -23,7 +22,7 @@
                     </div>
                     <div style="flex: 1; min-width: 200px;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main); font-size: 0.9rem;">Your skill level in this topic?</label>
-                        <select name="course_{{ course.temp_id }}_skill" class="search-input" style="width: 100%; padding: 0.5rem; background-color: var(--bg-card); color: var(--text-main);">
+                        <select name="course_{{ course.temp_id }}_skill" class="search-input">
                             <option value="None">None</option>
                             <option value="Beginner" selected>Beginner</option>
                             <option value="Intermediate">Intermediate</option>

@@ -10,40 +10,42 @@
             <h2 style="color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Edit Profile</h2>
             
             <form action="{{ url_for('profile') }}" method="POST">
-                <div style="margin-bottom: 1.25rem;">
-                    <label for="name" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Full Name</label>
-                    <input type="text" id="name" name="name" value="{{ user.name }}" class="search-input" style="width: 100%;">
+                <div class="profile-form-row">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" value="{{ user.name }}" class="search-input">
+                    </div>
+                    <div class="form-group">
+                        <label style="color: var(--text-muted);">Email (Unchangeable)</label>
+                        <input type="email" value="{{ user.email }}" class="search-input" disabled>
+                    </div>
                 </div>
                 
-                <div style="margin-bottom: 1.25rem;">
-                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Email (Unchangeable)</label>
-                    <input type="email" value="{{ user.email }}" class="search-input" style="width: 100%; opacity: 0.6;" disabled>
+                <div class="profile-form-row">
+                    <div class="form-group">
+                        <label for="track">Preferred Track</label>
+                        <select id="track" name="track" class="search-input">
+                            <option value="Artificial Intelligence" {% if user.track == 'Artificial Intelligence' %}selected{% endif %}>Artificial Intelligence</option>
+                            <option value="Web Development" {% if user.track == 'Web Development' %}selected{% endif %}>Web Development</option>
+                            <option value="Data Science" {% if user.track == 'Data Science' %}selected{% endif %}>Data Science</option>
+                            <option value="Cybersecurity" {% if user.track == 'Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
+                            <option value="Software Engineering" {% if user.track == 'Software Engineering' %}selected{% endif %}>Software Engineering</option>
+                            <option value="General CS" {% if user.track == 'General CS' %}selected{% endif %}>General Computer Science</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="current_skill_level">Current Skill Level</label>
+                        <select id="current_skill_level" name="current_skill_level" class="search-input">
+                            <option value="Beginner" {% if user.current_skill_level == 'Beginner' %}selected{% endif %}>Beginner</option>
+                            <option value="Intermediate" {% if user.current_skill_level == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                            <option value="Advanced" {% if user.current_skill_level == 'Advanced' %}selected{% endif %}>Advanced</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 1.25rem;">
-                    <label for="track" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Preferred Track</label>
-                    <select id="track" name="track" class="search-input" style="width: 100%; background-color: var(--bg-card); color: var(--text-main);">
-                        <option value="Artificial Intelligence" {% if user.track == 'Artificial Intelligence' %}selected{% endif %}>Artificial Intelligence</option>
-                        <option value="Web Development" {% if user.track == 'Web Development' %}selected{% endif %}>Web Development</option>
-                        <option value="Data Science" {% if user.track == 'Data Science' %}selected{% endif %}>Data Science</option>
-                        <option value="Cybersecurity" {% if user.track == 'Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
-                        <option value="Software Engineering" {% if user.track == 'Software Engineering' %}selected{% endif %}>Software Engineering</option>
-                        <option value="General CS" {% if user.track == 'General CS' %}selected{% endif %}>General Computer Science</option>
-                    </select>
-                </div>
-
-                <div style="margin-bottom: 1.25rem;">
-                    <label for="current_skill_level" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Current Skill Level</label>
-                    <select id="current_skill_level" name="current_skill_level" class="search-input" style="width: 100%; background-color: var(--bg-card); color: var(--text-main);">
-                        <option value="Beginner" {% if user.current_skill_level == 'Beginner' %}selected{% endif %}>Beginner</option>
-                        <option value="Intermediate" {% if user.current_skill_level == 'Intermediate' %}selected{% endif %}>Intermediate</option>
-                        <option value="Advanced" {% if user.current_skill_level == 'Advanced' %}selected{% endif %}>Advanced</option>
-                    </select>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="career_goals" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Career Goals</label>
-                    <textarea id="career_goals" name="career_goals" class="search-input" style="width: 100%; min-height: 80px; resize: vertical;">{{ user.career_goals }}</textarea>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="career_goals">Career Goals</label>
+                    <textarea id="career_goals" name="career_goals" class="search-input" style="min-height: 100px; resize: vertical;">{{ user.career_goals }}</textarea>
                 </div>
                 
                 <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Update Profile</button>
@@ -65,7 +67,7 @@
                 <form action="{{ url_for('delete_account') }}" method="POST">
                     <div style="margin-bottom: 1.5rem;">
                         <label for="delete_password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Confirm your password</label>
-                        <input type="password" id="delete_password" name="password" required class="search-input" style="width: 100%; background: var(--bg-main);" placeholder="Enter your password">
+                        <input type="password" id="delete_password" name="password" required class="search-input" placeholder="Enter your password">
                     </div>
                     <div style="display: flex; gap: 1rem;">
                         <button type="button" onclick="document.getElementById('delete-account-modal').style.display='none'" class="btn btn-outline" style="flex: 1;">Cancel</button>
