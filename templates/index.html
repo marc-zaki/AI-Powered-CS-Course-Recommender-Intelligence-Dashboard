@@ -178,10 +178,23 @@
                 <div
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1.5px solid var(--border-glass); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                     <h4 class="ai-output-title" style="margin: 0; padding: 0;">Your Custom Weekly Curriculum:</h4>
-                    <button onclick="exportPlanToPDF()" class="btn btn-outline"
-                        style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px;">
-                        <i data-lucide="download"></i> Export PDF
-                    </button>
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        {% if current_user %}
+                        <button onclick="saveStudyPlan()" class="btn btn-primary" id="save-plan-btn"
+                            style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px;">
+                            <i data-lucide="bookmark"></i> Save Study Plan
+                        </button>
+                        {% else %}
+                        <a href="/login" class="btn btn-primary"
+                            style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px; text-decoration: none;">
+                            <i data-lucide="bookmark"></i> Log in to Save Plan
+                        </a>
+                        {% endif %}
+                        <button onclick="exportPlanToPDF()" class="btn btn-outline"
+                            style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 8px;">
+                            <i data-lucide="download"></i> Export PDF
+                        </button>
+                    </div>
                 </div>
                 <div id="ai-path-content" class="ai-rendered-path"></div>
             </div>

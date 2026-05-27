@@ -1265,3 +1265,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeTab = localStorage.getItem('activeDashboardTab') || 'catalog';
     switchTab(activeTab);
 });
+
+// Save AI Generated Study Plan to Profile
+function saveStudyPlan() {
+    const goalInput = document.getElementById('ai-goal-input');
+    const pathContent = document.getElementById('ai-path-content');
+    const btn = document.getElementById('save-plan-btn');
+    
+    const goal = goalInput ? goalInput.value.trim() : "";
+    const pathHtml = pathContent ? pathContent.innerHTML : "";
+    
+    if (!goal || !pathHtml) {
+        alert("Please generate a study plan first.");
+        return;
+    }
+    
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader" class="spinner-icon" style="width:16px;height:16px;display:inline-block;animation:spin 1s linear infinite;"></i> Saving...';
+        if (window.lucide) window.lucide.createIcons();
+    }
+    
+    fetch('/api/save_path', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ goal: goal, path_html: pathHtml })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (btn) {
+                btn.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;"></i> Saved!';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-success');
+                btn.style.backgroundColor = 'var(--accent-emerald)';
+                btn.style.borderColor = 'var(--accent-emerald)';
+                if (window.lucide) window.lucide.createIcons();
+            }
+            alert("Study plan successfully saved to your profile!");
+        } else {
+            alert(data.error || "Failed to save study plan.");
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="bookmark" style="width:16px;height:16px;"></i> Save Study Plan';
+                if (window.lucide) window.lucide.createIcons();
+            }
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error saving study plan.");
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="bookmark" style="width:16px;height:16px;"></i> Save Study Plan';
+            if (window.lucide) window.lucide.createIcons();
+        }
+    });
+}

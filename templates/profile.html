@@ -1,102 +1,306 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container" style="max-width: 1000px; margin: 3rem auto;">
-    
-    <div class="profile-layout-grid">
-        
-        <!-- Left Column: Profile Edit -->
-        <div class="glass-panel" style="padding: 2rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass); align-self: start;">
-            <h2 style="color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Edit Profile</h2>
-            
-            <form action="{{ url_for('profile') }}" method="POST">
-                <div class="profile-form-row">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" value="{{ user.name }}" class="search-input">
-                    </div>
-                    <div class="form-group">
-                        <label style="color: var(--text-muted);">Email (Unchangeable)</label>
-                        <input type="email" value="{{ user.email }}" class="search-input" disabled>
-                    </div>
-                </div>
-                
-                <div class="profile-form-row">
-                    <div class="form-group">
-                        <label for="track">Preferred Track</label>
-                        <select id="track" name="track" class="search-input">
-                            <option value="Artificial Intelligence" {% if user.track == 'Artificial Intelligence' %}selected{% endif %}>Artificial Intelligence</option>
-                            <option value="Web Development" {% if user.track == 'Web Development' %}selected{% endif %}>Web Development</option>
-                            <option value="Data Science" {% if user.track == 'Data Science' %}selected{% endif %}>Data Science</option>
-                            <option value="Cybersecurity" {% if user.track == 'Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
-                            <option value="Software Engineering" {% if user.track == 'Software Engineering' %}selected{% endif %}>Software Engineering</option>
-                            <option value="General CS" {% if user.track == 'General CS' %}selected{% endif %}>General Computer Science</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="current_skill_level">Current Skill Level</label>
-                        <select id="current_skill_level" name="current_skill_level" class="search-input">
-                            <option value="Beginner" {% if user.current_skill_level == 'Beginner' %}selected{% endif %}>Beginner</option>
-                            <option value="Intermediate" {% if user.current_skill_level == 'Intermediate' %}selected{% endif %}>Intermediate</option>
-                            <option value="Advanced" {% if user.current_skill_level == 'Advanced' %}selected{% endif %}>Advanced</option>
-                        </select>
-                    </div>
-                </div>
+<div class="container" style="max-width: 1100px; margin: 3rem auto; padding: 0 1.5rem;">
 
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="career_goals">Career Goals</label>
-                    <textarea id="career_goals" name="career_goals" class="search-input" style="min-height: 100px; resize: vertical;">{{ user.career_goals }}</textarea>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Update Profile</button>
-            </form>
-            
-            <!-- Danger Zone -->
-            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(239, 68, 68, 0.2);">
-                <h3 style="color: #ef4444; font-weight: 800; font-size: 1.25rem; margin-bottom: 0.5rem;">Danger Zone</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Once you delete your account, there is no going back. Please be certain.</p>
-                <button type="button" onclick="document.getElementById('delete-account-modal').style.display='flex'" class="btn btn-outline" style="width: 100%; color: #ef4444; border-color: #fca5a5;">Delete Account</button>
+    <!-- Profile Hero Card -->
+    <div class="glass-panel"
+        style="padding: 2.5rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; position: relative; overflow: hidden; box-shadow: var(--shadow-glass);">
+        <div
+            style="position: absolute; top: -50%; left: -10%; width: 300px; height: 300px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); pointer-events: none; z-index: 1;">
+        </div>
+
+        <!-- Avatar Circle -->
+        <div
+            style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; color: white; box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4); border: 2px solid rgba(255, 255, 255, 0.2); z-index: 2; flex-shrink: 0;">
+            {{ (user.name or 'U')[0].upper() }}
+        </div>
+
+        <div style="z-index: 2; flex: 1; min-width: 250px;">
+            <h1
+                style="font-size: 2.25rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.5rem 0; letter-spacing: -0.03em;">
+                {{ user.name }}</h1>
+            <p
+                style="color: var(--text-muted); margin: 0 0 1.25rem 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
+                <i data-lucide="mail" style="width: 18px; height: 18px; color: var(--primary);"></i> {{ user.email }}
+            </p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <span
+                    style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--accent-emerald); padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.05);">
+                    <i data-lucide="award" style="width: 16px; height: 16px;"></i> {{ user.track or 'General CS' }}
+                </span>
+                <span
+                    style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3); color: var(--secondary); padding: 0.4rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 10px rgba(14, 165, 233, 0.05);">
+                    <i data-lucide="shield" style="width: 16px; height: 16px;"></i> {{ user.current_skill_level }} Rank
+                </span>
             </div>
         </div>
 
-        <!-- Delete Account Modal -->
-        <div id="delete-account-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-            <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 450px; width: 90%;">
-                <h3 style="color: #ef4444; font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Delete Account</h3>
-                <p style="color: var(--text-main); margin-bottom: 1.5rem;">Sorry to see you leave! Are you sure you want to delete your account? This action cannot be undone.</p>
-                <form action="{{ url_for('delete_account') }}" method="POST">
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="delete_password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Confirm your password</label>
-                        <input type="password" id="delete_password" name="password" required class="search-input" placeholder="Enter your password">
+        <!-- Quick Stats Widgets -->
+        <div style="display: flex; gap: 1.5rem; z-index: 2; flex-wrap: wrap;">
+            <div
+                style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1rem 1.5rem; text-align: center; min-width: 120px;">
+                <span style="display: block; font-size: 1.75rem; font-weight: 800; color: var(--text-main);">{{
+                    taken_courses|length }}</span>
+                <span
+                    style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Courses
+                    Taken</span>
+            </div>
+            <div
+                style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1rem 1.5rem; text-align: center; min-width: 120px;">
+                <span style="display: block; font-size: 1.75rem; font-weight: 800; color: var(--text-main);">{{
+                    user.saved_paths|length if user.saved_paths else 0 }}</span>
+                <span
+                    style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Saved
+                    Plans</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-layout-grid">
+
+        <!-- Left Column: Settings and Preferences -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- Profile Settings Card -->
+            <div class="glass-panel"
+                style="padding: 2.5rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
+                <div
+                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1.25rem;">
+                    <i data-lucide="settings" style="width: 24px; height: 24px; color: var(--primary);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Account
+                        Information</h2>
+                </div>
+
+                <form action="{{ url_for('profile') }}" method="POST">
+                    <div class="profile-form-row" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="name"
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Full
+                                Name</label>
+                            <input type="text" id="name" name="name" value="{{ user.name }}" class="search-input"
+                                style="width: 100%;">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">Email
+                                Address (Immutable)</label>
+                            <input type="email" value="{{ user.email }}" class="search-input" style="width: 100%;"
+                                disabled>
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 1rem;">
-                        <button type="button" onclick="document.getElementById('delete-account-modal').style.display='none'" class="btn btn-outline" style="flex: 1;">Cancel</button>
-                        <button type="submit" class="btn btn-primary" style="flex: 1; background: #ef4444; border-color: #ef4444;">Delete Permanently</button>
+
+                    <div class="profile-form-row" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="track"
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Preferred
+                                Track</label>
+                            <select id="track" name="track" class="search-input" style="width: 100%;">
+                                <option value="Artificial Intelligence" {% if user.track=='Artificial Intelligence'
+                                    %}selected{% endif %}>Artificial Intelligence</option>
+                                <option value="Web Development" {% if user.track=='Web Development' %}selected{% endif
+                                    %}>Web Development</option>
+                                <option value="Data Science" {% if user.track=='Data Science' %}selected{% endif %}>Data
+                                    Science</option>
+                                <option value="Cybersecurity" {% if user.track=='Cybersecurity' %}selected{% endif %}>
+                                    Cybersecurity</option>
+                                <option value="Software Engineering" {% if user.track=='Software Engineering'
+                                    %}selected{% endif %}>Software Engineering</option>
+                                <option value="General CS" {% if user.track=='General CS' %}selected{% endif %}>General
+                                    Computer Science</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="current_skill_level"
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Current
+                                Skill Level</label>
+                            <select id="current_skill_level" name="current_skill_level" class="search-input"
+                                style="width: 100%;">
+                                <option value="Beginner" {% if user.current_skill_level=='Beginner' %}selected{% endif
+                                    %}>Beginner</option>
+                                <option value="Intermediate" {% if user.current_skill_level=='Intermediate' %}selected{%
+                                    endif %}>Intermediate</option>
+                                <option value="Advanced" {% if user.current_skill_level=='Advanced' %}selected{% endif
+                                    %}>Advanced</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="career_goals"
+                            style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Career
+                            Goals & Ambitions</label>
+                        <textarea id="career_goals" name="career_goals" class="search-input"
+                            style="min-height: 120px; resize: vertical; width: 100%;">{{ user.career_goals }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; padding: 1rem; font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; transition: var(--transition-premium);">
+                        <i data-lucide="save" style="width: 18px; height: 18px;"></i> Save Changes
+                    </button>
                 </form>
             </div>
+
+            <!-- Danger Zone Card -->
+            <div class="glass-panel"
+                style="padding: 2rem; background: rgba(239, 68, 68, 0.03); border-radius: 24px; border: 1px solid rgba(239, 68, 68, 0.2); box-shadow: 0 8px 32px rgba(239, 68, 68, 0.05);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <i data-lucide="alert-triangle" style="color: #ef4444; width: 22px; height: 22px;"></i>
+                    <h3 style="color: #ef4444; font-weight: 800; font-size: 1.25rem; margin: 0;">Danger Zone</h3>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                    Deleting your profile is permanent. All your saved study plans, custom course metrics, progress
+                    configurations, and history records will be completely erased.</p>
+                <button type="button" onclick="document.getElementById('delete-account-modal').style.display='flex'"
+                    class="btn btn-outline"
+                    style="width: 100%; color: #ef4444; border-color: rgba(239, 68, 68, 0.4); padding: 0.75rem; font-weight: 700; transition: var(--transition-premium);"
+                    onmouseenter="this.style.background='rgba(239, 68, 68, 0.08)'"
+                    onmouseleave="this.style.background='transparent'">Delete Account</button>
+            </div>
         </div>
-        <!-- Right Column: Taken Courses -->
-        <div>
-            <div class="glass-panel" style="padding: 2rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass);">
-                <h2 style="color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Your Taken Courses</h2>
-                
+
+        <!-- Right Column: Learning Hub Dashboard -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+
+            <!-- Skill Testing Center -->
+            <div class="glass-panel"
+                style="padding: 2rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass); position: relative; overflow: hidden;">
+                <!-- Decorative glow behind button -->
+                <div
+                    style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); pointer-events: none; z-index: 1;">
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                    <i data-lucide="brain" style="width: 24px; height: 24px; color: var(--secondary);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Skill
+                        Assessment Center</h2>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    Take an adaptive multiple-choice assessment generated specifically for your track (**{{ user.track
+                    or 'General CS' }}**) at the **{{ user.current_skill_level }}** level. Scoring **80% or higher**
+                    automatically promotes your ranking!
+                </p>
+                <button type="button" onclick="startQuiz()" class="btn btn-primary btn-ai"
+                    style="width: 100%; padding: 0.9rem; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; box-shadow: var(--shadow-glow); z-index: 2; position: relative;">
+                    <i data-lucide="play-circle" style="width: 20px; height: 20px;"></i> Start Assessment Quiz
+                </button>
+            </div>
+
+            <!-- Taken Courses Card -->
+            <div class="glass-panel"
+                style="padding: 2rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
+                <div
+                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                    <i data-lucide="book-open" style="width: 24px; height: 24px; color: var(--accent-emerald);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Completed
+                        Courses</h2>
+                </div>
+
                 {% if taken_courses|length == 0 %}
-                <div class="empty-state" style="padding: 2rem; text-align: center; border: 1px dashed var(--border-glass); border-radius: 12px;">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You haven't marked any courses as taken yet.</p>
-                    <a href="{{ url_for('index') }}" class="btn btn-outline">Browse Courses</a>
+                <div class="empty-state"
+                    style="padding: 2rem; text-align: center; border: 1px dashed var(--border-glass); border-radius: 12px; background: rgba(255,255,255,0.01);">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You haven't marked any courses as taken
+                        yet.</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline" style="border-radius: 8px;">Browse
+                        Courses</a>
                 </div>
                 {% else %}
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     {% for course in taken_courses %}
-                    <div class="course-list-item" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.02); gap: 1rem;">
+                    <div class="course-list-item"
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.02); gap: 1rem;">
                         <div style="flex: 1; min-width: 0;">
-                            <h4 style="margin: 0 0 0.35rem 0; color: var(--text-main); font-size: 0.95rem; line-height: 1.4;">{{ course.title }}</h4>
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} <i data-lucide="star" style="width: 12px; height: 12px; fill: currentColor; display: inline-block; vertical-align: -1px; color: #FBBF24;"></i> {{ "%.1f"|format(course.stars) }}</span>
+                            <h4
+                                style="margin: 0 0 0.35rem 0; color: var(--text-main); font-size: 0.95rem; line-height: 1.4; font-weight: 600;">
+                                {{ course.title }}</h4>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} <i
+                                    data-lucide="star"
+                                    style="width: 12px; height: 12px; fill: currentColor; display: inline-block; vertical-align: -1px; color: #FBBF24;"></i>
+                                {{ "%.1f"|format(course.stars) }}</span>
                         </div>
                         <div class="course-list-actions" style="display: flex; gap: 0.5rem;">
-                            <a href="{{ course.url }}" target="_blank" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap;">View</a>
-                            <button onclick="toggleCourseTaken('{{ course.url }}', this)" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; color: #ef4444; border-color: #fca5a5; white-space: nowrap;">Remove</button>
+                            <a href="{{ course.url }}" target="_blank" class="btn btn-outline"
+                                style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap; border-radius: 8px;">View</a>
+                            <button onclick="toggleCourseTaken('{{ course.url }}', this)" class="btn btn-outline"
+                                style="padding: 0.4rem 0.85rem; font-size: 0.8rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.3); white-space: nowrap; border-radius: 8px;"
+                                onmouseenter="this.style.background='rgba(239, 68, 68, 0.05)'"
+                                onmouseleave="this.style.background='transparent'">Remove</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Saved Study Plans Card -->
+            <div class="glass-panel"
+                style="padding: 2rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
+                <div
+                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                    <i data-lucide="compass" style="width: 24px; height: 24px; color: var(--primary);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Saved Study
+                        Plans</h2>
+                </div>
+
+                {% if not user.saved_paths or user.saved_paths|length == 0 %}
+                <div class="empty-state"
+                    style="padding: 2rem; text-align: center; border: 1px dashed var(--border-glass); border-radius: 12px; background: rgba(255,255,255,0.01);">
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You don't have any saved study plans yet.
+                    </p>
+                    <a href="{{ url_for('index') }}#ai-path" class="btn btn-outline"
+                        style="border-radius: 8px;">Generate Study Plan</a>
+                </div>
+                {% else %}
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    {% for path in user.saved_paths %}
+                    <div class="saved-path-card" id="path-card-{{ path.id }}"
+                        style="border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.01); padding: 1.25rem; transition: all 0.3s ease;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem;">
+                            <div style="flex: 1; min-width: 0;">
+                                <h4
+                                    style="margin: 0; color: var(--text-main); font-size: 1.05rem; font-weight: 700; line-height: 1.4;">
+                                    {{ path.goal }}</h4>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">Saved on {{
+                                    path.created_at[:10] if path.created_at else 'Unknown Date' }}</span>
+                            </div>
+                            <button onclick="deleteSavedPath('{{ path.id }}')" class="btn btn-outline"
+                                style="padding: 0.35rem 0.65rem; border-color: rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem; border-radius: 8px;"
+                                title="Delete Plan">
+                                <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i> Delete
+                            </button>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div style="margin-bottom: 1rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 0.35rem;">
+                                <span style="color: var(--text-muted);">Progress</span>
+                                <span style="font-weight: 600; color: var(--secondary);"
+                                    id="progress-text-{{ path.id }}">{{ path.progress_percent }}%</span>
+                            </div>
+                            <div
+                                style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-glass);">
+                                <div id="progress-bar-{{ path.id }}"
+                                    style="height: 100%; width: {{ path.progress_percent }}%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Toggle details button -->
+                        <button onclick="togglePathDetails('{{ path.id }}')" class="btn btn-outline"
+                            style="width: 100%; padding: 0.5rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 8px;">
+                            <i data-lucide="chevron-down" id="chevron-icon-{{ path.id }}"></i> View Study Syllabus
+                        </button>
+
+                        <!-- Expandable syllabus container -->
+                        <div id="syllabus-details-{{ path.id }}"
+                            style="display: none; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border-glass); max-height: 500px; overflow-y: auto;"
+                            class="saved-path-details">
+                            <div class="saved-path-html-content" data-path-id="{{ path.id }}"
+                                data-checked-items='{{ (path.checked_items or []) | tojson | safe }}'>
+                                {{ path.path_html | safe }}
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -104,29 +308,476 @@
                 {% endif %}
             </div>
         </div>
-        
+
+    </div>
+</div>
+
+
+<!-- Quiz Modal -->
+<div id="quiz-modal"
+    style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 150; align-items: center; justify-content: center; backdrop-filter: blur(8px); padding: 1rem;">
+    <div class="glass-panel"
+        style="background: var(--bg-modal); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border-glass); max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-glass);">
+        <button onclick="closeQuizModal()"
+            style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; color: var(--text-muted); cursor: pointer; transition: color 0.2s;"
+            onmouseenter="this.style.color='var(--text-main)'" onmouseleave="this.style.color='var(--text-muted)'">
+            <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+        </button>
+
+        <div id="quiz-loading-view"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 0; gap: 1rem;">
+            <div class="spinner"
+                style="width: 48px; height: 48px; border: 4px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite;">
+            </div>
+            <h3 style="margin: 0; color: var(--text-main); font-weight: 700;">Generating Custom Quiz...</h3>
+            <p style="color: var(--text-muted); text-align: center; margin: 0; font-size: 0.95rem;">Our AI is crafting 5
+                multiple-choice questions for your track and level.</p>
+        </div>
+
+        <div id="quiz-content-view" style="display: none;">
+            <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                <span id="quiz-tag"
+                    style="background: var(--primary-glow); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border: 1px solid var(--border-glass); display: inline-block;">AI
+                    Quiz</span>
+                <h3 style="margin: 0.75rem 0 0 0; color: var(--text-main); font-weight: 800; font-size: 1.5rem;">Skill
+                    Assessment Quiz</h3>
+            </div>
+
+            <div id="quiz-questions-container" style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+
+            <div
+                style="margin-top: 2rem; border-top: 1px solid var(--border-glass); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <span style="font-size: 0.9rem; color: var(--text-muted);">Please answer all 5 questions.</span>
+                <button onclick="submitQuiz()" class="btn btn-primary" id="quiz-submit-btn"
+                    style="padding: 0.75rem 1.5rem;">Submit Answers</button>
+            </div>
+        </div>
+
+        <div id="quiz-results-view" style="display: none; text-align: center; padding: 1.5rem 0;">
+            <div id="quiz-result-icon" style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+            <h3 id="quiz-result-title"
+                style="font-weight: 800; font-size: 1.75rem; color: var(--text-main); margin-bottom: 0.5rem;">You
+                Passed!</h3>
+            <p id="quiz-result-score"
+                style="font-size: 1.25rem; font-weight: 700; color: var(--secondary); margin-bottom: 1rem;">Score: 100%
+            </p>
+            <p id="quiz-result-message"
+                style="color: var(--text-muted); margin-bottom: 2rem; max-width: 450px; margin-left: auto; margin-right: auto; font-size: 0.95rem; line-height: 1.5;">
+                Congratulations! You answered 5/5 questions correctly and have been promoted to Intermediate level!</p>
+
+            <div id="quiz-explanations-container"
+                style="text-align: left; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.25rem; margin-bottom: 2rem; max-height: 300px; overflow-y: auto;">
+                <!-- Explanations breakdown will be dynamically inserted here -->
+            </div>
+
+            <button onclick="closeQuizModalAndRefresh()" class="btn btn-primary"
+                style="padding: 0.75rem 2rem;">Done</button>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-function toggleCourseTaken(url, btnElement) {
-    fetch('/api/toggle_taken', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({url: url})
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success && data.action === 'removed') {
-            const row = btnElement.closest('.course-list-item');
-            if (row) row.remove();
+    function toggleCourseTaken(url, btnElement) {
+        fetch('/api/toggle_taken', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: url })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.action === 'removed') {
+                    const row = btnElement.closest('.course-list-item');
+                    if (row) row.remove();
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    // --- SAVED STUDY PLANS INTERACTIVITY ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize saved path checkboxes
+        const savedPathContainers = document.querySelectorAll('.saved-path-html-content');
+        savedPathContainers.forEach(container => {
+            const pathId = container.getAttribute('data-path-id');
+            const checkedItems = JSON.parse(container.getAttribute('data-checked-items') || '[]');
+            const headers = container.querySelectorAll('h3');
+            const totalItems = headers.length;
+
+            headers.forEach((header, index) => {
+                const itemText = header.textContent.trim();
+                const isChecked = checkedItems.includes(itemText);
+
+                header.style.display = 'flex';
+                header.style.alignItems = 'center';
+                header.style.gap = '0.75rem';
+                header.style.cursor = 'pointer';
+
+                const checkbox = document.createElement('span');
+                checkbox.className = 'path-checkbox';
+
+                if (isChecked) {
+                    checkbox.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;color:var(--secondary);"></i>';
+                    header.style.textDecoration = 'line-through';
+                    header.style.opacity = '0.5';
+                } else {
+                    checkbox.innerHTML = '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+                    header.style.textDecoration = 'none';
+                    header.style.opacity = '1';
+                }
+                checkbox.style.transition = 'all 0.2s';
+                header.prepend(checkbox);
+
+                header.addEventListener('click', () => {
+                    const currentChecked = JSON.parse(container.getAttribute('data-checked-items') || '[]');
+                    const itemIdx = currentChecked.indexOf(itemText);
+
+                    if (itemIdx === -1) {
+                        currentChecked.push(itemText);
+                        checkbox.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;color:var(--secondary);"></i>';
+                        header.style.textDecoration = 'line-through';
+                        header.style.opacity = '0.5';
+                    } else {
+                        currentChecked.splice(itemIdx, 1);
+                        checkbox.innerHTML = '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+                        header.style.textDecoration = 'none';
+                        header.style.opacity = '1';
+                    }
+
+                    container.setAttribute('data-checked-items', JSON.stringify(currentChecked));
+                    if (window.lucide) window.lucide.createIcons();
+
+                    updatePathProgress(pathId, currentChecked, totalItems);
+                });
+            });
+        });
+        if (window.lucide) window.lucide.createIcons();
+    });
+
+    function updatePathProgress(pathId, checkedItems, totalItems) {
+        fetch('/api/update_path_progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path_id: pathId,
+                checked_items: checkedItems,
+                total_items: totalItems
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const textEl = document.getElementById(`progress-text-${pathId}`);
+                    const barEl = document.getElementById(`progress-bar-${pathId}`);
+                    if (textEl) textEl.textContent = `${data.progress_percent}%`;
+                    if (barEl) barEl.style.width = `${data.progress_percent}%`;
+                }
+            })
+            .catch(err => console.error("Error updating progress:", err));
+    }
+
+    function togglePathDetails(pathId) {
+        const details = document.getElementById(`syllabus-details-${pathId}`);
+        const chevron = document.getElementById(`chevron-icon-${pathId}`);
+        if (details.style.display === 'none') {
+            details.style.display = 'block';
+            chevron.setAttribute('data-lucide', 'chevron-up');
+        } else {
+            details.style.display = 'none';
+            chevron.setAttribute('data-lucide', 'chevron-down');
         }
-    })
-    .catch(err => console.error(err));
-}
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    function deleteSavedPath(pathId) {
+        if (!confirm("Are you sure you want to delete this study plan?")) return;
+
+        fetch('/api/delete_path', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ path_id: pathId })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const card = document.getElementById(`path-card-${pathId}`);
+                    if (card) card.remove();
+                } else {
+                    alert(data.error || "Failed to delete plan.");
+                }
+            })
+            .catch(err => console.error("Error deleting path:", err));
+    }
+
+    // --- SKILL ASSESSMENT QUIZ SYSTEM ---
+    let currentQuizQuestions = [];
+
+    function startQuiz() {
+        const modal = document.getElementById('quiz-modal');
+        const loadingView = document.getElementById('quiz-loading-view');
+        const contentView = document.getElementById('quiz-content-view');
+        const resultsView = document.getElementById('quiz-results-view');
+
+        modal.style.display = 'flex';
+        loadingView.style.display = 'flex';
+        contentView.style.display = 'none';
+        resultsView.style.display = 'none';
+
+        fetch('/api/generate_quiz')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    currentQuizQuestions = data.questions;
+
+                    const tagEl = document.getElementById('quiz-tag');
+                    if (tagEl) tagEl.textContent = `${data.track} - ${data.skill_level}`;
+
+                    const container = document.getElementById('quiz-questions-container');
+                    container.innerHTML = '';
+
+                    currentQuizQuestions.forEach((q, qIndex) => {
+                        const qDiv = document.createElement('div');
+                        qDiv.className = 'quiz-question-block';
+                        qDiv.style.display = 'flex';
+                        qDiv.style.flexDirection = 'column';
+                        qDiv.style.gap = '0.75rem';
+
+                        const qTitle = document.createElement('h4');
+                        qTitle.style.margin = '0';
+                        qTitle.style.color = 'var(--text-main)';
+                        qTitle.style.fontWeight = '700';
+                        qTitle.style.fontSize = '1.05rem';
+                        qTitle.textContent = `${qIndex + 1}. ${q.question}`;
+                        qDiv.appendChild(qTitle);
+
+                        const optionsDiv = document.createElement('div');
+                        optionsDiv.style.display = 'flex';
+                        optionsDiv.style.flexDirection = 'column';
+                        optionsDiv.style.gap = '0.5rem';
+
+                        q.options.forEach((opt, optIndex) => {
+                            const label = document.createElement('label');
+                            label.style.display = 'flex';
+                            label.style.alignItems = 'center';
+                            label.style.gap = '0.75rem';
+                            label.style.padding = '0.75rem 1rem';
+                            label.style.border = '1px solid var(--border-glass)';
+                            label.style.borderRadius = '10px';
+                            label.style.background = 'rgba(255, 255, 255, 0.02)';
+                            label.style.cursor = 'pointer';
+                            label.style.transition = 'all 0.2s';
+
+                            const radio = document.createElement('input');
+                            radio.type = 'radio';
+                            radio.name = `question-${qIndex}`;
+                            radio.value = optIndex;
+                            radio.style.accentColor = 'var(--secondary)';
+
+                            label.addEventListener('mouseenter', () => {
+                                if (!radio.checked) {
+                                    label.style.background = 'rgba(255, 255, 255, 0.05)';
+                                    label.style.borderColor = 'var(--border-glass-active)';
+                                }
+                            });
+                            label.addEventListener('mouseleave', () => {
+                                if (!radio.checked) {
+                                    label.style.background = 'rgba(255, 255, 255, 0.02)';
+                                    label.style.borderColor = 'var(--border-glass)';
+                                }
+                            });
+
+                            radio.addEventListener('change', () => {
+                                const siblings = optionsDiv.querySelectorAll('label');
+                                siblings.forEach(sib => {
+                                    sib.style.background = 'rgba(255, 255, 255, 0.02)';
+                                    sib.style.borderColor = 'var(--border-glass)';
+                                    sib.style.color = 'var(--text-main)';
+                                });
+                                if (radio.checked) {
+                                    label.style.background = 'rgba(14, 165, 233, 0.1)';
+                                    label.style.borderColor = 'var(--secondary)';
+                                    label.style.color = 'var(--secondary)';
+                                }
+                            });
+
+                            label.appendChild(radio);
+                            const optSpan = document.createElement('span');
+                            optSpan.textContent = opt;
+                            label.appendChild(optSpan);
+                            optionsDiv.appendChild(label);
+                        });
+
+                        qDiv.appendChild(optionsDiv);
+                        container.appendChild(qDiv);
+                    });
+
+                    loadingView.style.display = 'none';
+                    contentView.style.display = 'block';
+                    if (window.lucide) window.lucide.createIcons();
+                } else {
+                    alert(data.error || "Failed to generate quiz questions.");
+                    closeQuizModal();
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Error fetching quiz questions.");
+                closeQuizModal();
+            });
+    }
+
+    function closeQuizModal() {
+        document.getElementById('quiz-modal').style.display = 'none';
+    }
+
+    function closeQuizModalAndRefresh() {
+        closeQuizModal();
+        window.location.reload();
+    }
+
+    function submitQuiz() {
+        const answers = [];
+        for (let i = 0; i < 5; i++) {
+            const selected = document.querySelector(`input[name="question-${i}"]:checked`);
+            if (!selected) {
+                alert(`Please answer Question ${i + 1}.`);
+                return;
+            }
+            answers.push(parseInt(selected.value));
+        }
+
+        const submitBtn = document.getElementById('quiz-submit-btn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Grading...';
+        }
+
+        fetch('/api/submit_quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quiz_answers: answers,
+                quiz_questions: currentQuizQuestions
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const contentView = document.getElementById('quiz-content-view');
+                    const resultsView = document.getElementById('quiz-results-view');
+
+                    contentView.style.display = 'none';
+                    resultsView.style.display = 'block';
+
+                    const resultIcon = document.getElementById('quiz-result-icon');
+                    const resultTitle = document.getElementById('quiz-result-title');
+                    const resultScore = document.getElementById('quiz-result-score');
+                    const resultMessage = document.getElementById('quiz-result-message');
+
+                    resultScore.textContent = `Score: ${data.score}% (${data.correct_count}/5 Correct)`;
+
+                    if (data.passed) {
+                        resultIcon.textContent = '🎉';
+                        resultTitle.textContent = data.promoted ? 'Congratulations! You Passed!' : 'You Passed!';
+                        resultTitle.style.color = 'var(--accent-emerald)';
+                        if (data.promoted) {
+                            resultMessage.textContent = `Excellent job! You passed the quiz and have been promoted to ${data.new_level}!`;
+                            if (window.confetti) {
+                                confetti({
+                                    particleCount: 150,
+                                    spread: 80,
+                                    origin: { y: 0.6 }
+                                });
+                            }
+                        } else {
+                            resultMessage.textContent = `Excellent job! You passed the quiz! Since you are already at the ${data.new_level} level, you continue to hold this top rank. Keep learning!`;
+                        }
+                    } else {
+                        resultIcon.textContent = '😢';
+                        resultTitle.textContent = 'Quiz Not Passed';
+                        resultTitle.style.color = '#ef4444';
+                        resultMessage.textContent = `You scored ${data.score}%. You need at least 80% (4/5 correct) to pass and advance your skill level. Keep studying and try again!`;
+                    }
+
+                    const explContainer = document.getElementById('quiz-explanations-container');
+                    explContainer.innerHTML = '<h4 style="margin: 0 0 1rem 0; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Questions Review:</h4>';
+
+                    currentQuizQuestions.forEach((q, idx) => {
+                        const userAns = answers[idx];
+                        const isCorrect = userAns === q.correct_index;
+
+                        const qRev = document.createElement('div');
+                        qRev.style.marginBottom = '1.25rem';
+
+                        const qText = document.createElement('p');
+                        qText.style.margin = '0 0 0.25rem 0';
+                        qText.style.fontWeight = '600';
+                        qText.style.fontSize = '0.95rem';
+                        qText.style.color = 'var(--text-main)';
+                        qText.textContent = `Q${idx + 1}: ${q.question}`;
+                        qRev.appendChild(qText);
+
+                        const statusSpan = document.createElement('span');
+                        statusSpan.style.fontSize = '0.8rem';
+                        statusSpan.style.fontWeight = '700';
+                        statusSpan.style.display = 'inline-block';
+                        statusSpan.style.marginBottom = '0.5rem';
+                        if (isCorrect) {
+                            statusSpan.style.color = 'var(--accent-emerald)';
+                            statusSpan.innerHTML = '✓ Correct';
+                        } else {
+                            statusSpan.style.color = '#ef4444';
+                            statusSpan.innerHTML = `✗ Incorrect (You selected: ${q.options[userAns]})`;
+                        }
+                        qRev.appendChild(statusSpan);
+
+                        const correctText = document.createElement('p');
+                        correctText.style.margin = '0 0 0.25rem 0';
+                        correctText.style.fontSize = '0.85rem';
+                        correctText.style.color = 'var(--text-muted)';
+                        correctText.innerHTML = `Correct Answer: <strong>${q.options[q.correct_index]}</strong>`;
+                        qRev.appendChild(correctText);
+
+                        const explText = document.createElement('p');
+                        explText.style.margin = '0';
+                        explText.style.fontSize = '0.85rem';
+                        explText.style.color = 'var(--text-muted)';
+                        explText.style.fontStyle = 'italic';
+                        explText.textContent = `Explanation: ${q.explanation}`;
+                        qRev.appendChild(explText);
+
+                        explContainer.appendChild(qRev);
+                    });
+
+                    if (window.lucide) window.lucide.createIcons();
+                } else {
+                    alert(data.error || "An error occurred during submission.");
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit Answers';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Error submitting quiz answers.");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Answers';
+                }
+            });
+    }
 </script>
 {% endblock %}

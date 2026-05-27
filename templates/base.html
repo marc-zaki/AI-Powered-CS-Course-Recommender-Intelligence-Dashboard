@@ -166,6 +166,137 @@
             }
         });
     </script>
+    
+    {% if current_user %}
+    <!-- Floating AI Chatbot Widget -->
+    <div id="ai-chat-widget" class="ai-chat-widget">
+        <!-- Chat Bubble Button -->
+        <button id="chat-bubble-btn" onclick="toggleChatWindow(event)" class="chat-bubble-btn" title="Ask AI Study Assistant">
+            <i data-lucide="message-square" style="width: 24px; height: 24px;"></i>
+            <span class="chat-badge">AI</span>
+        </button>
+
+        <!-- Chat Window Card -->
+        <div id="chat-window" class="chat-window">
+            <div class="chat-header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="status-dot"></div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 0.9rem; font-weight: 700; color: var(--text-main); text-align: left;">AI Study Assistant</h4>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; text-align: left;">Elite Academic Advisor</span>
+                    </div>
+                </div>
+                <button onclick="toggleChatWindow(event)" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.25rem; display: flex; align-items: center;">
+                    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            
+            <div id="chat-messages" class="chat-messages">
+                <div class="chat-message bot-message">
+                    Hello {{ (current_user.name or 'User').split(' ')[0] }}! I am your AI CS Study Assistant. Ask me anything about computer science concepts, tracks, or course recommendations!
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ask a question..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" id="chat-send-btn" class="chat-send-btn">
+                    <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        function toggleChatWindow(e) {
+            if (e) e.stopPropagation();
+            const chatWindow = document.getElementById('chat-window');
+            if (chatWindow) {
+                chatWindow.classList.toggle('open');
+                if (chatWindow.classList.contains('open')) {
+                    const input = document.getElementById('chat-input');
+                    if (input) input.focus();
+                }
+            }
+        }
+
+        // Close chat window on outside click
+        document.addEventListener('click', (e) => {
+            const chatWidget = document.getElementById('ai-chat-widget');
+            const chatWindow = document.getElementById('chat-window');
+            if (chatWindow && chatWindow.classList.contains('open') && chatWidget && !chatWidget.contains(e.target)) {
+                chatWindow.classList.remove('open');
+            }
+        });
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const messageText = input ? input.value.trim() : "";
+            if (!messageText) return;
+            
+            // Add user message to UI
+            appendChatMessage(messageText, 'user');
+            if (input) input.value = '';
+            
+            // Save to history
+            chatHistory.push({ role: 'user', content: messageText });
+            
+            // Show typing indicator
+            const typingIndicator = appendChatMessage('Assistant is thinking...', 'bot typing');
+            
+            // Send to backend API
+            fetch('/api/chat_assistant', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ messages: chatHistory })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Remove typing indicator
+                if (typingIndicator) typingIndicator.remove();
+                
+                if (data.success) {
+                    appendChatMessage(data.response, 'bot');
+                    chatHistory.push({ role: 'assistant', content: data.response });
+                } else {
+                    appendChatMessage(data.error || "Sorry, I had trouble connecting. Please try again.", 'bot');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                if (typingIndicator) typingIndicator.remove();
+                appendChatMessage("Sorry, a connection error occurred. Please try again.", 'bot');
+            });
+        }
+
+        function appendChatMessage(text, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            if (!messagesContainer) return null;
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${sender}-message`;
+            
+            if (sender.includes('bot') && !sender.includes('typing')) {
+                // Simple markdown parsing helper
+                let formatted = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
+                msgDiv.innerHTML = formatted;
+            } else {
+                msgDiv.textContent = text;
+            }
+            
+            messagesContainer.appendChild(msgDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return msgDiv;
+        }
+    </script>
+    {% endif %}
     {% block scripts %}
     {% endblock %}
 </body>
