@@ -1130,14 +1130,19 @@ CS Course Recommender Team"""
             except Exception as e:
                 print(f"SMTP Error: {e}")
                 
+        is_production = os.environ.get("VERCEL") == "1"
+        
         if not email_sent:
             print("\n" + "="*80)
             print(f"[DEVELOPER MODE] Password Reset Request for: {email}")
             print(f"Reset Link: {reset_link}")
             print("="*80 + "\n")
-            flash("If that email address is registered, a password reset link has been sent. [Developer Mode: Check the server console log for the link!]", "success")
+            if is_production:
+                flash("If that email address is registered, a password reset link has been sent.", "success")
+            else:
+                flash("If that email address is registered, a password reset link has been sent. [Developer Mode: Check the server console log for the link!]", "success")
         else:
-            flash("If that email address is registered, a password reset link has been sent to your email.", "success")
+            flash("If that email address is registered, a password reset link has been sent.", "success")
             
         return redirect(url_for('login'))
         
@@ -1320,9 +1325,10 @@ def delete_account():
         flash("User not found.", "danger")
         return redirect(url_for('logout'))
         
-    if not check_password_hash(user['password_hash'], password):
-        flash("Incorrect password, please try again.", "danger")
-        return redirect(url_for('profile'))
+    if user.get('password_hash'):
+        if not check_password_hash(user['password_hash'], password):
+            flash("Incorrect password, please try again.", "danger")
+            return redirect(url_for('profile'))
         
     db.users.delete_one({"_id": user_id})
     session.clear()
