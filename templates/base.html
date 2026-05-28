@@ -105,17 +105,41 @@
 
             <main class="app-main-body">
                 <!-- Flash Messages -->
-                <div class="container" style="margin-top: 1rem;">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div id="flask-flash-messages" style="display: none;">
                             {% for category, message in messages %}
-                                <div class="alert alert-{{ category }}" style="padding: 1rem; border-radius: 8px; margin-bottom: 1rem; background-color: var(--bg-card); border: 1px solid var(--border-glass);">
-                                    {{ message }}
-                                </div>
+                                <div class="flash-message" data-category="{{ category }}" data-message="{{ message }}"></div>
                             {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const flashContainer = document.getElementById('flask-flash-messages');
+                                if (flashContainer) {
+                                    const messageElements = flashContainer.querySelectorAll('.flash-message');
+                                    messageElements.forEach(el => {
+                                        const category = el.getAttribute('data-category');
+                                        const message = el.getAttribute('data-message');
+                                        let toastType = 'info';
+                                        if (category === 'success') {
+                                            toastType = 'success';
+                                        } else if (category === 'danger' || category === 'error') {
+                                            toastType = 'error';
+                                        } else if (category === 'warning') {
+                                            toastType = 'warning';
+                                        }
+                                        if (typeof showToast === 'function') {
+                                            showToast(message, toastType);
+                                        } else {
+                                            console.log("Flashed Message:", message);
+                                        }
+                                    });
+                                    flashContainer.remove();
+                                }
+                            });
+                        </script>
+                    {% endif %}
+                {% endwith %}
 
                 {% block content %}
                 {% endblock %}

@@ -544,7 +544,7 @@ function generateAIPath() {
 
     const goal = input ? input.value.trim() : "";
     if (!goal) {
-        alert("Please enter a learning goal or career target (e.g., 'Learn Python' or 'Become a Data Scientist').");
+        showToast("Please enter a learning goal or career target (e.g., 'Learn Python' or 'Become a Data Scientist').", "warning");
         return;
     }
 
@@ -599,14 +599,14 @@ function generateAIPath() {
 
             if (outputContainer) outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-            alert(data.error || "An error occurred while generating your learning path.");
+            showToast(data.error || "An error occurred while generating your learning path.", "error");
         }
     })
     .catch(err => {
         if (btn) btn.disabled = false;
         if (btn) btn.textContent = "Generate Plan";
         if (loader) loader.style.display = "none";
-        alert("Failed to reach server or make API call. Make sure you set your GEMINI_API_KEY in the .env file.");
+        showToast("Failed to reach server or make API call. Make sure you set your GEMINI_API_KEY in the .env file.", "error");
     });
 }
 
@@ -1276,7 +1276,7 @@ function saveStudyPlan() {
     const pathHtml = pathContent ? pathContent.innerHTML : "";
     
     if (!goal || !pathHtml) {
-        alert("Please generate a study plan first.");
+        showToast("Please generate a study plan first.", "warning");
         return;
     }
     
@@ -1304,9 +1304,9 @@ function saveStudyPlan() {
                 btn.style.borderColor = 'var(--accent-emerald)';
                 if (window.lucide) window.lucide.createIcons();
             }
-            alert("Study plan successfully saved to your profile!");
+            showToast("Study plan successfully saved to your profile!", "success");
         } else {
-            alert(data.error || "Failed to save study plan.");
+            showToast(data.error || "Failed to save study plan.", "error");
             if (btn) {
                 btn.disabled = false;
                 btn.innerHTML = '<i data-lucide="bookmark" style="width:16px;height:16px;"></i> Save Study Plan';
@@ -1316,7 +1316,7 @@ function saveStudyPlan() {
     })
     .catch(err => {
         console.error(err);
-        alert("Error saving study plan.");
+        showToast("Error saving study plan.", "error");
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<i data-lucide="bookmark" style="width:16px;height:16px;"></i> Save Study Plan';

@@ -393,7 +393,7 @@
     <div class="compare-modal-content">
         <button class="compare-modal-close" onclick="closeCompareModal()">✕</button>
         <h2
-            style="font-size: 2.25rem; font-weight: 800; text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.03em;">
+            style="font-size: 2.25rem; font-weight: 800; text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.03em;">
             Course Comparison Matrix</h2>
         <div id="compare-grid" class="compare-grid-layout">
             <!-- Comparison columns will be dynamically injected here -->
@@ -530,15 +530,23 @@
                         btn.style.backgroundColor = 'var(--accent-emerald)';
                         btn.style.color = '#fff';
                         btn.style.borderColor = 'var(--accent-emerald)';
+                        showToast("Course marked as completed!", "success");
                     } else {
                         btn.innerHTML = '<i data-lucide="bookmark-plus" style="width: 14px; height: 14px;"></i> Mark Taken';
                         btn.style.backgroundColor = 'transparent';
                         btn.style.color = 'var(--text-main)';
                         btn.style.borderColor = 'var(--border-glass)';
+                        showToast("Course removed from completed list.", "info");
                     }
                     // Re-render lucide icons for the new elements
                     if (window.lucide) lucide.createIcons();
+                } else {
+                    showToast(data.error || "Failed to update course status.", "error");
                 }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("An error occurred while updating course status.", "error");
             });
     }
 </script>

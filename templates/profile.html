@@ -282,7 +282,8 @@
                             <div
                                 style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-glass);">
                                 <div id="progress-bar-{{ path.id }}"
-                                    style="height: 100%; width: {{ path.progress_percent }}%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 4px;">
+                                    data-progress-percent="{{ path.progress_percent }}"
+                                    style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 4px;">
                                 </div>
                             </div>
                         </div>
@@ -432,16 +433,32 @@
         })
             .then(res => res.json())
             .then(data => {
-                if (data.success && data.action === 'removed') {
-                    const row = btnElement.closest('.course-list-item');
-                    if (row) row.remove();
+                if (data.success) {
+                    if (data.action === 'removed') {
+                        const row = btnElement.closest('.course-list-item');
+                        if (row) row.remove();
+                        showToast("Course removed from completed courses.", "info");
+                    } else {
+                        showToast("Course marked as completed!", "success");
+                    }
+                } else {
+                    showToast(data.error || "Failed to update course status.", "error");
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err);
+                showToast("An error occurred while updating course status.", "error");
+            });
     }
 
     // --- SAVED STUDY PLANS INTERACTIVITY ---
     document.addEventListener('DOMContentLoaded', () => {
+        // Initialize progress bar widths dynamically
+        document.querySelectorAll('[id^="progress-bar-"]').forEach(bar => {
+            const pct = bar.getAttribute('data-progress-percent') || '0';
+            bar.style.width = `${pct}%`;
+        });
+
         // Initialize saved path checkboxes
         const savedPathContainers = document.querySelectorAll('.saved-path-html-content');
         savedPathContainers.forEach(container => {
@@ -519,9 +536,15 @@
                     const barEl = document.getElementById(`progress-bar-${pathId}`);
                     if (textEl) textEl.textContent = `${data.progress_percent}%`;
                     if (barEl) barEl.style.width = `${data.progress_percent}%`;
+                    showToast(`Syllabus progress updated to ${data.progress_percent}%`, "success");
+                } else {
+                    showToast(data.error || "Failed to update progress.", "error");
                 }
             })
-            .catch(err => console.error("Error updating progress:", err));
+            .catch(err => {
+                console.error("Error updating progress:", err);
+                showToast("An error occurred while updating progress.", "error");
+            });
     }
 
     function togglePathDetails(pathId) {
@@ -552,11 +575,15 @@
                 if (data.success) {
                     const card = document.getElementById(`path-card-${pathId}`);
                     if (card) card.remove();
+                    showToast("Study plan deleted successfully.", "success");
                 } else {
-                    alert(data.error || "Failed to delete plan.");
+                    showToast(data.error || "Failed to delete plan.", "error");
                 }
             })
-            .catch(err => console.error("Error deleting path:", err));
+            .catch(err => {
+                console.error("Error deleting path:", err);
+                showToast("An error occurred while deleting the study plan.", "error");
+            });
     }
 
     // --- SKILL ASSESSMENT QUIZ SYSTEM ---
@@ -665,13 +692,13 @@
                     contentView.style.display = 'block';
                     if (window.lucide) window.lucide.createIcons();
                 } else {
-                    alert(data.error || "Failed to generate quiz questions.");
+                    showToast(data.error || "Failed to generate quiz questions.", "error");
                     closeQuizModal();
                 }
             })
             .catch(err => {
                 console.error(err);
-                alert("Error fetching quiz questions.");
+                showToast("Error fetching quiz questions.", "error");
                 closeQuizModal();
             });
     }
@@ -690,7 +717,7 @@
         for (let i = 0; i < 5; i++) {
             const selected = document.querySelector(`input[name="question-${i}"]:checked`);
             if (!selected) {
-                alert(`Please answer Question ${i + 1}.`);
+                showToast(`Please answer Question ${i + 1}.`, "warning");
                 return;
             }
             answers.push(parseInt(selected.value));
@@ -803,7 +830,7 @@
 
                     if (window.lucide) window.lucide.createIcons();
                 } else {
-                    alert(data.error || "An error occurred during submission.");
+                    showToast(data.error || "An error occurred during submission.", "error");
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.textContent = 'Submit Answers';
@@ -812,7 +839,7 @@
             })
             .catch(err => {
                 console.error(err);
-                alert("Error submitting quiz answers.");
+                showToast("Error submitting quiz answers.", "error");
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Submit Answers';
