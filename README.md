@@ -107,8 +107,8 @@ This project is for educational purposes.
 
 ---
 
-## 👤 Author
+## 👤 Authors
 
-**Marc Zaki**
+**Marc Zaki, Muhammad Kandil, Retag Ahmed**
 
 ---
