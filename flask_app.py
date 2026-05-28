@@ -116,6 +116,20 @@ def get_db():
         print(f"MongoDB connection failed: {e}")
         return None
 
+def check_is_super_admin(user):
+    if not user:
+        return False
+    # Check environment variable
+    super_admin_emails = os.environ.get("SUPER_ADMIN_EMAILS", os.environ.get("SUPER_ADMIN_EMAIL", ""))
+    if super_admin_emails:
+        emails = [e.strip().lower() for e in super_admin_emails.split(",") if e.strip()]
+        if user.get("email", "").strip().lower() in emails:
+            return True
+    # Check database properties
+    if user.get("is_super_admin") is True or user.get("role") == "super_admin":
+        return True
+    return False
+
 def load_and_train_model():
     global df, vectorizer, tfidf_matrix
     print("Loading data and training AI model...")
@@ -410,7 +424,7 @@ def api_stats():
     db = get_db()
     if db is not None:
         user = db.users.find_one({"_id": session['user_id']})
-        if not user or user.get('role') != 'admin':
+        if not user or (user.get('role') != 'admin' and not check_is_super_admin(user)):
             return jsonify({"success": False, "error": "Forbidden. Admin access required."}), 403
     else:
         return jsonify({"success": False, "error": "Database connection error."}), 500
@@ -831,7 +845,7 @@ def admin_required(f):
             return redirect(url_for('login', next=request.url))
         db = get_db()
         user = db.users.find_one({"_id": session['user_id']})
-        if not user or user.get('role') != 'admin':
+        if not user or (user.get('role') != 'admin' and not check_is_super_admin(user)):
             flash("Admin access required.", "danger")
             return redirect(url_for('index'))
         return f(*args, **kwargs)
@@ -840,11 +854,14 @@ def admin_required(f):
 @app.context_processor
 def inject_user():
     user = None
+    is_super = False
     if 'user_id' in session:
         db = get_db()
         if db is not None:
             user = db.users.find_one({"_id": session['user_id']})
-    return dict(current_user=user)
+            if user:
+                is_super = check_is_super_admin(user)
+    return dict(current_user=user, is_super_admin=is_super)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -2503,11 +2520,40 @@ def toggle_user_role():
         return jsonify({"success": False, "error": "Missing parameters"}), 400
         
     db = get_db()
+    target_user = db.users.find_one({"_id": user_id})
+    if not target_user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+        
+    current_user = db.users.find_one({"_id": session.get('user_id')})
+    if not current_user:
+        return jsonify({"success": False, "error": "Unauthorized"}), 401
+        
+    current_is_super = check_is_super_admin(current_user)
+    target_is_super = check_is_super_admin(target_user)
+    
+    # Rule 1: Cannot demote the last remaining admin
+    if target_user.get('role') == 'admin' and new_role != 'admin':
+        admin_count = db.users.count_documents({"role": "admin"})
+        if admin_count <= 1:
+            return jsonify({"success": False, "error": "Security Restriction: Cannot demote the only remaining admin."}), 403
+            
+    # Rule 2: Cannot demote the last remaining super admin
+    if target_is_super and new_role != 'admin' and new_role != 'super_admin':
+        all_admins = list(db.users.find({"role": {"$in": ["admin", "super_admin"]}}))
+        super_count = sum(1 for u in all_admins if check_is_super_admin(u))
+        if super_count <= 1:
+            return jsonify({"success": False, "error": "Security Restriction: Cannot demote the only remaining Super Admin."}), 403
+
+    # Rule 3: Promoting, demoting, or modifying an Admin/Super Admin account
+    if (target_user.get('role') in ['admin', 'super_admin'] or target_is_super or new_role in ['admin', 'super_admin']):
+        if not current_is_super:
+            return jsonify({"success": False, "error": "Security Restriction: Only a Super Admin can promote, demote, or modify admin accounts."}), 403
+
     result = db.users.update_one({"_id": user_id}, {"$set": {"role": new_role}})
     
     if result.modified_count > 0:
         return jsonify({"success": True})
-    return jsonify({"success": False, "error": "User not found or role already set"}), 404
+    return jsonify({"success": False, "error": "Role already set to this value"}), 400
 
 @app.route('/api/admin/delete_user', methods=['POST'])
 @admin_required
@@ -2523,6 +2569,35 @@ def delete_user_admin():
         return jsonify({"success": False, "error": "You cannot delete your own admin account from here."}), 403
         
     db = get_db()
+    target_user = db.users.find_one({"_id": user_id})
+    if not target_user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+        
+    current_user = db.users.find_one({"_id": session.get('user_id')})
+    if not current_user:
+        return jsonify({"success": False, "error": "Unauthorized"}), 401
+        
+    current_is_super = check_is_super_admin(current_user)
+    target_is_super = check_is_super_admin(target_user)
+    
+    # Rule 1: Cannot delete the last remaining admin
+    if target_user.get('role') == 'admin':
+        admin_count = db.users.count_documents({"role": "admin"})
+        if admin_count <= 1:
+            return jsonify({"success": False, "error": "Security Restriction: Cannot delete the only remaining admin."}), 403
+            
+    # Rule 2: Cannot delete the last remaining super admin
+    if target_is_super:
+        all_admins = list(db.users.find({"role": {"$in": ["admin", "super_admin"]}}))
+        super_count = sum(1 for u in all_admins if check_is_super_admin(u))
+        if super_count <= 1:
+            return jsonify({"success": False, "error": "Security Restriction: Cannot delete the only remaining Super Admin."}), 403
+            
+    # Rule 3: Deleting an Admin or Super Admin requires being a Super Admin themselves
+    if target_user.get('role') in ['admin', 'super_admin'] or target_is_super:
+        if not current_is_super:
+            return jsonify({"success": False, "error": "Security Restriction: Only a Super Admin can delete another admin account."}), 403
+            
     result = db.users.delete_one({"_id": user_id})
     
     if result.deleted_count > 0:
