@@ -402,7 +402,7 @@ body {
     }
     /* Toast mobile positioning */
     .toast-container {
-        top: 1rem;
+        top: 4.5rem;
         right: 0.75rem;
         left: 0.75rem;
     }
@@ -1276,7 +1276,7 @@ select.search-input {
 /* Floating Toast System */
 .toast-container {
     position: fixed;
-    top: 2rem;
+    top: 5.5rem;
     right: 2rem;
     display: flex;
     flex-direction: column;
