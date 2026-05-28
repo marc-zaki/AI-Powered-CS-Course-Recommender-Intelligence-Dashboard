@@ -210,10 +210,39 @@
         </div>
     </div>
 </div>
+
+<!-- Custom Alert Modal -->
+<div id="alert-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 400px; width: 90%; text-align: center;">
+        <h3 id="alert-modal-title" style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Notice</h3>
+        <p id="alert-modal-message" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5;"></p>
+        <button id="alert-modal-ok" class="btn btn-primary" style="width: 100%;">OK</button>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+function showCustomAlert(title, message) {
+    const modal = document.getElementById('alert-modal');
+    const titleEl = document.getElementById('alert-modal-title');
+    const msgEl = document.getElementById('alert-modal-message');
+    const okBtn = document.getElementById('alert-modal-ok');
+    
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+    
+    modal.style.display = 'flex';
+    
+    // Clear and re-bind click listener
+    const newOk = okBtn.cloneNode(true);
+    okBtn.parentNode.replaceChild(newOk, okBtn);
+    
+    newOk.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+}
+
 function showCustomConfirm(title, message, onConfirm) {
     const modal = document.getElementById('confirm-modal');
     const titleEl = document.getElementById('confirm-modal-title');
@@ -258,7 +287,7 @@ function deleteCourse(url, btn) {
                 const row = btn.closest('tr');
                 if(row) row.remove();
             } else {
-                alert("Error deleting course: " + data.error);
+                showCustomAlert("Error", "Error deleting course: " + data.error);
             }
         })
         .catch(err => console.error(err));
@@ -282,7 +311,7 @@ function toggleUserRole(userId, currentRole, btn) {
             if(data.success) {
                 window.location.reload();
             } else {
-                alert("Error: " + data.error);
+                showCustomAlert("Action Restricted", data.error);
             }
         })
         .catch(err => console.error(err));
@@ -302,7 +331,7 @@ function deleteUser(userId, btn) {
                 const row = btn.closest('tr');
                 if(row) row.remove();
             } else {
-                alert("Error deleting user: " + data.error);
+                showCustomAlert("Action Restricted", data.error);
             }
         })
         .catch(err => console.error(err));
@@ -328,7 +357,7 @@ function submitAddCourse(e) {
         if(data.success) {
             window.location.reload();
         } else {
-            alert("Error: " + data.error);
+            showCustomAlert("Error", data.error);
         }
     })
     .catch(err => console.error(err));
@@ -348,7 +377,7 @@ function approveCourse(courseId, btn) {
             if(data.success) {
                 window.location.reload();
             } else {
-                alert("Error: " + data.error);
+                showCustomAlert("Error", data.error);
                 btn.textContent = "Approve";
                 btn.disabled = false;
             }
@@ -372,7 +401,7 @@ function rejectCourse(courseId, btn) {
                 const row = btn.closest('tr');
                 if(row) row.remove();
             } else {
-                alert("Error: " + data.error);
+                showCustomAlert("Error", data.error);
                 btn.textContent = "Reject";
                 btn.disabled = false;
             }
@@ -410,7 +439,7 @@ function submitEditCourse(e) {
         if(data.success) {
             window.location.reload();
         } else {
-            alert("Error: " + data.error);
+            showCustomAlert("Error", data.error);
         }
     })
     .catch(err => console.error(err));
