@@ -1118,11 +1118,11 @@ def forgot_password():
                 msg = MIMEMultipart()
                 msg['From'] = smtp_email
                 msg['To'] = email
-                msg['Subject'] = "Password Reset Request - CS Course Recommender"
+                msg['Subject'] = "Password Reset Request - MASARI"
                 
                 body = f"""Hello {user.get('name', 'User')},
 
-We received a request to reset the password for your account on the AI-Powered CS Course Recommender.
+We received a request to reset the password for your account on MASARI.
 
 Click the link below to set a new password:
 {reset_link}
@@ -1130,7 +1130,7 @@ Click the link below to set a new password:
 This link is valid for 1 hour. If you did not request this, please ignore this email.
 
 Best regards,
-CS Course Recommender Team"""
+MASARI Team"""
                 
                 msg.attach(MIMEText(body, 'plain'))
                 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CS Course Recommender | AI Powered Learning Dashboard{% endblock %}</title>
+    <title>{% block title %}MASARI | AI Powered Learning Dashboard{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_head %}{% endblock %}
@@ -18,8 +18,8 @@
         <!-- Sidebar -->
         <aside class="app-sidebar" id="app-sidebar">
             <div class="app-sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <a href="/" class="logo" style="font-size: 1.25rem;">
-                    <i data-lucide="brain"></i> AI Recommender
+                <a href="/" class="logo">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
                 </a>
                 <button class="mobile-close-btn" onclick="toggleSidebar(event)" style="background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
             </div>
@@ -43,7 +43,7 @@
             </nav>
             
             <div style="padding: 1.5rem 1rem; border-top: 1px solid var(--border-glass); font-size: 0.8rem; color: var(--text-muted); text-align: center;">
-                &copy; 2026 AI Recommender<br/>Advanced Systems
+                &copy; 2026 MASARI<br/>Advanced Systems
             </div>
         </aside>
 
@@ -53,7 +53,7 @@
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <button class="mobile-menu-btn" onclick="toggleSidebar(event)">☰</button>
                     <a href="/" class="logo header-logo">
-                        <i data-lucide="brain"></i> <span class="header-logo-text">AI Recommender</span>
+                        <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
                     </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">

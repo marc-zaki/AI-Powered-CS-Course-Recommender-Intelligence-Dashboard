@@ -854,7 +854,7 @@ function exportPlanToPDF() {
             </div>
             <div style="text-align: right; font-size: 11px; color: #64748B;">
                 <strong>Date:</strong> ${new Date().toLocaleDateString()}<br/>
-                <strong>Platform:</strong> AI CS Recommender
+                <strong>Platform:</strong> MASARI
             </div>
         </div>
         <div style="background: #F8FAFC; border-left: 4px solid #3282B8; padding: 12px 18px; border-radius: 6px; margin-top: 20px; text-align: left;">
@@ -873,13 +873,13 @@ function exportPlanToPDF() {
     pdfFooter.style.textAlign = 'center';
     pdfFooter.style.fontSize = '11px';
     pdfFooter.style.color = '#94A3B8';
-    pdfFooter.innerHTML = `AI-Powered CS Course Recommender Intelligence Dashboard &bull; Curated and Structured with Gemini 2.5-Flash`;
+    pdfFooter.innerHTML = `MASARI Intelligence Dashboard &bull; Curated and Structured with Gemini 2.5-Flash`;
     pathContent.appendChild(pdfFooter);
     
     // 4. PDF Generation Options
     const opt = {
         margin:       12,
-        filename:     `AI_Study_Plan_${goalText.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
+        filename:     `MASARI_Study_Plan_${goalText.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { 
             scale: 2, 
