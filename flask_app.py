@@ -16,6 +16,7 @@ import json
 import threading
 import requests
 import uuid
+import urllib.parse
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
@@ -578,8 +579,6 @@ def generate_local_fallback_path(user_goal, matched_courses):
     Generates a beautifully structured, highly customized, and comprehensive 6-week
     academic syllabus from the matched courses when Gemini API rate limits/quotas are exceeded.
     """
-    import urllib.parse
-    
     html = []
     
     # 1. Graceful API notice banner
@@ -928,9 +927,6 @@ def google_login():
     if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
         flash("Google OAuth credentials are not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.", "warning")
         return redirect(url_for('login'))
-        
-    import urllib.parse
-    
     # Generate redirect URI
     scheme = request.headers.get("X-Forwarded-Proto", request.scheme)
     redirect_uri = f"{scheme}://{request.host}/login/google/callback"

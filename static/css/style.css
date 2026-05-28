@@ -459,6 +459,7 @@ body {
     margin-bottom: 1.25rem;
     background: linear-gradient(135deg, var(--text-main) 30%, var(--secondary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -0.04em;
     line-height: 1.2;
@@ -670,6 +671,7 @@ select.search-input {
     letter-spacing: -0.03em;
     background: linear-gradient(135deg, var(--text-main) 40%, var(--secondary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -1414,6 +1416,7 @@ footer {
     text-align: center;
     background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
 }
