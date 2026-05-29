@@ -204,12 +204,22 @@ body {
 }
 
 .mobile-menu-btn {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: transparent;
     border: none;
     color: var(--text-main);
-    font-size: 1.5rem;
     cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .mobile-close-btn {
@@ -217,7 +227,22 @@ body {
 }
 
 .app-sidebar .mobile-close-btn {
-    display: block !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.app-sidebar .mobile-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .app-main-body {
@@ -247,7 +272,7 @@ body {
         gap: 0.5rem;
     }
     .mobile-menu-btn {
-        display: block;
+        display: flex;
         flex-shrink: 0;
     }
     .nav-links {

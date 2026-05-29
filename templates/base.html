@@ -22,7 +22,9 @@
                 <a href="/" class="logo">
                     <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
                 </a>
-                <button class="mobile-close-btn" onclick="toggleSidebar(event)" style="background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">✕</button>
+                <button class="mobile-close-btn" onclick="toggleSidebar(event)">
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
             </div>
             
             <nav class="app-sidebar-nav">
@@ -52,9 +54,11 @@
         <div class="app-main-content">
             <header class="app-header">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <button class="mobile-menu-btn" onclick="toggleSidebar(event)">☰</button>
+                    <button class="mobile-menu-btn" onclick="toggleSidebar(event)">
+                        <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+                    </button>
                     <a href="/" class="logo header-logo">
-                        <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
+                        <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 18px; width: auto; max-width: 150px; object-fit: contain;">
                     </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
