@@ -477,23 +477,72 @@ def interview_prep():
 
 @app.route('/api/interview/search', methods=['GET'])
 def api_interview_search():
-    if not interview_ir_engine:
-        return jsonify({"error": "Interview system not loaded"}), 500
-        
-    query = request.args.get('q', '')
+    query = request.args.get('q', '').strip()
     difficulty = request.args.get('difficulty', 'Intermediate')
     
     if not query:
         return jsonify({"results": [], "recommendations": []})
         
-    # Perform Search
-    results = interview_ir_engine.search(query, top_k=10, method='hybrid')
+    system_prompt = (
+        "You are an expert technical interviewer. Generate 5 highly relevant interview questions "
+        f"and detailed answers for the query: '{query}' at the {difficulty} level. "
+        "Respond ONLY with a valid JSON object matching this exact schema:\n"
+        "{\n"
+        "  \"results\": [\n"
+        "    {\n"
+        "      \"question\": \"<the interview question>\",\n"
+        "      \"answer\": \"<detailed explanation>\",\n"
+        "      \"relevance_percentage\": <integer from 80 to 99>\n"
+        "    }\n"
+        "  ]\n"
+        "}"
+    )
+
+    results = []
     
-    # Perform AI Analysis on the query
-    analysis = interview_ai_models.analyze_question_comprehensive(query)
+    if GROQ_API_KEY:
+        try:
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "user", "content": system_prompt}],
+                "temperature": 0.5,
+                "max_tokens": 1500,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
+            if res.status_code == 200:
+                import json as _json
+                data = _json.loads(res.json()["choices"][0]["message"]["content"])
+                results = data.get("results", [])
+        except Exception:
+            pass
+
+    if not results and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+            response = model.generate_content(system_prompt)
+            import json as _json
+            text = response.text.strip()
+            if text.startswith("```"):
+                text = text.split("```")[1]
+                if text.startswith("json"):
+                    text = text[4:]
+            data = _json.loads(text)
+            results = data.get("results", [])
+        except Exception:
+            pass
+
+    # Perform AI Analysis on the query (Keep existing logic)
+    analysis = None
+    if interview_ai_models:
+        analysis = interview_ai_models.analyze_question_comprehensive(query)
     
     # Get Recommendations
-    recommendations = interview_rec_engine.get_recommendations(query, difficulty, top_k=5)
+    recommendations = []
+    if interview_rec_engine:
+        recommendations = interview_rec_engine.get_recommendations(query, difficulty, top_k=5)
     
     # Feature 1: Skill-Gap Recommendations (Interviews -> Courses)
     related_courses = []
@@ -588,11 +637,12 @@ def api_interview_followup():
         return jsonify({"error": "Missing question or user_answer"}), 400
 
     system_prompt = (
-        "You are a rigorous technical interviewer. Evaluate the candidate's answer to a technical question. "
+        "You are a rigorous technical interviewer. Evaluate the candidate's answer (which may be text or code) to a technical question. "
+        "If the candidate provides code, you MUST evaluate its Time Complexity (Big-O), Space Complexity, and identify any missed edge cases. "
         "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
         "{\n"
         "  \"verdict\": \"complete\" | \"incomplete\",\n"
-        "  \"feedback\": \"<specific feedback about what is correct or missing>\",\n"
+        "  \"feedback\": \"<specific feedback about what is correct or missing. Include Big-O if code is provided.>\",\n"
         "  \"followup\": \"<a single probing follow-up question, or null if verdict is complete>\",\n"
         "  \"score\": <integer 1-10>\n"
         "}\n"
@@ -659,6 +709,20 @@ def api_interview_followup():
     result.setdefault("feedback", "")
     result.setdefault("followup", None)
     result.setdefault("score", 5)
+
+    # Save to Historical Progress if complete
+    if result.get("verdict") == "complete" and 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            try:
+                db.interview_results.insert_one({
+                    "user_id": ObjectId(session['user_id']),
+                    "category": "Technical",
+                    "score": result.get("score", 5),
+                    "date": datetime.utcnow()
+                })
+            except Exception as e:
+                print(f"Error saving technical result: {e}")
 
     return jsonify(result)
 
@@ -923,7 +987,67 @@ def api_interview_star_analyze():
         result.setdefault(component, {"score": 5, "comment": "No data"})
     result.setdefault("overall", "")
 
+    # Calculate average score for the radar chart
+    try:
+        avg_score = sum([result[c].get("score", 5) for c in ["situation", "task", "action", "result"]]) / 4.0
+        if 'user_id' in session:
+            db = get_db()
+            if db is not None:
+                db.interview_results.insert_one({
+                    "user_id": ObjectId(session['user_id']),
+                    "category": "Behavioral",
+                    "score": round(avg_score, 1),
+                    "date": datetime.utcnow()
+                })
+    except Exception as e:
+        print(f"Error saving behavioral result: {e}")
+
     return jsonify(result)
+
+@app.route('/api/interview/stats', methods=['GET'])
+def api_interview_stats():
+    """
+    Returns the user's historical interview score averages grouped by category.
+    """
+    if 'user_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    db = get_db()
+    if db is None:
+        return jsonify({"error": "Database error"}), 500
+        
+    try:
+        pipeline = [
+            {"$match": {"user_id": ObjectId(session['user_id'])}},
+            {"$group": {
+                "_id": "$category",
+                "average_score": {"$avg": "$score"},
+                "attempts": {"$sum": 1}
+            }}
+        ]
+        stats = list(db.interview_results.aggregate(pipeline))
+        
+        # Format for Chart.js Radar
+        categories = ["Technical", "Behavioral", "System Design", "Algorithms", "Data Structures"]
+        # Seed with 0s if they don't have records yet
+        results = {c: 0 for c in categories}
+        for s in stats:
+            cat = s["_id"]
+            if cat in results:
+                results[cat] = round(s["average_score"], 1)
+            else:
+                results[cat] = round(s["average_score"], 1)
+                categories.append(cat)
+                
+        labels = list(results.keys())
+        data = list(results.values())
+        
+        return jsonify({
+            "labels": labels,
+            "data": data
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/stats')
