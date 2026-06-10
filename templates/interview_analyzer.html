@@ -48,7 +48,7 @@
                     <option value="Advanced">Advanced</option>
                 </select>
             </div>
-            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700;">
+            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; color: white !important;">
                 <i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate & Start
             </button>
         </form>
@@ -509,7 +509,10 @@
     async function startFlashcardsFromForm() {
         const topic = document.getElementById('flashcard-topic').value.trim();
         const difficulty = document.getElementById('flashcard-difficulty').value;
-        if (!topic) return;
+        if (!topic) {
+            alert("Please enter a topic to practice (e.g., 'React Hooks', 'System Design').");
+            return;
+        }
         const btn = document.getElementById('flashcard-start-btn');
         btn.disabled = true;
         setLoader(true, 'Generating unique technical questions...');
