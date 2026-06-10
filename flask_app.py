@@ -716,7 +716,7 @@ def api_interview_followup():
         if db is not None:
             try:
                 db.interview_results.insert_one({
-                    "user_id": ObjectId(session['user_id']),
+                    "user_id": session['user_id'],
                     "category": "Technical",
                     "score": result.get("score", 5),
                     "date": datetime.utcnow()
@@ -994,7 +994,7 @@ def api_interview_star_analyze():
             db = get_db()
             if db is not None:
                 db.interview_results.insert_one({
-                    "user_id": ObjectId(session['user_id']),
+                    "user_id": session['user_id'],
                     "category": "Behavioral",
                     "score": round(avg_score, 1),
                     "date": datetime.utcnow()
@@ -1018,7 +1018,7 @@ def api_interview_stats():
         
     try:
         pipeline = [
-            {"$match": {"user_id": ObjectId(session['user_id'])}},
+            {"$match": {"user_id": session['user_id']}},
             {"$group": {
                 "_id": "$category",
                 "average_score": {"$avg": "$score"},
