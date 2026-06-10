@@ -15,10 +15,10 @@
         </h2>
         
         <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem; flex-wrap: wrap;">
-            <button class="btn btn-primary" id="tab-search" onclick="switchInterviewTab('search')" style="padding: 0.5rem 1rem;">🔍 Search Mode</button>
-            <button class="btn btn-outline" id="tab-flashcard" onclick="switchInterviewTab('flashcard')" style="padding: 0.5rem 1rem;">🎴 Flashcard Mode</button>
-            <button class="btn btn-outline" id="tab-behavioral" onclick="switchInterviewTab('behavioral')" style="padding: 0.5rem 1rem;">🧠 Behavioral Mode</button>
-            <button class="btn btn-outline" id="tab-progress" onclick="switchInterviewTab('progress')" style="padding: 0.5rem 1rem;">📊 My Progress</button>
+            <button class="btn btn-primary" id="tab-search" onclick="switchInterviewTab('search')" style="padding: 0.5rem 1rem;"><i data-lucide="search" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>Search Mode</button>
+            <button class="btn btn-outline" id="tab-flashcard" onclick="switchInterviewTab('flashcard')" style="padding: 0.5rem 1rem;"><i data-lucide="credit-card" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>Flashcard Mode</button>
+            <button class="btn btn-outline" id="tab-behavioral" onclick="switchInterviewTab('behavioral')" style="padding: 0.5rem 1rem;"><i data-lucide="brain" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>Behavioral Mode</button>
+            <button class="btn btn-outline" id="tab-progress" onclick="switchInterviewTab('progress')" style="padding: 0.5rem 1rem;"><i data-lucide="bar-chart-2" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>My Progress</button>
         </div>
         
         <!-- Search Mode Form -->
@@ -48,7 +48,7 @@
                     <option value="Advanced">Advanced</option>
                 </select>
             </div>
-            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; background: var(--accent-indigo); color: white; border: none;">
+            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700;">
                 <i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate & Start
             </button>
         </form>
@@ -192,7 +192,7 @@
         <div id="flashcard-ai-feedback" style="display: none; width: 100%; max-width: 760px; margin-top: 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid var(--border-glass);">
             <div id="feedback-header" style="padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <span id="feedback-verdict-icon" style="font-size: 1.5rem;">⏳</span>
+                    <span id="feedback-verdict-icon" style="font-size: 1.5rem;"><i data-lucide="hourglass" style="width: 24px; height: 24px;"></i></span>
                     <div>
                         <div id="feedback-verdict-label" style="font-weight: 700; font-size: 1rem;">Evaluating...</div>
                         <div style="font-size: 0.8rem; color: var(--text-muted);">AI Technical Assessment</div>
@@ -240,7 +240,7 @@
 
         <div style="width: 100%; max-width: 740px; background: var(--bg-card); border: 2px solid var(--border-glass); border-radius: 16px; padding: 2rem; box-shadow: var(--shadow-glass);">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
-                <span style="background: rgba(139,92,246,0.15); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">🧠</span>
+                <span style="background: rgba(139,92,246,0.15); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0;"><i data-lucide="brain" style="width: 20px; height: 20px;"></i></span>
                 <div>
                     <div style="font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Behavioral Question</div>
                     <p id="behavioral-question" style="margin: 0.25rem 0 0; font-size: 1.1rem; font-weight: 700; line-height: 1.5; color: var(--text-main);">Loading...</p>
@@ -248,7 +248,7 @@
             </div>
 
             <div id="star-tips-box" style="background: var(--bg-main); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; border-left: 3px solid var(--primary);">
-                <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;">💡 STAR Tips</div>
+                <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;"><i data-lucide="lightbulb" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> STAR Tips</div>
                 <p id="behavioral-star-tips" style="margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;"></p>
             </div>
 
@@ -281,7 +281,7 @@
                 <div class="star-row" data-key="result" data-label="R — Result" data-color="#10b981"></div>
 
                 <div id="star-overall" style="margin-top: 1.25rem; padding: 1rem; background: var(--bg-main); border-radius: 10px; border-left: 3px solid var(--secondary);">
-                    <div style="font-size: 0.75rem; color: var(--secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">✨ Overall Feedback</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Overall Feedback</div>
                     <p id="star-overall-text" style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></p>
                 </div>
                 <button onclick="nextBehavioralCard()" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; font-weight: 700;">Next Question →</button>
@@ -581,7 +581,7 @@
         btn.disabled = true; btn.textContent = 'Evaluating...';
 
         document.getElementById('flashcard-ai-feedback').style.display = 'block';
-        document.getElementById('feedback-verdict-icon').textContent = '⏳';
+        document.getElementById('feedback-verdict-icon').innerHTML = '<i data-lucide="hourglass" style="width: 24px; height: 24px;"></i>';
         document.getElementById('feedback-verdict-label').textContent = 'Evaluating...';
         document.getElementById('feedback-score').textContent = '-';
         document.getElementById('feedback-text').textContent = '';
@@ -600,7 +600,7 @@
             const isComplete = data.verdict === 'complete';
             const score = data.score || 5;
             document.getElementById('feedback-header').style.background = isComplete ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.08)';
-            document.getElementById('feedback-verdict-icon').textContent = isComplete ? '✅' : '🔄';
+            document.getElementById('feedback-verdict-icon').innerHTML = isComplete ? '<i data-lucide="check-circle-2" style="width: 24px; height: 24px;"></i>' : '<i data-lucide="refresh-cw" style="width: 24px; height: 24px;"></i>';
             document.getElementById('feedback-verdict-label').textContent = isComplete ? 'Answer Complete!' : 'Good start — try the follow-up';
             document.getElementById('feedback-score').textContent = score;
             document.getElementById('feedback-score').style.color = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
@@ -639,7 +639,7 @@
 
             const isComplete = data.verdict === 'complete';
             const score = data.score || 5;
-            document.getElementById('feedback-verdict-icon').textContent = isComplete ? '✅' : '🔄';
+            document.getElementById('feedback-verdict-icon').innerHTML = isComplete ? '<i data-lucide="check-circle-2" style="width: 24px; height: 24px;"></i>' : '<i data-lucide="refresh-cw" style="width: 24px; height: 24px;"></i>';
             document.getElementById('feedback-verdict-label').textContent = isComplete ? 'Answer Complete!' : 'Keep going...';
             document.getElementById('feedback-score').textContent = score;
             document.getElementById('feedback-score').style.color = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
@@ -656,7 +656,12 @@
                 document.getElementById('followup-answer-input').value = '';
                 btn.disabled = false; btn.textContent = 'Submit Follow-up Answer';
             }
-        } catch (err) { document.getElementById('feedback-text').textContent = 'Error: ' + err.message; document.getElementById('flashcard-controls').style.display = 'flex'; }
+        } catch (err) { 
+            document.getElementById('feedback-text').textContent = 'Error: ' + err.message; 
+            document.getElementById('flashcard-controls').style.display = 'flex'; 
+        } finally {
+            if (window.lucide) lucide.createIcons();
+        }
     }
 
     function nextCard() { currentCardIndex++; showCurrentCard(); window.speechSynthesis.cancel(); }
@@ -804,7 +809,7 @@
                     const displayQ = escapeHtml(r.question).substring(0, 200);
                     const hasAnswer = r.answer ? 'true' : 'false';
                     const answerContent = r.answer 
-                        ? `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);">✨ <strong>AI Generated Answer</strong><br/><br/>${escapeHtml(r.answer).replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}</div>` 
+                        ? `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> <strong>AI Generated Answer</strong><br/><br/>${escapeHtml(r.answer).replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}</div>` 
                         : `<div style="color: var(--text-muted);"><i data-lucide="loader-2" class="spin" style="width: 16px;"></i> Loading...</div>`;
 
                     list.innerHTML += `
@@ -834,7 +839,7 @@
                 const res = await fetch(`/api/interview/explain?q=${questionEncoded}`);
                 const data = await res.json();
                 if (data.explanation) {
-                    content.innerHTML = `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px;">✨ AI Explanation<br/>${data.explanation.replace(/\n/g, '<br>')}</div>`;
+                    content.innerHTML = `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px;"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> AI Explanation<br/>${data.explanation.replace(/\n/g, '<br>')}</div>`;
                     content.dataset.loaded = 'true';
                 }
             } catch (e) { content.innerHTML = '<div style="color: red;">Error fetching explanation.</div>'; }
