@@ -53,6 +53,29 @@
             </div>
         </div>
 
+        <!-- Feature 4: Interview Results on Global Search -->
+        {% if is_search and interview_results %}
+        <div style="margin: 2rem 0; padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--secondary); border-radius: 16px;">
+            <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--secondary);"><i data-lucide="help-circle"></i> Relevant Interview Questions</h3>
+            <div style="display: grid; gap: 1rem;">
+                {% for q in interview_results[:3] %}
+                <div style="padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 8px;">
+                    <strong style="font-size: 1.05rem;">{{ q.question }}</strong>
+                    {% if q.answer %}
+                    <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">{{ q.answer[:150] }}...</p>
+                    {% endif %}
+                    <div style="margin-top: 0.75rem;">
+                        <a href="/interview-prep?q={{ query | urlencode }}" class="btn btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.8rem; border-radius: 6px;">Analyze Question &rarr;</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <a href="/interview-prep?q={{ query | urlencode }}" class="btn btn-primary" style="padding: 0.5rem 1.5rem; border-radius: 8px;">View all {{ interview_results|length }} interview matches</a>
+            </div>
+        </div>
+        {% endif %}
+
         {% if courses|length == 0 %}
         <div class="empty-state">
             <h3>No courses found</h3>

@@ -38,6 +38,9 @@
                 <a href="/#skill-map" id="side-link-skill-map" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('skill-map'); window.history.pushState(null, '', '/#skill-map'); event.preventDefault(); }">
                     <i data-lucide="bar-chart-2"></i> Skill Map
                 </a>
+                <a href="/interview-prep" id="side-link-interview" class="app-sidebar-link {% if request.path == '/interview-prep' %}active{% endif %}">
+                    <i data-lucide="message-circle"></i> Interview Analyzer
+                </a>
                 {% if current_user and current_user.role == 'admin' %}
                 <a href="/#dashboard" id="side-link-dashboard" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('dashboard'); window.history.pushState(null, '', '/#dashboard'); event.preventDefault(); }">
                     <i data-lucide="trending-up"></i> Intelligence EDA

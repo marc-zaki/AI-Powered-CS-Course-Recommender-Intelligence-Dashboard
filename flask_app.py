@@ -24,6 +24,13 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import pymongo
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Interview-Question-Analyzer-main'))
+from phase2_ir_engine import IREngine
+from phase2_ai_models import AIModels
+from phase2_recommendation import RecommendationEngine
+from phase2_eda_analysis import EDAAnalysis
+
 load_dotenv()  # Load API keys from .env file
 
 
@@ -102,6 +109,13 @@ vectorizer = None
 tfidf_matrix = None
 mongo_client = None
 mongo_db = None
+
+# Global variables for Interview Analyzer
+interview_ir_engine = None
+interview_ai_models = None
+interview_rec_engine = None
+interview_eda = None
+interview_questions = []
 
 def get_db():
     global mongo_client, mongo_db
@@ -264,6 +278,30 @@ def load_and_train_model():
 # Load model at startup
 load_and_train_model()
 
+def load_interview_system():
+    global interview_ir_engine, interview_ai_models, interview_rec_engine, interview_eda, interview_questions
+    print("Loading Interview Analyzer system...")
+    try:
+        dataset_path = os.path.join(os.path.dirname(__file__), 'Interview-Question-Analyzer-main', 'storage', 'dataset_2.json')
+        with open(dataset_path, 'r', encoding='utf-8') as f:
+            interview_questions = json.load(f)
+        
+        interview_ir_engine = IREngine(interview_questions)
+        interview_ai_models = AIModels(interview_questions)
+        interview_rec_engine = RecommendationEngine(interview_ir_engine, interview_ai_models)
+        interview_eda = EDAAnalysis(interview_questions, interview_ir_engine, interview_ai_models)
+        
+        # Load indexes
+        storage_path = os.path.join(os.path.dirname(__file__), 'Interview-Question-Analyzer-main', 'storage')
+        interview_ir_engine.load_index(storage_path)
+        interview_ai_models.load_models(storage_path)
+        
+        print("Interview Analyzer models loaded successfully!")
+    except Exception as e:
+        print(f"Error loading Interview Analyzer system: {e}")
+
+load_interview_system()
+
 def clean_user_query(query):
     stop_words = set(stopwords.words('english'))
     text = str(query).lower()
@@ -347,9 +385,15 @@ def search():
     if recs.empty:
         recs = search_df[search_df['match_score'] > 0.02].sort_values(by=['stars', 'match_score'], ascending=[False, False])
         
-    results = recs.head(20).to_dict('records')
+    # Feature 4: Unified Global Search
+    interview_results = []
+    if interview_ir_engine:
+        try:
+            interview_results = interview_ir_engine.search(query, top_k=5, method='hybrid')
+        except Exception:
+            pass
 
-    return render_template('index.html', courses=results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
+    return render_template('index.html', courses=results, interview_results=interview_results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
 
 @app.route('/validate_link')
 def validate_link():
@@ -415,6 +459,104 @@ def verify_link():
         return redirect(url)
     except Exception:
         return redirect(fallback_url)
+
+@app.route('/interview-prep')
+def interview_prep():
+    # The frontend strategy (Step 3) will render 'interview_analyzer.html' here
+    return render_template('interview_analyzer.html')
+
+@app.route('/api/interview/search', methods=['GET'])
+def api_interview_search():
+    if not interview_ir_engine:
+        return jsonify({"error": "Interview system not loaded"}), 500
+        
+    query = request.args.get('q', '')
+    difficulty = request.args.get('difficulty', 'Intermediate')
+    
+    if not query:
+        return jsonify({"results": [], "recommendations": []})
+        
+    # Perform Search
+    results = interview_ir_engine.search(query, top_k=10, method='hybrid')
+    
+    # Perform AI Analysis on the query
+    analysis = interview_ai_models.analyze_question_comprehensive(query)
+    
+    # Get Recommendations
+    recommendations = interview_rec_engine.get_recommendations(query, difficulty, top_k=5)
+    
+    # Feature 1: Skill-Gap Recommendations (Interviews -> Courses)
+    related_courses = []
+    if df is not None and not df.empty and vectorizer is not None:
+        query_vector = vectorizer.transform([query.lower()])
+        search_df = df.copy()
+        search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+        recs = search_df[search_df['match_score'] > 0.05].sort_values(by=['stars', 'match_score'], ascending=[False, False])
+        
+        for c in recs.head(3).to_dict('records'):
+            related_courses.append({
+                "title": c.get("title"),
+                "provider": c.get("provider"),
+                "url": c.get("url", "#"),
+                "stars": c.get("stars"),
+                "ratings_count": c.get("ratings_count", 0),
+                "description": c.get("content_text", "")[:100] + "..."
+            })
+    
+    return jsonify({
+        "results": results,
+        "analysis": analysis,
+        "recommendations": recommendations,
+        "related_courses": related_courses
+    })
+
+@app.route('/api/interview/explain', methods=['GET'])
+def api_interview_explain():
+    question = request.args.get('q', '').strip()
+    if not question:
+        return jsonify({"explanation": None}), 400
+
+    system_prompt = "You are an elite technical interviewer. Provide a clear, accurate, and concise answer and explanation (around 3-4 sentences) for the following interview question. Use markdown for code if necessary."
+    user_prompt = f"Interview Question: {question}\n\nPlease provide the answer and explanation."
+
+    explanation = None
+    
+    # Tier 1: Groq
+    if GROQ_API_KEY:
+        try:
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.3,
+                "max_tokens": 500
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=5.0)
+            if res.status_code == 200:
+                explanation = res.json()["choices"][0]["message"]["content"].strip()
+        except Exception:
+            pass
+
+    # Tier 2: Gemini
+    if not explanation and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(
+                model_name='gemini-2.5-flash',
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(user_prompt)
+            explanation = response.text.strip()
+        except Exception:
+            pass
+
+    return jsonify({"explanation": explanation})
 
 @app.route('/api/stats')
 def api_stats():
@@ -666,10 +808,20 @@ def generate_local_fallback_path(user_goal, matched_courses):
             
         html.append('</ul>')
         
-        # Bespoke Recommended Practical Exercise!
+        # Feature 5: Bespoke Recommended Practical Exercise with Interview Question!
+        interview_q = "Explain the core technical principles you learned this week."
+        if 'interview_ir_engine' in globals() and interview_ir_engine:
+            try:
+                ir_res = interview_ir_engine.search(c1.get("title", ""), top_k=1, method='hybrid')
+                if ir_res:
+                    interview_q = ir_res[0]['question']
+            except Exception:
+                pass
+
         html.append(f'<div style="background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;">')
-        html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;"><i data-lucide="tool" style="width: 14px; height: 14px; display: inline-block;"></i> Weekly Practical Exercise:</strong>')
-        html.append(f'<span style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block;">Design and construct a modular software module incorporating the core competencies introduced this week. Focus on writing clean object-oriented logic, defining API schemas, and implementing comprehensive unit tests to validate boundaries on <strong>"{c1.get("title")}"</strong>. Commit your solution to a portfolio repository on GitHub.</span>')
+        html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;"><i data-lucide="tool" style="width: 14px; height: 14px; display: inline-block;"></i> Weekly Practical Exercise & Mock Interview:</strong>')
+        html.append(f'<span style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block; margin-bottom: 0.5rem;">Design and construct a modular software module incorporating the core competencies introduced this week. Focus on writing clean object-oriented logic, defining API schemas, and implementing comprehensive unit tests to validate boundaries on <strong>"{c1.get("title")}"</strong>.</span>')
+        html.append(f'<span style="color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block;">💡 End-of-Week Interview Prep: "{interview_q}"</span>')
         html.append('</div>')
         
         html.append('</div>')
@@ -734,8 +886,17 @@ def generate_path():
         "5. CRITICAL: For every course listed, you MUST write its exact star rating and review count right next to its name "
         "in the bullet point list in parentheses. Example: 'Course Title (Udemy) - ⭐ 4.7 (15,230 ratings)'. "
         "Ensure you pull the exact 'stars' and 'ratings_count' values provided in the data.\n"
-        "6. Start directly with the syllabus layout. Do not include introductory conversational fluff or markdown code blocks like ```html."
+        "6. CRITICAL (Feature 5): In the practical exercise section for each week, include exactly ONE mock interview question from the provided list of 'Relevant Mock Interview Questions'. You MUST wrap both the practical exercise and the mock interview question together in a visually distinct, beautifully styled HTML block like this: `<div style=\"background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;\"><strong style=\"color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;\"><i data-lucide=\"tool\" style=\"width: 14px; height: 14px; display: inline-block;\"></i> Weekly Practical Exercise & Mock Interview:</strong><span style=\"color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block; margin-bottom: 0.5rem;\">[Insert practical exercise here]</span><span style=\"color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block;\">💡 End-of-Week Interview Prep: \"[Insert Interview Question Here]\"</span></div>`\n"
+        "7. Start directly with the syllabus layout. Do not include introductory conversational fluff or markdown code blocks like ```html."
     )
+
+    interview_context = []
+    if 'interview_ir_engine' in globals() and interview_ir_engine:
+        try:
+            ir_res = interview_ir_engine.search(user_goal, top_k=5, method='hybrid')
+            interview_context = [r['question'] for r in ir_res]
+        except Exception:
+            pass
 
     user_prompt = f"""
     Student Goal: "{user_goal}"
@@ -743,7 +904,10 @@ def generate_path():
     Available Courses in Database (with Ratings):
     {json.dumps(courses_context, indent=2)}
     
-    Please build a premium week-by-week curriculum using these courses.
+    Relevant Mock Interview Questions from Database:
+    {json.dumps(interview_context, indent=2)}
+    
+    Please build a premium week-by-week curriculum using these courses and injecting one relevant mock interview question per week.
     """
 
     # ── Multi-Tier Study Plan Generator ──────────────────────────────

@@ -217,7 +217,8 @@
                                     style="width: 12px; height: 12px; fill: currentColor; display: inline-block; vertical-align: -1px; color: #FBBF24;"></i>
                                 {{ "%.1f"|format(course.stars) }}</span>
                         </div>
-                        <div class="course-list-actions" style="display: flex; gap: 0.5rem;">
+                        <div class="course-list-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+                            <a href="/interview-prep?mode=flashcard&q={{ course.title | urlencode }}" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap; border-radius: 8px; background: var(--secondary); border: none;">Test Knowledge</a>
                             <a href="{{ course.url }}" target="_blank" class="btn btn-outline"
                                 style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap; border-radius: 8px;">View</a>
                             <button onclick="toggleCourseTaken('{{ course.url }}', this)" class="btn btn-outline"

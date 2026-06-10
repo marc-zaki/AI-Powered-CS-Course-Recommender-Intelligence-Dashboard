@@ -1,0 +1,505 @@
+{% extends "base.html" %}
+
+{% block title %}MASARI | Interview Analyzer{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding: 2rem 2rem 3rem;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Interview Question Analyzer</h1>
+    <p style="font-size: 1.1rem;">AI-powered technical interview preparation, search, and intelligent recommendations.</p>
+</section>
+
+<div class="container">
+    <div class="glass-panel" style="padding: 2.5rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px; margin-bottom: 2rem;">
+        <h2 style="margin-bottom: 1.5rem; color: var(--primary); font-weight: 800; font-size: 1.75rem; letter-spacing: -0.03em;">
+            <i data-lucide="search" style="width: 24px; height: 24px; display: inline-block; vertical-align: bottom;"></i> Find Questions
+        </h2>
+        
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+            <button class="btn btn-primary" id="tab-search" onclick="switchInterviewTab('search')" style="padding: 0.5rem 1rem;">🔍 Search Mode</button>
+            <button class="btn btn-outline" id="tab-flashcard" onclick="switchInterviewTab('flashcard')" style="padding: 0.5rem 1rem;">🎴 Flashcard Mode</button>
+        </div>
+        
+        <!-- Search Mode Form -->
+        <form id="interview-search-form" onsubmit="performSearch(event)" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <input type="text" id="interview-query" class="search-input" placeholder="e.g., 'binary search', 'system design', 'python'" required style="width: 100%;">
+            </div>
+            <div style="width: 200px;">
+                <select id="interview-difficulty" class="search-input" style="width: 100%; cursor: pointer;">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate" selected>Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="interview-search-btn" style="padding: 0.75rem 1.5rem; font-weight: 700;">Analyze</button>
+        </form>
+
+        <!-- Flashcard Mode Form (Hidden by default) -->
+        <form id="interview-flashcard-form" onsubmit="startFlashcards(event)" style="display: none; gap: 1rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <input type="text" id="flashcard-topic" class="search-input" placeholder="Topic to practice (e.g., 'React', 'Databases')" required style="width: 100%;">
+            </div>
+            <div style="width: 200px;">
+                <select id="flashcard-difficulty" class="search-input" style="width: 100%; cursor: pointer;">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate" selected>Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; background: var(--accent-indigo); color: white; border: none; border-radius: 8px;">Start Session</button>
+        </form>
+    </div>
+
+    <!-- Loader -->
+    <div id="interview-loader" style="display: none; align-items: center; justify-content: center; gap: 1rem; margin: 2rem 0;">
+        <div class="spinner" style="width: 32px; height: 32px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="color: var(--secondary); font-weight: 600; font-size: 1.05rem;">Analyzing questions via AI Models...</span>
+    </div>
+
+    <!-- Error State -->
+    <div id="interview-error" style="display: none; padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; color: #ef4444; margin-bottom: 2rem; font-weight: 600;">
+        Could not connect to the Interview Analyzer backend.
+    </div>
+
+    <div id="interview-results-container" style="display: none;">
+        <!-- AI Analysis Summary -->
+        <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);"><i data-lucide="microscope" style="width: 18px; height: 18px; display: inline-block;"></i> Query AI Analysis</h3>
+        <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="glass-panel" style="padding: 1.25rem; text-align: center; border-radius: 12px;">
+                <div style="font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;" id="analysis-category">-</div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Category</div>
+            </div>
+            <div class="glass-panel" style="padding: 1.25rem; text-align: center; border-radius: 12px;">
+                <div style="font-size: 1.15rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.25rem;" id="analysis-difficulty">-</div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Difficulty Estimate</div>
+            </div>
+            <div class="glass-panel" style="padding: 1.25rem; text-align: center; border-radius: 12px;">
+                <div style="font-size: 1.15rem; font-weight: 700; color: #10B981; margin-bottom: 0.25rem;" id="analysis-skill">-</div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Primary Skill</div>
+            </div>
+            <div class="glass-panel" style="padding: 1.25rem; text-align: center; border-radius: 12px;">
+                <div style="font-size: 1.15rem; font-weight: 700; color: #F59E0B; margin-bottom: 0.25rem;" id="analysis-sentiment">-</div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Sentiment Tone</div>
+            </div>
+        </div>
+
+        <!-- Skill-Gap Courses -->
+        <div id="skill-gap-courses-container" style="display: none; margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);"><i data-lucide="graduation-cap" style="width: 18px; height: 18px; display: inline-block;"></i> Skill-Gap Recommendations</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Struggling with these concepts? Master them with these recommended courses:</p>
+            <div id="skill-gap-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                <!-- Courses injected here -->
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Top Search Results -->
+            <div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);"><i data-lucide="list" style="width: 18px; height: 18px; display: inline-block;"></i> Top Matching Questions</h3>
+                <div id="results-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Results injected here -->
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);"><i data-lucide="lightbulb" style="width: 18px; height: 18px; display: inline-block;"></i> Recommended Next</h3>
+                <div id="recommendations-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Recs injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Flashcard UI Container -->
+    <div id="flashcard-container" style="display: none; flex-direction: column; align-items: center; justify-content: center; margin: 2rem 0;">
+        <div style="display: flex; justify-content: space-between; width: 100%; max-width: 600px; margin-bottom: 1rem; align-items: center;">
+            <span id="flashcard-progress" style="font-weight: 700; color: var(--text-muted);">Card 1 of 10</span>
+            <button class="btn btn-outline" onclick="exitFlashcards()" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">End Session</button>
+        </div>
+        
+        <div class="flashcard-scene" style="width: 100%; max-width: 600px; perspective: 1000px; height: 350px;">
+            <div id="flashcard-card" class="flashcard-card" style="width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;" onclick="flipCard()">
+                <!-- Front -->
+                <div class="flashcard-face flashcard-front" style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; background: var(--bg-card); border: 2px solid var(--border-glass); border-radius: 16px; padding: 2.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: var(--shadow-glass); overflow-y: auto;">
+                    <i data-lucide="help-circle" style="width: 32px; height: 32px; color: var(--primary); margin-bottom: 1.5rem; flex-shrink: 0;"></i>
+                    <h3 id="flashcard-question" style="font-size: 1.15rem; font-weight: 700; line-height: 1.6; margin: 0; padding-bottom: 1rem;">Loading question...</h3>
+                    <div style="margin-top: auto; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;">Click to Reveal Answer</div>
+                </div>
+                <!-- Back -->
+                <div class="flashcard-face flashcard-back" style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%); border: 2px solid var(--secondary); border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; overflow-y: auto; transform: rotateY(180deg); box-shadow: var(--shadow-glass);">
+                    <h4 style="font-size: 1rem; color: var(--secondary); margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Answer & Explanation</h4>
+                    <div id="flashcard-answer" style="font-size: 1rem; line-height: 1.6; color: var(--text-main); flex: 1;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="flashcard-controls" style="display: none; width: 100%; max-width: 600px; margin-top: 2rem; gap: 1rem; justify-content: center;">
+            <button class="btn btn-outline" onclick="nextCard('Hard')" style="flex: 1; border-color: #EF4444; color: #EF4444;">Hard (Review Again)</button>
+            <button class="btn btn-outline" onclick="nextCard('Good')" style="flex: 1; border-color: #F59E0B; color: #F59E0B;">Good</button>
+            <button class="btn btn-outline" onclick="nextCard('Easy')" style="flex: 1; border-color: #10B981; color: #10B981;">Easy</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let flashcards = [];
+    let currentCardIndex = 0;
+
+    // Check for URL parameters
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const q = urlParams.get('q');
+        
+        if (mode === 'flashcard' && q) {
+            switchInterviewTab('flashcard');
+            document.getElementById('flashcard-topic').value = q;
+            // Trigger the form submit programmatically
+            setTimeout(() => {
+                const btn = document.getElementById('flashcard-start-btn');
+                if(btn) btn.click();
+            }, 100);
+        }
+    });
+
+    // Helper to escape HTML to prevent code tags from disappearing
+    function escapeHtml(unsafe) {
+        return (unsafe || '').replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function switchInterviewTab(tab) {
+        if (tab === 'search') {
+            document.getElementById('tab-search').className = 'btn btn-primary';
+            document.getElementById('tab-flashcard').className = 'btn btn-outline';
+            document.getElementById('interview-search-form').style.display = 'flex';
+            document.getElementById('interview-flashcard-form').style.display = 'none';
+            document.getElementById('flashcard-container').style.display = 'none';
+            
+            // Re-show search results if we have them
+            if (document.getElementById('results-list').innerHTML.trim().length > 0) {
+                document.getElementById('interview-results-container').style.display = 'block';
+            }
+        } else {
+            document.getElementById('tab-search').className = 'btn btn-outline';
+            document.getElementById('tab-flashcard').className = 'btn btn-primary';
+            document.getElementById('interview-search-form').style.display = 'none';
+            document.getElementById('interview-flashcard-form').style.display = 'flex';
+            document.getElementById('interview-results-container').style.display = 'none';
+        }
+    }
+    async function performSearch(e) {
+        e.preventDefault();
+        
+        const query = document.getElementById('interview-query').value.trim();
+        const difficulty = document.getElementById('interview-difficulty').value;
+        if (!query) return;
+
+        const loader = document.getElementById('interview-loader');
+        const errorState = document.getElementById('interview-error');
+        const resultsContainer = document.getElementById('interview-results-container');
+        const btn = document.getElementById('interview-search-btn');
+
+        loader.style.display = 'flex';
+        errorState.style.display = 'none';
+        resultsContainer.style.display = 'none';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`/api/interview/search?q=${encodeURIComponent(query)}&difficulty=${encodeURIComponent(difficulty)}`);
+            const data = await res.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Populate Analysis
+            if (data.analysis) {
+                let cat = data.analysis.category.category || "-";
+                if (cat.includes(' > ')) cat = cat.split(' > ').pop(); // Just show subcategory
+                
+                document.getElementById('analysis-category').textContent = cat.substring(0, 25);
+                document.getElementById('analysis-difficulty').textContent = data.analysis.difficulty.difficulty || "-";
+                
+                let primarySkill = "-";
+                if (data.analysis.skills && data.analysis.skills.length > 0) {
+                    primarySkill = data.analysis.skills[0].replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+                document.getElementById('analysis-skill').textContent = primarySkill;
+                document.getElementById('analysis-sentiment').textContent = data.analysis.sentiment.label || "-";
+            }
+
+            // Populate Results
+            const resultsList = document.getElementById('results-list');
+            resultsList.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                data.results.forEach((r, i) => {
+                    const safeQuestion = escapeHtml(r.question);
+                    const displayQuestion = safeQuestion.length > 200 ? safeQuestion.substring(0, 200) + '...' : safeQuestion;
+                    const html = `
+                        <div class="glass-panel search-result-card" style="padding: 1.25rem; border-radius: 12px; cursor: pointer; transition: all 0.2s;" onclick="toggleAnswer(this, '${encodeURIComponent(r.question).replace(/'/g, "%27")}')">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                                <div>
+                                    <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; font-weight: 600; color: var(--text-main); line-height: 1.4;">${displayQuestion}</h4>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; background: var(--bg-main); padding: 0.2rem 0.5rem; border-radius: 4px;"><i data-lucide="folder" style="width: 12px; height: 12px;"></i> ${escapeHtml(r.category.split(' > ').pop())}</span>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; min-width: 80px;">
+                                    <div style="font-size: 1.15rem; font-weight: 700; color: var(--secondary);">${r.relevance_percentage}%</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Relevance</div>
+                                </div>
+                            </div>
+                            <div class="answer-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-glass);">
+                                <div class="answer-content" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted);">
+                                        <i data-lucide="loader-2" class="spin" style="width: 16px; height: 16px;"></i> Generating AI explanation...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    resultsList.innerHTML += html;
+                });
+            } else {
+                resultsList.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">No specific questions found.</div>';
+            }
+
+            // Populate Recommendations
+            const recsList = document.getElementById('recommendations-list');
+            recsList.innerHTML = '';
+            if (data.recommendations && data.recommendations.length > 0) {
+                data.recommendations.forEach(r => {
+                    const skills = (r.skills || []).slice(0, 2).map(s => s.replace('_', ' ')).join(', ');
+                    const safeQuestion = escapeHtml(r.question);
+                    const html = `
+                        <div class="glass-panel" style="padding: 1rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                            <h5 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 600; line-height: 1.4;">${safeQuestion.length > 80 ? safeQuestion.substring(0, 80) + '...' : safeQuestion}</h5>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                <strong>Level:</strong> ${r.difficulty} • <strong>Skills:</strong> ${skills}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; background: var(--bg-main); padding: 0.5rem; border-radius: 6px;">
+                                <i data-lucide="info" style="width: 12px; height: 12px; display: inline-block;"></i> ${r.why_recommended}
+                            </div>
+                        </div>
+                    `;
+                    recsList.innerHTML += html;
+                });
+            } else {
+                recsList.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">No recommendations available.</div>';
+            }
+
+            // Populate Skill-Gap Courses
+            const relatedCoursesList = document.getElementById('skill-gap-list');
+            relatedCoursesList.innerHTML = '';
+            if (data.related_courses && data.related_courses.length > 0) {
+                data.related_courses.forEach(c => {
+                    const html = `
+                        <div class="course-card" style="margin-bottom: 0;">
+                            <div class="card-content" style="padding: 1.25rem;">
+                                <div class="card-category" style="font-size: 0.75rem;">${c.provider}</div>
+                                <div class="card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem;">${c.title}</div>
+                                <div class="rating" style="margin-bottom: 0.75rem;">
+                                    <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>
+                                    <span style="font-weight: 700; color: var(--primary);">${c.stars}</span>
+                                    <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.25rem;">(${c.ratings_count})</span>
+                                </div>
+                                <a href="${c.url}" target="_blank" class="btn btn-outline" style="width: 100%; text-align: center; padding: 0.5rem; font-size: 0.85rem;">View Course</a>
+                            </div>
+                        </div>
+                    `;
+                    relatedCoursesList.innerHTML += html;
+                });
+                document.getElementById('skill-gap-courses-container').style.display = 'block';
+            } else {
+                document.getElementById('skill-gap-courses-container').style.display = 'none';
+            }
+
+            resultsContainer.style.display = 'block';
+            
+            if (window.lucide) lucide.createIcons();
+
+        } catch (err) {
+            console.error(err);
+            errorState.style.display = 'block';
+            if (err.message) errorState.textContent = err.message;
+        } finally {
+            loader.style.display = 'none';
+            btn.disabled = false;
+        }
+    }
+
+    // Globally expose toggleAnswer
+    window.toggleAnswer = async function(element, questionEncoded) {
+        const answerContainer = element.querySelector('.answer-container');
+        const answerContent = element.querySelector('.answer-content');
+        
+        if (answerContainer.style.display === 'none') {
+            answerContainer.style.display = 'block';
+            element.style.borderColor = 'var(--primary)';
+            
+            if (answerContent.dataset.loaded) return;
+            
+            try {
+                const res = await fetch(`/api/interview/explain?q=${questionEncoded}`);
+                const data = await res.json();
+                
+                if (data.explanation) {
+                    const formatted = data.explanation.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    answerContent.innerHTML = `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; border-left: 3px solid var(--secondary);">
+                        <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">✨ AI Explanation</div>
+                        ${formatted}
+                    </div>`;
+                    answerContent.dataset.loaded = 'true';
+                } else {
+                    answerContent.innerHTML = '<div style="color: var(--danger);">Failed to generate explanation.</div>';
+                }
+            } catch (e) {
+                answerContent.innerHTML = '<div style="color: var(--danger);">Error fetching explanation.</div>';
+            }
+        } else {
+            answerContainer.style.display = 'none';
+            element.style.borderColor = 'var(--border-glass)';
+        }
+    };
+
+    // Flashcard Logic
+    async function startFlashcards(e) {
+        e.preventDefault();
+        
+        const topic = document.getElementById('flashcard-topic').value.trim();
+        const difficulty = document.getElementById('flashcard-difficulty').value;
+        if (!topic) return;
+
+        const loader = document.getElementById('interview-loader');
+        const errorState = document.getElementById('interview-error');
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const btn = document.getElementById('flashcard-start-btn');
+
+        loader.style.display = 'flex';
+        errorState.style.display = 'none';
+        flashcardContainer.style.display = 'none';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`/api/interview/search?q=${encodeURIComponent(topic)}&difficulty=${encodeURIComponent(difficulty)}`);
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            // Combine results and recommendations for flashcards
+            flashcards = [];
+            if (data.results) flashcards.push(...data.results);
+            if (data.recommendations) {
+                // Ensure no direct duplicates
+                data.recommendations.forEach(r => {
+                    if (!flashcards.find(f => f.question === r.question)) {
+                        flashcards.push(r);
+                    }
+                });
+            }
+
+            if (flashcards.length === 0) {
+                throw new Error("No questions found for this topic.");
+            }
+
+            // Randomize Flashcards
+            flashcards.sort(() => Math.random() - 0.5);
+
+            // Start Session
+            currentCardIndex = 0;
+            flashcardContainer.style.display = 'flex';
+            document.getElementById('interview-flashcard-form').style.display = 'none';
+            
+            showCurrentCard();
+
+        } catch (err) {
+            console.error(err);
+            errorState.style.display = 'block';
+            if (err.message) errorState.textContent = err.message;
+        } finally {
+            loader.style.display = 'none';
+            btn.disabled = false;
+        }
+    }
+
+    function showCurrentCard() {
+        if (currentCardIndex >= flashcards.length) {
+            exitFlashcards();
+            return;
+        }
+
+        const card = flashcards[currentCardIndex];
+        document.getElementById('flashcard-progress').textContent = `Card ${currentCardIndex + 1} of ${flashcards.length}`;
+        
+        document.getElementById('flashcard-question').textContent = card.question;
+        
+        // Build answer HTML
+        let answerHtml = '';
+        if (card.answer) {
+            answerHtml += `<div style="margin-bottom: 1rem;"><strong>Correct Answer:</strong> ${card.answer}</div>`;
+        }
+        if (card.explanation) {
+            answerHtml += `<div><strong>Explanation:</strong><br/>${card.explanation.replace(/\\n/g, '<br/>')}</div>`;
+        }
+        
+        const answerElem = document.getElementById('flashcard-answer');
+        
+        if (!card.answer && !card.explanation) {
+            answerElem.innerHTML = "<div style='text-align: center; color: var(--text-muted); margin-top: 2rem;'><div class='spinner' style='width: 24px; height: 24px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;'></div><i>Generating AI explanation...</i></div>";
+            
+            fetch('/api/interview/explain?q=' + encodeURIComponent(card.question))
+                .then(r => r.json())
+                .then(data => {
+                    if (data.explanation) {
+                        answerElem.innerHTML = `<div><strong style="color: var(--secondary);"><i data-lucide="sparkles" style="width: 14px; height: 14px; display: inline-block;"></i> AI Explanation:</strong><br/><br/>${data.explanation.replace(/\\n/g, '<br/>').replace(/\n/g, '<br/>')}</div>`;
+                        card.explanation = data.explanation; // cache it for future views
+                        if (window.lucide) lucide.createIcons();
+                    } else {
+                        answerElem.innerHTML = "<i>No detailed explanation available for this question.</i>";
+                    }
+                })
+                .catch(() => {
+                    answerElem.innerHTML = "<i>No detailed explanation available for this question.</i>";
+                });
+        } else {
+            answerElem.innerHTML = answerHtml;
+        }
+        
+        // Reset rotation
+        const cardElem = document.getElementById('flashcard-card');
+        cardElem.style.transform = 'rotateY(0deg)';
+        document.getElementById('flashcard-controls').style.display = 'none';
+    }
+
+    function flipCard() {
+        const cardElem = document.getElementById('flashcard-card');
+        const isFlipped = cardElem.style.transform === 'rotateY(180deg)';
+        
+        if (!isFlipped) {
+            cardElem.style.transform = 'rotateY(180deg)';
+            document.getElementById('flashcard-controls').style.display = 'flex';
+        }
+    }
+
+    function nextCard(rating) {
+        // rating parameter can be used to track metrics later
+        currentCardIndex++;
+        showCurrentCard();
+    }
+
+    function exitFlashcards() {
+        document.getElementById('flashcard-container').style.display = 'none';
+        document.getElementById('interview-flashcard-form').style.display = 'flex';
+        const btn = document.getElementById('flashcard-start-btn');
+        btn.textContent = "Session Complete - Start New";
+        btn.style.background = "var(--primary)";
+    }
+</script>
+{% endblock %}

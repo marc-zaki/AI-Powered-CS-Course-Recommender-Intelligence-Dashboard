@@ -1,0 +1,3202 @@
+[
+  {
+    "id": 1,
+    "question": "What is a variable in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/variables/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 2,
+    "question": "In this example, the variables",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/variables/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 3,
+    "question": "What are the built-in data types in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/data-types/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 4,
+    "question": ": Floating-point number",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/data-types/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 5,
+    "question": "Explain the difference between mutable and immutable data types with examples.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/data-types/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 6,
+    "question": "What is an operator in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/operators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 7,
+    "question": "is a special symbol or keyword that performs operations on variables and values. Operators are used to manipulate data and perform various computations.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/operators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 8,
+    "question": "Understanding operators in Python.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/operators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 9,
+    "question": "), comparison operators (",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/operators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 10,
+    "question": "What is a loop in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/loops/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 11,
+    "question": "loop. Let's discuss each with examples.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/loops/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 12,
+    "question": "loop iterates over each element in the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/loops/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 13,
+    "question": "list, and the variable",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/loops/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 14,
+    "question": "statement prints each value.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/loops/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 15,
+    "question": "Python - Conditional Statements",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/conditional-statements/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 16,
+    "question": "Conditional Statements",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/conditional-statements/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 17,
+    "question": "What is a conditional statement in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/conditional-statements/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 18,
+    "question": "What is a function in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 19,
+    "question": "Example of a Simple Function:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 20,
+    "question": "In the example above:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 21,
+    "question": "is defined with one parameter (",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 22,
+    "question": "What is a list in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/lists/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 23,
+    "question": "How do you create an empty list in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/lists/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 24,
+    "question": "What is a tuple in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/tuples/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 25,
+    "question": "The program creates a tuple (",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/tuples/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 26,
+    "question": "How do you create an empty tuple in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/tuples/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 27,
+    "question": "is an unordered collection of unique elements. Sets are commonly used for membership testing, removing duplicates from other collections, and performing mathematical set operations. Here's an example program illustrating the use of sets:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/sets/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 28,
+    "question": "In this example, a set named",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/sets/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 29,
+    "question": "is created with elements 1 to 5. Elements are added using",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/sets/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 30,
+    "question": "How do you create an empty set in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/sets/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 31,
+    "question": "Python - Dictionaries",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/dictionaries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 32,
+    "question": "What is a dictionary in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/dictionaries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 33,
+    "question": "Name: John\nAge: 25\nCity: New York",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/dictionaries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 34,
+    "question": "How do you create an empty dictionary in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/dictionaries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 35,
+    "question": "What is an array in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 36,
+    "question": "is not a built-in data type like lists or dictionaries. Instead, it is typically represented using the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 37,
+    "question": "module or the more commonly used",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 38,
+    "question": "Python - Exception Handling",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/exception-handling/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 39,
+    "question": "What is an exception in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/exception-handling/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 40,
+    "question": "Explain the difference between syntax errors and exceptions.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/exception-handling/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 41,
+    "question": "What is debugging in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/debugging/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 42,
+    "question": "What is software testing, and why is it important?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/testing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 43,
+    "question": "framework or third-party libraries like",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/testing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 44,
+    "question": "Ensuring Functionality:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/testing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 45,
+    "question": "Python - Lambda Functions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/lambda-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 46,
+    "question": "What is a lambda function in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/lambda-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 47,
+    "question": "The syntax for a lambda function is:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/lambda-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 48,
+    "question": "lambda arguments: expression",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/lambda-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 49,
+    "question": "What is a decorator in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/decorators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 50,
+    "question": "Here is a simple example:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/decorators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 51,
+    "question": "In the above example,",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/decorators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 52,
+    "question": "is a decorator function that takes another function",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/decorators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 53,
+    "question": "What is a generator in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/generators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 54,
+    "question": "The output of the program will be:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/generators/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 55,
+    "question": "Python - Console Input/Output",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/console-io/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 56,
+    "question": "How do you take user input in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/console-io/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 57,
+    "question": "In Python, you can use the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/console-io/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 58,
+    "question": "Here's a simple example:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/console-io/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 59,
+    "question": "Python - Reading and Writing Files",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/reading-and-writing-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 60,
+    "question": "Reading and Writing Files",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/reading-and-writing-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 61,
+    "question": "How do you open a file in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/reading-and-writing-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 62,
+    "question": "In this example, the file named",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/reading-and-writing-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 63,
+    "question": "Python - Standard Libraries",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/standard-libraries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 64,
+    "question": "What is a standard library in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/standard-libraries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 65,
+    "question": "In this example, we import the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/standard-libraries/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 66,
+    "question": "What is a class in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/classes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 67,
+    "question": "Let's create a simple class called",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/classes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 68,
+    "question": "In this example, we defined a class",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/classes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 69,
+    "question": "that initializes the member variables",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/classes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 70,
+    "question": ". The class also has a method",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/classes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 71,
+    "question": "Python - Encapsulation",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/encapsulation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 72,
+    "question": "What is encapsulation in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/encapsulation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 73,
+    "question": "In this example, the variable",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/encapsulation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 74,
+    "question": "is encapsulated within the class",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/encapsulation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 75,
+    "question": "What is inheritance in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/inheritance/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 76,
+    "question": "Buddy\nWoof!\nWhiskers\nMeow!",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/inheritance/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 77,
+    "question": "Explain the concept of a superclass and a subclass.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/inheritance/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 78,
+    "question": "What is an object in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/objects/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 79,
+    "question": "Explain the concept of object-oriented programming (OOP).",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/objects/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 80,
+    "question": "Python - Polymorphism",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/polymorphism/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 81,
+    "question": "What is polymorphism in Python?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/polymorphism/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 82,
+    "question": "In this example, we have a base class",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/polymorphism/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 83,
+    "question": ". We then have two derived classes",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/polymorphism/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 84,
+    "question": ", both of which override the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Python Interview QuestionsPython",
+    "source_url": "https://www.indiabix.com/technical/python/polymorphism/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 85,
+    "question": "Variables and Data Storage",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/variables-and-data-storage/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 86,
+    "question": "Where in memory are my variables stored?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/variables-and-data-storage/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 87,
+    "question": "C Programming - Bits and Bytes",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/bits-and-bytes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 88,
+    "question": "What is the most efficient way to store flag values?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/bits-and-bytes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 89,
+    "question": "What is meant by \"bit masking\"?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/bits-and-bytes/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 90,
+    "question": "C Programming - Functions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 91,
+    "question": "When should I declare a function?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 92,
+    "question": "is used only in the\nsource file",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 93,
+    "question": ", it should be declared as shown here:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 94,
+    "question": "In this example, the function named",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 95,
+    "question": "C Programming - Preprocessors",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/preprocessors/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 96,
+    "question": "What is a macro, and how do you use it?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/preprocessors/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 97,
+    "question": "#define VERSION_STAMP \"1.02\"",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/preprocessors/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 98,
+    "question": "is simply a physical representation of the string  \"1.02\". When the  preprocessor is invoked, every\noccurrence of the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/preprocessors/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 99,
+    "question": "C Programming - Strings",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/strings/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 100,
+    "question": "What is the difference between a string copy (",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/strings/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 101,
+    "question": ") and a memory copy (",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/strings/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 102,
+    "question": ")? When should each be used?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/strings/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 103,
+    "question": ") has been moved. On the other hand, the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/strings/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 104,
+    "question": "C Programming - Arrays",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 105,
+    "question": "Do array subscripts always start with zero?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 106,
+    "question": "Yes. If you have an array",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 107,
+    "question": "is some value known at compile time), the first element is",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 108,
+    "question": ", and the last element is",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/arrays/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 109,
+    "question": "C Programming - Pointers",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/pointers/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 110,
+    "question": "is a pointer, the value of",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/pointers/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 111,
+    "question": "is the address\nof the object.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/pointers/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 112,
+    "question": "means \"apply the indirection operator to",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/pointers/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 113,
+    "question": "C Programming - Data Files",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/data-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 114,
+    "question": "contains a nonzero number, is there an error?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/data-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 115,
+    "question": "is used by many standard C library functions to pass back to\nyour program an error code that denotes specifically which error occurred. However, your\nprogram should not check the value of",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/data-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 116,
+    "question": "to determine whether an error occurred.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/data-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 117,
+    "question": ", there is a good chance that",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/data-files/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 118,
+    "question": "Standard Library Functions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/standard-library-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 119,
+    "question": "Why should I use standard library functions instead of writing my own?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/standard-library-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 120,
+    "question": "What header files do I need in order to define the standard library functions I use?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "C Programming Interview QuestionsC Programming",
+    "source_url": "https://www.indiabix.com/technical/c/standard-library-functions/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 121,
+    "question": "Minimum number of queues needed to implement the priority queue?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 122,
+    "question": "What is the data structures used to perform recursion?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 123,
+    "question": "What are the notations used in Evaluation of Arithmetic Expressions using prefix and postfix forms?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 124,
+    "question": "Polish and Reverse Polish notations.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 125,
+    "question": "AB + C * DE -  FG + ^ -",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 126,
+    "question": "Does  the  minimum  spanning  tree  of  a  graph  give  the  shortest  distance  between  any  2 specified nodes?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/6",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 127,
+    "question": "Which is the simplest file structure? (Sequential, Indexed, Random)",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/6",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 128,
+    "question": "Whether Linked List is linear or Non-linear data structure?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Data Structure BasicsData Structures",
+    "source_url": "https://www.indiabix.com/technical/data-structures/6",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 129,
+    "question": ".NET - .NET Framework",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-framework/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 130,
+    "question": "What is .NET Framework?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-framework/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 131,
+    "question": "Windows Forms applications",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-framework/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 132,
+    "question": ".NET - .NET Programming Concepts",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-programming-concepts/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 133,
+    "question": ".NET Programming Concepts",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-programming-concepts/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 134,
+    "question": "Define variable and constant.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-programming-concepts/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 135,
+    "question": "<Data_type> <variable_name> ;",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-programming-concepts/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 136,
+    "question": "const int interestRate = 10;",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-programming-concepts/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 137,
+    "question": ".NET - Object-Oriented Programming",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/object-oriented-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 138,
+    "question": "Object-Oriented Programming",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/object-oriented-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 139,
+    "question": "What is object-oriented programming (OOP)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/object-oriented-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 140,
+    "question": ".NET - Windows Controls",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-controls/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 141,
+    "question": "How can we auto size a button to fit its text?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-controls/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 142,
+    "question": "property, which can be set to",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-controls/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 143,
+    "question": ". If we set the value of the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-controls/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 144,
+    "question": "How can we display an icon or a bitmap image on the Button control?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-controls/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 145,
+    "question": "What is the full form of ADO?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/ado-dot-net/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 146,
+    "question": "Explain ADO.NET in brief.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/ado-dot-net/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 147,
+    "question": ".NET - Language-Integrated Query (LINQ)",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/language-integrated-query-linq/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 148,
+    "question": "Language-Integrated Query (LINQ)",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/language-integrated-query-linq/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 149,
+    "question": "What is Language Integrated Query (LINQ)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/language-integrated-query-linq/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 150,
+    "question": "What are LINQ query expressions?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/language-integrated-query-linq/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 151,
+    "question": "Write the basic steps to execute a LINQ query.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/language-integrated-query-linq/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 152,
+    "question": ".NET - Dynamic Programming",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dynamic-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 153,
+    "question": "What is Dynamic Language Runtime (DLR)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dynamic-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 154,
+    "question": "System.Runtime.CompilerServices",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dynamic-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 155,
+    "question": "What are the advantages of DLR?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dynamic-programming/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 156,
+    "question": "What is Extensible Markup Language (XML).",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/xml/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 157,
+    "question": "What is the version information in XML?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/xml/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 158,
+    "question": "If XML does not have closing tag will it work?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/xml/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 159,
+    "question": "Is XML case sensitive?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/xml/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 160,
+    "question": "What is the basic difference between ASP and ASP.NET?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/asp-dot-net/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 161,
+    "question": "In which event are the controls fully loaded?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/asp-dot-net/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 162,
+    "question": "What are Windows services?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/web-services/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 163,
+    "question": "Can you share a process between Windows services?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/web-services/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 164,
+    "question": "In .NET, which is the parent class to create all Windows services?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/web-services/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 165,
+    "question": "Which class in .NET is used to install a Windows service?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/web-services/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 166,
+    "question": ".NET - Windows Workflow Foundation",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-workflow-foundation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 167,
+    "question": "Windows Workflow Foundation",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-workflow-foundation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 168,
+    "question": "What is Windows Workflow Foundation (WF)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-workflow-foundation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 169,
+    "question": "What are the components of WF 4.0?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-workflow-foundation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 170,
+    "question": "Workflows and activities",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-workflow-foundation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 171,
+    "question": "Base activity library",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/windows-workflow-foundation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 172,
+    "question": "What is ASP.NET AJAX?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/asp-dot-net-ajax/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 173,
+    "question": "What is the difference between synchronous postback and asynchronous postback?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/asp-dot-net-ajax/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 174,
+    "question": "What technologies are being used in AJAX?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/asp-dot-net-ajax/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 175,
+    "question": ".NET - Application Deployment",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/application-deployment/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 176,
+    "question": "Application Deployment",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/application-deployment/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 177,
+    "question": "copy the hidden and system files?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/application-deployment/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 178,
+    "question": ".NET - .NET Assemblies",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-assemblies/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 179,
+    "question": "What are the different types of assemblies? Explain them in detail.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-assemblies/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 180,
+    "question": "Public or Shared Assembly",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/dot-net-assemblies/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 181,
+    "question": ".NET - Cloud Computing",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/cloud-computing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 182,
+    "question": "What is cloud computing?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/cloud-computing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 183,
+    "question": "What are the basic characteristics of cloud computing?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/cloud-computing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 184,
+    "question": "Elasticity and scalability.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": ".NET Interview Questions.NET",
+    "source_url": "https://www.indiabix.com/technical/dotnet/cloud-computing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 185,
+    "question": "Software Testing Basics",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/software-testing-basics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 186,
+    "question": "Can you explain the PDCA cycle and where testing fits in?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/software-testing-basics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 187,
+    "question": "Let's review the four steps in detail.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/software-testing-basics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 188,
+    "question": "Define the goal and the plan for achieving that goal.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/software-testing-basics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 189,
+    "question": "Software Testing - Testing Techniques",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-techniques/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 190,
+    "question": "Can you explain boundary value analysis?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-techniques/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 191,
+    "question": "Can you explain equivalence partitioning?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-techniques/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 192,
+    "question": "They should produce the same results.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-techniques/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 193,
+    "question": "Software Testing - The Software Processs",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/the-software-processs/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 194,
+    "question": "The Software Processs",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/the-software-processs/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 195,
+    "question": "What is a software process?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/the-software-processs/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 196,
+    "question": "Software Testing - CMMI",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/cmmi/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 197,
+    "question": "What is CMMI and what's the advantage of implementing it in an organization?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/cmmi/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 198,
+    "question": "Software engineering:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/cmmi/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 199,
+    "question": "Software Testing - Six Sigma",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/six-sigma/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 200,
+    "question": "Can you explain the different methodology for the execution and the design process stages in Six Sigma?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/six-sigma/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 201,
+    "question": "Software Testing - Metrics",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/metrics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 202,
+    "question": "What is meant by measures and metrics?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/metrics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 203,
+    "question": "Can you explain how the number of defects is measured?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/metrics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 204,
+    "question": "Can you explain unit and system test DRE?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/metrics/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 205,
+    "question": "Software Testing - Automated Testing",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/automated-testing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 206,
+    "question": "Does automation replace manual testing?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/automated-testing/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 207,
+    "question": "Software Testing - Testing Estimation",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 208,
+    "question": "What are the different Ways of doing Black Box testing?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 209,
+    "question": "Top down according to budget",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 210,
+    "question": "WBS (Work Breakdown Structure)",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 211,
+    "question": "Guess and gut feeling",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 212,
+    "question": "TPA (Test Point Analysis)",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 213,
+    "question": "Can you explain TPA analysis?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Software Testing Interview QuestionsSoftware Testing",
+    "source_url": "https://www.indiabix.com/technical/software-testing/testing-estimation/",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 214,
+    "question": "What is point-point link?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 215,
+    "question": "What is Multiple Access?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 216,
+    "question": "What are the advantages of Distributed Processing?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 217,
+    "question": "a. Security/Encapsulation",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 218,
+    "question": "b. Distributed database",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 219,
+    "question": "c. Faster Problem solving",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 220,
+    "question": "d. Security through redundancy",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 221,
+    "question": "e. Collaborative Processing",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 222,
+    "question": "What are the criteria necessary for an effective and efficient network?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 223,
+    "question": "What is SLIP (Serial Line Interface Protocol)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/34",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 224,
+    "question": "What is RIP (Routing Information Protocol)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/34",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 225,
+    "question": "What is source route?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Networking BasicsNetworking",
+    "source_url": "https://www.indiabix.com/technical/networking/34",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 226,
+    "question": "What are short, long and medium-term scheduling?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 227,
+    "question": "Medium  term scheduling",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 228,
+    "question": "is part of  the swapping  function. This relates  to processes  that \nare in a blocked or suspended state. They are swapped out of real-memory until they are ready to execute. The swapping-in decision is based on memory-management criteria.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 229,
+    "question": "What are turnaround time and response time?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 230,
+    "question": "What are the typical elements of a process image?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 231,
+    "question": "What is Executive in Windows NT?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/12",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 232,
+    "question": "What are the sub-components of I/O manager in Windows NT?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/12",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 233,
+    "question": "Network redirector/ Server",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/12",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 234,
+    "question": "What are DDks? Name an operating system that includes this feature.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/12",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 235,
+    "question": "What level of security does Windows NT meets?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Operating System BasicsOperating Systems",
+    "source_url": "https://www.indiabix.com/technical/operating-systems/12",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 236,
+    "question": "What is the difference between a JDK and a JVM?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Core JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/core-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 237,
+    "question": "What is a pointer and does Java support pointers?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Core JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/core-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 238,
+    "question": "What is the base class of all classes?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Core JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/core-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 239,
+    "question": "Does Java support multiple inheritance?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Core JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/core-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 240,
+    "question": "The sizeof operator is not a keyword.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Core JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/core-java/33",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 241,
+    "question": "What is the difference between an Interface and an Abstract class?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Java BasicsJava Programming",
+    "source_url": "https://www.indiabix.com/technical/java-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 242,
+    "question": ", etc.), but has some abstract methods.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Java BasicsJava Programming",
+    "source_url": "https://www.indiabix.com/technical/java-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 243,
+    "question": "Explain different way of using thread?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Java BasicsJava Programming",
+    "source_url": "https://www.indiabix.com/technical/java-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 244,
+    "question": "Difference between Swing and Awt?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Java BasicsJava Programming",
+    "source_url": "https://www.indiabix.com/technical/java-basics/25",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 245,
+    "question": "What will be the default values of all the elements of an array defined as an instance variable?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Java BasicsJava Programming",
+    "source_url": "https://www.indiabix.com/technical/java-basics/25",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 246,
+    "question": "What is synchronization and why is it important?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 247,
+    "question": "Can a lock be acquired on a class?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 248,
+    "question": "What's new with the stop(), suspend() and resume() methods in JDK 1.2?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 249,
+    "question": "methods have been deprecated in JDK 1.2.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 250,
+    "question": "What are the two basic ways in which classes that can be run as threads may be defined?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/47",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 251,
+    "question": ", or it may implement the",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/47",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 252,
+    "question": "What are the problems faced by Java programmers who don't use layout managers?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Advanced JavaJava Programming",
+    "source_url": "https://www.indiabix.com/technical/advanced-java/47",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 253,
+    "question": "What are the disadvantage in File Processing System?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 254,
+    "question": "Data redundancy and inconsistency.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 255,
+    "question": "Difficult in accessing data.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 256,
+    "question": "Concurrent access is not possible.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 257,
+    "question": "Describe the three levels of data abstraction?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 258,
+    "question": "The are three levels of abstraction:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 259,
+    "question": "Define the \"integrity rules\"?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 260,
+    "question": "There are two Integrity rules.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 261,
+    "question": "Referential Integrity:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 262,
+    "question": "What is cold backup and hot backup (in case of Oracle)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/22",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 263,
+    "question": "What is meant by Proactive, Retroactive and Simultaneous Update.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "DBMS BasicsDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms-basics/22",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 264,
+    "question": "Who is E.F. Codd, and why is he significant in the development of modern database systems?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 265,
+    "question": "What is SQL, and why is it important?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 266,
+    "question": "Write an SQL SELECT statement to display all the columns of the STUDENT table but only those rows where the Grade column is greater than or equal to 90.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 267,
+    "question": "SELECT * FROM STUDENT WHERE Grade >= 90;",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 268,
+    "question": "What is a distributed database?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/35",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 269,
+    "question": "What is the difference between horizontal and vertical partitioning?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/35",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 270,
+    "question": "Explain concurrency transparency.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/35",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 271,
+    "question": "Explain snapshot replication.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Database Management SystemDatabase Management",
+    "source_url": "https://www.indiabix.com/technical/dbms/35",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 272,
+    "question": "SQL Server General Questions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 273,
+    "question": "What are different normalization forms?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 274,
+    "question": "1NF: Eliminate Repeating Groups",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 275,
+    "question": "2NF: Eliminate Redundant Data",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 276,
+    "question": "BCNF: Boyce-Codd Normal Form",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 277,
+    "question": "SQL Server General Questions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 278,
+    "question": "What are primary keys and foreign keys?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 279,
+    "question": "What is User Defined Functions? What kind of User-Defined Functions can be created?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 280,
+    "question": "Scalar User-Defined Function",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 281,
+    "question": "Inline Table-Value User-Defined Function",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server General QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-general-questions/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 282,
+    "question": "SQL Server Common Questions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 283,
+    "question": "What is OLTP (Online Transaction Processing)?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 284,
+    "question": "What's the difference between a primary key and a unique key?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 285,
+    "question": "What is difference between DELETE and TRUNCATE commands?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 286,
+    "question": "TRUNCATE cannot be rolled back.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 287,
+    "question": "TRUNCATE is DDL Command.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 288,
+    "question": "SQL Server Common Questions",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/9",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 289,
+    "question": "What is an execution plan? When would you use it? How would you view the execution plan?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server Common QuestionsMicrosoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-common-questions/9",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 290,
+    "question": "What is Replication and Database Mirroring?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server 2008Microsoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-2008/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 291,
+    "question": "What are Sparse Columns?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server 2008Microsoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-2008/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 292,
+    "question": "What does TOP Operator Do?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "SQL Server 2008Microsoft SQL Server",
+    "source_url": "https://www.indiabix.com/technical/sql-server-2008/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 293,
+    "question": "How do you change File Access Permissions?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 294,
+    "question": "Every file has following attributes:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 295,
+    "question": "owner's user ID ( 16 bit integer )",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 296,
+    "question": "owner's group ID ( 16 bit integer )",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 297,
+    "question": "File access mode word",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 298,
+    "question": "(r w x) - (r w x) - (r w x)",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 299,
+    "question": "Therefore, for 'rw' the value is 6(4+2).",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 300,
+    "question": "What are links and symbolic links in UNIX file system?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 301,
+    "question": "Discuss the mount and unmount system calls.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/3",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 302,
+    "question": "How does the inode map to data block of a file?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix File ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-file-management/3",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 303,
+    "question": "UNIX Memory Management",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 304,
+    "question": "What scheme does the Kernel in Unix System V follow while choosing a swap device among the multiple swap devices?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 305,
+    "question": "What are the events done by the Kernel after a process is being swapped out from the main memory?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 306,
+    "question": "When Kernel swaps the process out of the primary memory, it performs the following:",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 307,
+    "question": "Is the Process before and after the swap are the same? Give reason.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 308,
+    "question": "UNIX Memory Management",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/11",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 309,
+    "question": "How the Kernel handles the copy on write bit of a page, when the bit is set?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/11",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 310,
+    "question": "For which kind of fault the page is checked first?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/11",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 311,
+    "question": "In what way the protection fault handler concludes?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/11",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 312,
+    "question": "How the Kernel handles both the page stealer and the fault handler?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Memory ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-memory-management/11",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 313,
+    "question": "UNIX Process Management",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 314,
+    "question": "fork(); fork(); fork();",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 315,
+    "question": "printf(\"Hello World!\");",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 316,
+    "question": ": \"Hello World\" will be printed 8 times.",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 317,
+    "question": "fork() \u00a0 - To create a new process",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/2",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 318,
+    "question": "UNIX Process Management",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 319,
+    "question": "How do you execute one program from within another?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/5",
+    "source": "IndiaBIX"
+  },
+  {
+    "id": 320,
+    "question": "What is IPC? What are the various schemes available?",
+    "answer": "",
+    "options": [],
+    "main_category": "Technical",
+    "sub_category": "Unix Process ManagementUNIX",
+    "source_url": "https://www.indiabix.com/technical/unix-process-management/5",
+    "source": "IndiaBIX"
+  }
+]

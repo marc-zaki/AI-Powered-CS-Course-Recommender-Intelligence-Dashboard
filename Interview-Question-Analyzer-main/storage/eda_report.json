@@ -1,0 +1,230 @@
+{
+  "basic_statistics": {
+    "total_questions": 320,
+    "unique_categories": 18,
+    "unique_main_categories": 1,
+    "avg_question_length": 7.0125,
+    "median_question_length": 6.0,
+    "min_question_length": 1,
+    "max_question_length": 38
+  },
+  "category_distribution": {
+    "total_categories": 18,
+    "distribution": {
+      "Technical > Python Interview QuestionsPython": 84,
+      "Technical > .NET Interview Questions.NET": 56,
+      "Technical > C Programming Interview QuestionsC Programming": 36,
+      "Technical > Software Testing Interview QuestionsSoftware Testing": 29,
+      "Technical > Networking BasicsNetworking": 12,
+      "Technical > DBMS BasicsDatabase Management": 11,
+      "Technical > Operating System BasicsOperating Systems": 10,
+      "Technical > SQL Server General QuestionsMicrosoft SQL Server": 10,
+      "Technical > Unix File ManagementUNIX": 10,
+      "Technical > Unix Memory ManagementUNIX": 10,
+      "Technical > Data Structure BasicsData Structures": 8,
+      "Technical > Database Management SystemDatabase Management": 8,
+      "Technical > SQL Server Common QuestionsMicrosoft SQL Server": 8,
+      "Technical > Unix Process ManagementUNIX": 8,
+      "Technical > Advanced JavaJava Programming": 7,
+      "Technical > Core JavaJava Programming": 5,
+      "Technical > Java BasicsJava Programming": 5,
+      "Technical > SQL Server 2008Microsoft SQL Server": 3
+    },
+    "top_10": {
+      "Technical > Python Interview QuestionsPython": 84,
+      "Technical > .NET Interview Questions.NET": 56,
+      "Technical > C Programming Interview QuestionsC Programming": 36,
+      "Technical > Software Testing Interview QuestionsSoftware Testing": 29,
+      "Technical > Networking BasicsNetworking": 12,
+      "Technical > DBMS BasicsDatabase Management": 11,
+      "Technical > Operating System BasicsOperating Systems": 10,
+      "Technical > SQL Server General QuestionsMicrosoft SQL Server": 10,
+      "Technical > Unix File ManagementUNIX": 10,
+      "Technical > Unix Memory ManagementUNIX": 10
+    },
+    "bottom_10": {
+      "Technical > Unix File ManagementUNIX": 10,
+      "Technical > Unix Memory ManagementUNIX": 10,
+      "Technical > Data Structure BasicsData Structures": 8,
+      "Technical > Database Management SystemDatabase Management": 8,
+      "Technical > SQL Server Common QuestionsMicrosoft SQL Server": 8,
+      "Technical > Unix Process ManagementUNIX": 8,
+      "Technical > Advanced JavaJava Programming": 7,
+      "Technical > Core JavaJava Programming": 5,
+      "Technical > Java BasicsJava Programming": 5,
+      "Technical > SQL Server 2008Microsoft SQL Server": 3
+    }
+  },
+  "difficulty_distribution": {
+    "Beginner": 135,
+    "Intermediate": 179,
+    "Advanced": 6
+  },
+  "skills_distribution": {
+    "general": 174,
+    "programming": 92,
+    "system_design": 22,
+    "database": 20,
+    "data_structures": 19,
+    "cloud": 7,
+    "web": 7,
+    "algorithms": 5,
+    "machine_learning": 2
+  },
+  "visualization_data": {
+    "category_bar": {
+      "labels": [
+        "Python Interview Que",
+        ".NET Interview Quest",
+        "C Programming Interv",
+        "Software Testing Int",
+        "Networking BasicsNet",
+        "DBMS BasicsDatabase ",
+        "Operating System Bas",
+        "SQL Server General Q",
+        "Unix File Management",
+        "Unix Memory Manageme"
+      ],
+      "values": [
+        84,
+        56,
+        36,
+        29,
+        12,
+        11,
+        10,
+        10,
+        10,
+        10
+      ]
+    },
+    "main_category_pie": {
+      "labels": [
+        "Technical"
+      ],
+      "values": [
+        320
+      ]
+    },
+    "difficulty_pie": {
+      "labels": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ],
+      "values": [
+        135,
+        179,
+        6
+      ]
+    },
+    "skills_bar": {
+      "labels": [
+        "General",
+        "Programming",
+        "System Design",
+        "Database",
+        "Data Structures",
+        "Cloud",
+        "Web",
+        "Algorithms",
+        "Machine Learning"
+      ],
+      "values": [
+        174,
+        92,
+        22,
+        20,
+        19,
+        7,
+        7,
+        5,
+        2
+      ]
+    },
+    "keywords": {
+      "the": 126,
+      "what": 99,
+      "and": 53,
+      "python": 38,
+      "are": 37,
+      "you": 21,
+      "net": 20,
+      "explain": 16,
+      "how": 16,
+      "testing": 16,
+      "can": 15,
+      "example": 14,
+      "data": 14,
+      "programming": 14,
+      "between": 13,
+      "software": 13,
+      "windows": 12,
+      "difference": 11,
+      "function": 11,
+      "class": 11,
+      "this": 10,
+      "used": 10,
+      "file": 10,
+      "process": 10,
+      "that": 9,
+      "which": 9,
+      "does": 9,
+      "value": 8,
+      "defined": 8,
+      "functions": 8,
+      "memory": 8,
+      "system": 8,
+      "create": 7,
+      "for": 7,
+      "use": 7,
+      "variable": 6,
+      "with": 6,
+      "program": 6,
+      "set": 6,
+      "user": 6,
+      "standard": 6,
+      "library": 6,
+      "object": 6,
+      "when": 6,
+      "should": 6,
+      "sql": 6,
+      "unix": 6,
+      "variables": 5,
+      "elements": 5,
+      "not": 5
+    }
+  },
+  "insights": [
+    {
+      "title": "Dataset Size",
+      "value": "320 questions",
+      "insight": "Large and comprehensive interview question database"
+    },
+    {
+      "title": "Category Coverage",
+      "value": "18 categories",
+      "insight": "Diverse coverage across multiple interview domains"
+    },
+    {
+      "title": "Most Tested Topic",
+      "value": "Technical > Python Interview QuestionsPython (84 questions)",
+      "insight": "This is the most frequently tested category in interviews"
+    },
+    {
+      "title": "Difficulty Breakdown",
+      "value": "42% Beginner-friendly questions",
+      "insight": "Good mix of difficulty levels for interview prep"
+    },
+    {
+      "title": "Top Skill Tested",
+      "value": "General",
+      "insight": "Most frequently tested skill across 174 questions"
+    },
+    {
+      "title": "Average Question Length",
+      "value": "7.0 words",
+      "insight": "Questions are concise and focused"
+    }
+  ]
+}
