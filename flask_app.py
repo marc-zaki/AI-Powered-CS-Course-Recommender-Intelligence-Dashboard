@@ -403,7 +403,7 @@ def search():
         except Exception:
             pass
 
-    return render_template('index.html', courses=results, interview_results=interview_results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
+    return render_template('index.html', courses=recs.to_dict('records'), interview_results=interview_results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
 
 @app.route('/validate_link')
 def validate_link():
