@@ -664,6 +664,118 @@ def api_interview_followup():
 
 
 # ─────────────────────────────────────────────────────────────────
+# Interview: Generative Flashcards & Voice Transcribe
+# ─────────────────────────────────────────────────────────────────
+
+@app.route('/api/interview/generate_technical', methods=['POST'])
+def api_interview_generate_technical():
+    """
+    Dynamically generates technical interview questions using LLM
+    instead of searching a static database.
+    """
+    data = request.get_json(force=True)
+    topic = data.get('topic', '').strip()
+    difficulty = data.get('difficulty', 'Intermediate')
+
+    if not topic:
+        return jsonify({"error": "Missing topic"}), 400
+
+    system_prompt = (
+        "You are an expert technical interviewer. Generate exactly 5 technical interview questions "
+        f"for the topic: '{topic}' at {difficulty} level. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"questions\": [\n"
+        "    { \"question\": \"<the interview question>\" }\n"
+        "  ]\n"
+        "}"
+    )
+
+    result = None
+    if GROQ_API_KEY:
+        try:
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "user", "content": system_prompt}],
+                "temperature": 0.5,
+                "max_tokens": 800,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
+            if res.status_code == 200:
+                import json as _json
+                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+        except Exception:
+            pass
+
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+            response = model.generate_content(system_prompt)
+            import json as _json
+            text = response.text.strip()
+            if text.startswith("```"):
+                text = text.split("```")[1]
+                if text.startswith("json"):
+                    text = text[4:]
+            result = _json.loads(text)
+        except Exception:
+            pass
+
+    if not result or "questions" not in result:
+        return jsonify({"error": "Could not generate technical questions."}), 503
+
+    return jsonify(result)
+
+@app.route('/api/interview/transcribe', methods=['POST'])
+def api_interview_transcribe():
+    """
+    Accepts an audio file upload, sends it to Groq Whisper API, 
+    and returns the transcribed text.
+    """
+    if 'audio' not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+        
+    if not GROQ_API_KEY:
+        return jsonify({"error": "GROQ_API_KEY is required for voice transcription"}), 503
+
+    audio_file = request.files['audio']
+    
+    import tempfile
+    import os
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_audio:
+        audio_file.save(temp_audio.name)
+        temp_path = temp_audio.name
+        
+    try:
+        url = "https://api.groq.com/openai/v1/audio/transcriptions"
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}"
+        }
+        with open(temp_path, "rb") as file_stream:
+            files = {
+                "file": (os.path.basename(temp_path), file_stream, "audio/webm")
+            }
+            data = {
+                "model": "whisper-large-v3-turbo"
+            }
+            response = requests.post(url, headers=headers, files=files, data=data, timeout=20.0)
+            
+        os.remove(temp_path)
+        
+        if response.status_code == 200:
+            return jsonify({"text": response.json().get("text", "").strip()})
+        else:
+            return jsonify({"error": f"Transcription failed: {response.text}"}), response.status_code
+    except Exception as e:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        return jsonify({"error": f"Internal error during transcription: {str(e)}"}), 500
+
+
+# ─────────────────────────────────────────────────────────────────
 # Interview: Behavioral STAR Mode (Feature 4)
 # ─────────────────────────────────────────────────────────────────
 

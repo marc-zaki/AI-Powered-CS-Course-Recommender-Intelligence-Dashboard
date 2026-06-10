@@ -35,7 +35,7 @@
             <button type="submit" class="btn btn-primary" id="interview-search-btn" style="padding: 0.75rem 1.5rem; font-weight: 700;">Analyze</button>
         </form>
 
-        <!-- Flashcard Mode Form -->
+        <!-- Flashcard Mode Form (Simplified: Generate & Start) -->
         <form id="interview-flashcard-form" onsubmit="return false;" style="display: none; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
             <div style="flex: 1; min-width: 250px;">
                 <input type="text" id="flashcard-topic" class="search-input" placeholder="Topic to practice (e.g., 'React', 'Databases')" required style="width: 100%;">
@@ -47,18 +47,23 @@
                     <option value="Advanced">Advanced</option>
                 </select>
             </div>
-            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-                <button type="button" onclick="analyzeFlashcardTopic()" class="btn btn-primary" id="flashcard-analyze-btn" style="padding: 0.75rem 1.25rem; font-weight: 700;">
-                    <i data-lucide="microscope" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Analyze
-                </button>
-                <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-secondary" id="flashcard-start-btn" style="padding: 0.75rem 1.25rem; font-weight: 700; background: var(--accent-indigo); color: white; border: none; border-radius: 8px;">Start Session</button>
-            </div>
+            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; background: var(--accent-indigo); border: none;">
+                <i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate & Start
+            </button>
         </form>
 
-        <!-- Behavioral Mode Form -->
+        <!-- Behavioral Mode Form (With Dropdown + Custom) -->
         <form id="interview-behavioral-form" onsubmit="return false;" style="display: none; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
             <div style="flex: 1; min-width: 250px;">
-                <input type="text" id="behavioral-topic" class="search-input" placeholder="Theme (e.g., 'teamwork, conflict resolution, leadership')" required style="width: 100%;">
+                <select id="behavioral-preset" class="search-input" style="width: 100%; cursor: pointer;" onchange="toggleCustomBehavioralInput()">
+                    <option value="Teamwork and Collaboration">Teamwork & Collaboration</option>
+                    <option value="Conflict Resolution">Conflict Resolution</option>
+                    <option value="Leadership and Initiative">Leadership & Initiative</option>
+                    <option value="Handling Failure and Mistakes">Handling Failure & Mistakes</option>
+                    <option value="Working Under Pressure and Deadlines">Working Under Pressure</option>
+                    <option value="custom" style="font-weight: 700; color: var(--primary);">+ Custom Topic...</option>
+                </select>
+                <input type="text" id="behavioral-topic-custom" class="search-input" placeholder="Type your custom theme..." style="width: 100%; margin-top: 0.5rem; display: none;">
             </div>
             <div style="width: 200px;">
                 <select id="behavioral-difficulty" class="search-input" style="width: 100%; cursor: pointer;">
@@ -107,13 +112,6 @@
             </div>
         </div>
 
-        <!-- Skill-Gap Courses -->
-        <div id="skill-gap-courses-container" style="display: none; margin-bottom: 2rem;">
-            <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);"><i data-lucide="graduation-cap" style="width: 18px; height: 18px; display: inline-block;"></i> Skill-Gap Recommendations</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Struggling with these concepts? Master them with these recommended courses:</p>
-            <div id="skill-gap-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;"></div>
-        </div>
-
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
             <div>
                 <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);"><i data-lucide="list" style="width: 18px; height: 18px; display: inline-block;"></i> Top Matching Questions</h3>
@@ -127,17 +125,17 @@
     </div>
     
     <!-- ═══════════════════════════════════════════════════════
-         FLASHCARD UI (Feature 3: with AI Answer Evaluation)
+         FLASHCARD UI (With Voice Recording)
          ═══════════════════════════════════════════════════════ -->
     <div id="flashcard-container" style="display: none; flex-direction: column; align-items: center; justify-content: center; margin: 2rem 0;">
         <div style="display: flex; justify-content: space-between; width: 100%; max-width: 680px; margin-bottom: 1rem; align-items: center;">
-            <span id="flashcard-progress" style="font-weight: 700; color: var(--text-muted);">Card 1 of 10</span>
+            <span id="flashcard-progress" style="font-weight: 700; color: var(--text-muted);">Card 1 of 5</span>
             <button class="btn btn-outline" onclick="exitFlashcards()" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">End Session</button>
         </div>
         
         <div class="flashcard-scene" style="width: 100%; max-width: 680px; perspective: 1000px; min-height: 380px;">
             <div id="flashcard-card" style="width: 100%; min-height: 380px; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;">
-                <!-- Front: Question + Answer Textarea -->
+                <!-- Front: Question + Answer Textarea + Voice Mic -->
                 <div class="flashcard-face flashcard-front" id="flashcard-front-face" style="position: absolute; width: 100%; min-height: 380px; backface-visibility: hidden; background: var(--bg-card); border: 2px solid var(--border-glass); border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; box-shadow: var(--shadow-glass); overflow-y: auto;">
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;">
                         <i data-lucide="help-circle" style="width: 24px; height: 24px; color: var(--primary); flex-shrink: 0;"></i>
@@ -145,30 +143,34 @@
                     </div>
                     
                     <div style="margin-top: auto;">
-                        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block;">Your Answer</label>
-                        <textarea id="flashcard-user-answer" placeholder="Type your answer here before revealing..." rows="4" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem; color: var(--text-main); font-size: 0.95rem; resize: vertical; font-family: inherit; box-sizing: border-box;"></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block;">Your Answer</label>
+                            <!-- Mic Button -->
+                            <button id="mic-btn" onclick="toggleVoiceRecording('flashcard-user-answer', 'mic-btn')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; transition: color 0.2s;">
+                                <i data-lucide="mic" id="mic-icon" style="width: 16px; height: 16px;"></i> <span id="mic-text">Record</span>
+                            </button>
+                        </div>
+                        <textarea id="flashcard-user-answer" placeholder="Type your answer here or click Record..." rows="4" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.75rem; color: var(--text-main); font-size: 0.95rem; resize: vertical; font-family: inherit; box-sizing: border-box;"></textarea>
+                        
                         <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem;">
                             <button onclick="submitFlashcardAnswer()" class="btn btn-primary" id="flashcard-submit-btn" style="flex: 1; font-weight: 700;">
                                 <i data-lucide="send" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Submit & Evaluate
                             </button>
-                            <button onclick="flipCard()" class="btn btn-outline" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
-                                Skip →
-                            </button>
+                            <button onclick="flipCard()" class="btn btn-outline" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">Skip →</button>
                         </div>
                     </div>
                 </div>
                 <!-- Back: Official Answer -->
                 <div class="flashcard-face flashcard-back" style="position: absolute; width: 100%; min-height: 380px; backface-visibility: hidden; background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%); border: 2px solid var(--secondary); border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; overflow-y: auto; transform: rotateY(180deg); box-shadow: var(--shadow-glass);">
-                    <h4 style="font-size: 1rem; color: var(--secondary); margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">Answer & Explanation</h4>
+                    <h4 style="font-size: 1rem; color: var(--secondary); margin-top: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">AI Explanation</h4>
                     <div id="flashcard-answer" style="font-size: 1rem; line-height: 1.6; color: var(--text-main); flex: 1;"></div>
                     <button onclick="flipCard()" class="btn btn-outline" style="margin-top: 1rem; font-size: 0.85rem;">← Back to Question</button>
                 </div>
             </div>
         </div>
 
-        <!-- AI Feedback Panel (Feature 3) -->
+        <!-- AI Feedback Panel -->
         <div id="flashcard-ai-feedback" style="display: none; width: 100%; max-width: 680px; margin-top: 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid var(--border-glass);">
-            <!-- Score Header -->
             <div id="feedback-header" style="padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <span id="feedback-verdict-icon" style="font-size: 1.5rem;">⏳</span>
@@ -182,27 +184,32 @@
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">/ 10</div>
                 </div>
             </div>
-            <!-- Feedback Text -->
             <div style="padding: 0 1.5rem 1rem; border-top: 1px solid var(--border-glass);">
                 <p id="feedback-text" style="margin: 1rem 0 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></p>
             </div>
-            <!-- Follow-up Question (if incomplete) -->
+            <!-- Follow-up Question -->
             <div id="followup-section" style="display: none; padding: 1rem 1.5rem; background: rgba(139, 92, 246, 0.08); border-top: 1px solid rgba(139, 92, 246, 0.2);">
                 <div style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem;">
                     <i data-lucide="message-circle-question" style="width: 20px; height: 20px; color: var(--primary); flex-shrink: 0; margin-top: 2px;"></i>
-                    <div>
+                    <div style="flex: 1;">
                         <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); font-weight: 600; margin-bottom: 0.25rem;">Follow-up Question</div>
-                        <p id="followup-question-text" style="margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text-main); line-height: 1.5;"></p>
+                        <p id="followup-question-text" style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 600; color: var(--text-main); line-height: 1.5;"></p>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Your Follow-up Answer</label>
+                            <button id="mic-btn-followup" onclick="toggleVoiceRecording('followup-answer-input', 'mic-btn-followup')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; transition: color 0.2s;">
+                                <i data-lucide="mic" id="mic-icon-followup" style="width: 14px; height: 14px;"></i> <span id="mic-text-followup">Record</span>
+                            </button>
+                        </div>
+                        <textarea id="followup-answer-input" placeholder="Answer the follow-up..." rows="3" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.65rem; color: var(--text-main); font-size: 0.9rem; resize: vertical; font-family: inherit; box-sizing: border-box;"></textarea>
                     </div>
                 </div>
-                <textarea id="followup-answer-input" placeholder="Answer the follow-up..." rows="3" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.65rem; color: var(--text-main); font-size: 0.9rem; resize: vertical; font-family: inherit; box-sizing: border-box;"></textarea>
                 <button onclick="submitFollowup()" class="btn btn-primary" style="margin-top: 0.6rem; width: 100%; font-weight: 700;" id="followup-submit-btn">
                     Submit Follow-up Answer
                 </button>
             </div>
         </div>
 
-        <!-- Rating buttons (shown only when verdict = 'complete') -->
         <div id="flashcard-controls" style="display: none; width: 100%; max-width: 680px; margin-top: 1rem; gap: 1rem; justify-content: center;">
             <button class="btn btn-outline" onclick="nextCard('Hard')" style="flex: 1; border-color: #EF4444; color: #EF4444;">Hard (Review Again)</button>
             <button class="btn btn-outline" onclick="nextCard('Good')" style="flex: 1; border-color: #F59E0B; color: #F59E0B;">Good</button>
@@ -211,16 +218,14 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════
-         BEHAVIORAL MODE UI (Feature 4: STAR Scorecard)
+         BEHAVIORAL MODE UI
          ═══════════════════════════════════════════════════════ -->
     <div id="behavioral-container" style="display: none; flex-direction: column; align-items: center; margin: 2rem 0;">
-        <!-- Question Navigation -->
         <div style="display: flex; justify-content: space-between; width: 100%; max-width: 740px; margin-bottom: 1rem; align-items: center;">
             <span id="behavioral-progress" style="font-weight: 700; color: var(--text-muted);">Question 1 of 6</span>
             <button class="btn btn-outline" onclick="exitBehavioral()" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">End Session</button>
         </div>
 
-        <!-- Behavioral Question Card -->
         <div style="width: 100%; max-width: 740px; background: var(--bg-card); border: 2px solid var(--border-glass); border-radius: 16px; padding: 2rem; box-shadow: var(--shadow-glass);">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
                 <span style="background: rgba(139,92,246,0.15); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">🧠</span>
@@ -230,15 +235,19 @@
                 </div>
             </div>
 
-            <!-- STAR Tips -->
             <div id="star-tips-box" style="background: var(--bg-main); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; border-left: 3px solid var(--primary);">
                 <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem;">💡 STAR Tips</div>
                 <p id="behavioral-star-tips" style="margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;"></p>
             </div>
 
-            <!-- Answer Input -->
-            <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block;">Your STAR Answer</label>
-            <textarea id="behavioral-answer-input" placeholder="Structure your answer: describe the Situation, your Task, the Actions you took, and the Results you achieved..." rows="7" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.85rem; color: var(--text-main); font-size: 0.95rem; resize: vertical; font-family: inherit; box-sizing: border-box; margin-bottom: 1rem;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Your STAR Answer</label>
+                <!-- Mic Button -->
+                <button id="mic-btn-behavioral" onclick="toggleVoiceRecording('behavioral-answer-input', 'mic-btn-behavioral')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; transition: color 0.2s;">
+                    <i data-lucide="mic" id="mic-icon-behavioral" style="width: 14px; height: 14px;"></i> <span id="mic-text-behavioral">Record</span>
+                </button>
+            </div>
+            <textarea id="behavioral-answer-input" placeholder="Structure your answer: Situation, Task, Action, Result..." rows="7" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.85rem; color: var(--text-main); font-size: 0.95rem; resize: vertical; font-family: inherit; box-sizing: border-box; margin-bottom: 1rem;"></textarea>
 
             <div style="display: flex; gap: 0.75rem;">
                 <button onclick="submitStarAnswer()" class="btn btn-primary" id="star-submit-btn" style="flex: 2; font-weight: 700;">
@@ -248,27 +257,21 @@
             </div>
         </div>
 
-        <!-- STAR Scorecard (Feature 4) -->
         <div id="star-scorecard" style="display: none; width: 100%; max-width: 740px; margin-top: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; overflow: hidden;">
             <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-glass); display: flex; align-items: center; gap: 0.75rem;">
                 <i data-lucide="bar-chart-2" style="width: 20px; height: 20px; color: var(--primary);"></i>
                 <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">STAR Scorecard</h3>
             </div>
             <div style="padding: 1.25rem 1.5rem;">
-                <!-- S row -->
                 <div class="star-row" data-key="situation" data-label="S — Situation" data-color="#6366f1"></div>
-                <!-- T row -->
                 <div class="star-row" data-key="task" data-label="T — Task" data-color="#8b5cf6"></div>
-                <!-- A row -->
                 <div class="star-row" data-key="action" data-label="A — Action" data-color="#06b6d4"></div>
-                <!-- R row -->
                 <div class="star-row" data-key="result" data-label="R — Result" data-color="#10b981"></div>
 
                 <div id="star-overall" style="margin-top: 1.25rem; padding: 1rem; background: var(--bg-main); border-radius: 10px; border-left: 3px solid var(--secondary);">
                     <div style="font-size: 0.75rem; color: var(--secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;">✨ Overall Feedback</div>
                     <p id="star-overall-text" style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></p>
                 </div>
-
                 <button onclick="nextBehavioralCard()" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; font-weight: 700;">Next Question →</button>
             </div>
         </div>
@@ -278,27 +281,13 @@
 
 {% block scripts %}
 <style>
-    .star-component-bar {
-        height: 8px;
-        border-radius: 4px;
-        background: var(--bg-main);
-        overflow: hidden;
-        flex: 1;
-    }
-    .star-component-bar-fill {
-        height: 100%;
-        border-radius: 4px;
-        transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .flashcard-face {
-        box-sizing: border-box;
-    }
-    #flashcard-card {
-        transform-style: preserve-3d;
-    }
-    #flashcard-card.is-flipped {
-        transform: rotateY(180deg);
-    }
+    .star-component-bar { height: 8px; border-radius: 4px; background: var(--bg-main); overflow: hidden; flex: 1; }
+    .star-component-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .flashcard-face { box-sizing: border-box; }
+    #flashcard-card { transform-style: preserve-3d; }
+    #flashcard-card.is-flipped { transform: rotateY(180deg); }
+    .recording-pulse { animation: pulse-red 1.5s infinite; color: #ef4444 !important; }
+    @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 </style>
 <script>
     // ── Shared State ────────────────────────────────────────────────
@@ -310,18 +299,14 @@
     let behavioralQuestions = [];
     let currentBehavioralIndex = 0;
 
+    // Voice State
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let activeMicTarget = null;
+    let activeMicBtnId = null;
+
     // ── Init ─────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-        const q = urlParams.get('q');
-        if (mode === 'flashcard' && q) {
-            switchInterviewTab('flashcard');
-            document.getElementById('flashcard-topic').value = q;
-            setTimeout(() => startFlashcardsFromForm(), 100);
-        }
-
-        // Build STAR row templates
         document.querySelectorAll('.star-row').forEach(row => {
             const key = row.dataset.key;
             const label = row.dataset.label;
@@ -339,25 +324,84 @@
         });
     });
 
-    // ── Helpers ───────────────────────────────────────────────────────
-    function escapeHtml(unsafe) {
-        return (unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    // ── Voice Recording Logic (Feature 1 Roadmap) ────────────────────
+    async function toggleVoiceRecording(targetInputId, btnId) {
+        const btn = document.getElementById(btnId);
+        const textSpan = document.getElementById(btnId.replace('btn', 'text'));
+        
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            // Stop recording
+            mediaRecorder.stop();
+            btn.classList.remove('recording-pulse');
+            textSpan.textContent = "Transcribing...";
+            return;
+        }
+
+        // Start recording
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+            audioChunks = [];
+            activeMicTarget = targetInputId;
+            activeMicBtnId = btnId;
+
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+            
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                stream.getTracks().forEach(track => track.stop()); // release mic
+                
+                // Upload to transcribe endpoint
+                const formData = new FormData();
+                formData.append("audio", audioBlob, "recording.webm");
+                
+                try {
+                    const res = await fetch('/api/interview/transcribe', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+                    
+                    const targetEl = document.getElementById(activeMicTarget);
+                    // Append the transcribed text
+                    if (targetEl.value.length > 0) targetEl.value += " ";
+                    targetEl.value += data.text;
+                    
+                } catch (err) {
+                    alert("Transcription failed: " + err.message);
+                } finally {
+                    const b = document.getElementById(activeMicBtnId);
+                    const t = document.getElementById(activeMicBtnId.replace('btn', 'text'));
+                    if (b) b.classList.remove('recording-pulse');
+                    if (t) t.textContent = "Record";
+                }
+            };
+
+            mediaRecorder.start(250);
+            btn.classList.add('recording-pulse');
+            textSpan.textContent = "Stop";
+
+        } catch (err) {
+            alert("Microphone access denied or not supported.");
+        }
     }
 
+    // Optional: Speak AI responses aloud
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); // stop current
+            const msg = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(msg);
+        }
+    }
+
+
+    // ── Helpers ───────────────────────────────────────────────────────
+    function escapeHtml(unsafe) { return (unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
     function setLoader(visible, text = 'Analyzing questions via AI Models...') {
         document.getElementById('interview-loader').style.display = visible ? 'flex' : 'none';
         document.getElementById('loader-text').textContent = text;
     }
-
-    function showError(msg) {
-        const el = document.getElementById('interview-error');
-        el.style.display = 'block';
-        el.textContent = msg || 'An error occurred. Please try again.';
-    }
-
-    function hideError() {
-        document.getElementById('interview-error').style.display = 'none';
-    }
+    function showError(msg) { const el = document.getElementById('interview-error'); el.style.display = 'block'; el.textContent = msg || 'Error.'; }
+    function hideError() { document.getElementById('interview-error').style.display = 'none'; }
 
     // ── Tab Switching ─────────────────────────────────────────────────
     function switchInterviewTab(tab) {
@@ -370,138 +414,91 @@
         document.getElementById('behavioral-container').style.display = 'none';
         document.getElementById('interview-results-container').style.display = 'none';
         hideError();
-
-        if (tab === 'search' && document.getElementById('results-list').innerHTML.trim().length > 0) {
-            document.getElementById('interview-results-container').style.display = 'block';
-        }
     }
 
-    // ── Analyze button (Flashcard Mode) ───────────────────────────────
-    async function analyzeFlashcardTopic() {
-        const topic = document.getElementById('flashcard-topic').value.trim();
-        const difficulty = document.getElementById('flashcard-difficulty').value;
-        if (!topic) return;
-        const btn = document.getElementById('flashcard-analyze-btn');
-        btn.disabled = true;
-        setLoader(true);
-        hideError();
-        document.getElementById('interview-results-container').style.display = 'none';
-        try {
-            const res = await fetch(`/api/interview/search?q=${encodeURIComponent(topic)}&difficulty=${encodeURIComponent(difficulty)}`);
-            const data = await res.json();
-            if (data.error) throw new Error(data.error);
-            populateAnalysisCards(data.analysis);
-            populateSkillGapCourses(data.related_courses);
-            document.getElementById('results-list').innerHTML = '';
-            document.getElementById('recommendations-list').innerHTML = '';
-            document.getElementById('interview-results-container').style.display = 'block';
-            if (window.lucide) lucide.createIcons();
-        } catch (err) { showError(err.message); }
-        finally { setLoader(false); btn.disabled = false; }
-    }
-
-    // ── Start Flashcard Session ───────────────────────────────────────
+    // ── Flashcard Session (Generative Route) ──────────────────────────
     async function startFlashcardsFromForm() {
         const topic = document.getElementById('flashcard-topic').value.trim();
         const difficulty = document.getElementById('flashcard-difficulty').value;
         if (!topic) return;
         const btn = document.getElementById('flashcard-start-btn');
         btn.disabled = true;
-        setLoader(true, 'Generating flashcard session...');
+        setLoader(true, 'Generating unique technical questions...');
         hideError();
-        document.getElementById('flashcard-container').style.display = 'none';
-        document.getElementById('interview-results-container').style.display = 'none';
+        
         try {
-            const res = await fetch(`/api/interview/search?q=${encodeURIComponent(topic)}&difficulty=${encodeURIComponent(difficulty)}`);
+            // Hit the NEW generative endpoint instead of local search
+            const res = await fetch('/api/interview/generate_technical', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic, difficulty })
+            });
             const data = await res.json();
             if (data.error) throw new Error(data.error);
-            flashcards = [...(data.results || []), ...(data.recommendations || [])];
-            flashcards = flashcards.filter((f, i, a) => a.findIndex(x => x.question === f.question) === i);
-            if (flashcards.length === 0) throw new Error('No questions found for this topic.');
-            flashcards.sort(() => Math.random() - 0.5);
+            if (!data.questions || data.questions.length === 0) throw new Error("Could not generate questions.");
+            
+            flashcards = data.questions;
             currentCardIndex = 0;
             document.getElementById('interview-flashcard-form').style.display = 'none';
             document.getElementById('flashcard-container').style.display = 'flex';
             showCurrentCard();
-        } catch (err) { showError(err.message); document.getElementById('interview-flashcard-form').style.display = 'flex'; }
-        finally { setLoader(false); btn.disabled = false; }
+        } catch (err) { 
+            showError(err.message); 
+        } finally { 
+            setLoader(false); btn.disabled = false; 
+        }
     }
 
-    // ── Show Flashcard ─────────────────────────────────────────────────
     function showCurrentCard() {
         if (currentCardIndex >= flashcards.length) { exitFlashcards(); return; }
         const card = flashcards[currentCardIndex];
         conversationHistory = [];
-        currentFollowupQuestion = null;
-
+        
         document.getElementById('flashcard-progress').textContent = `Card ${currentCardIndex + 1} of ${flashcards.length}`;
         document.getElementById('flashcard-question').textContent = card.question;
         document.getElementById('flashcard-user-answer').value = '';
         document.getElementById('flashcard-ai-feedback').style.display = 'none';
         document.getElementById('flashcard-controls').style.display = 'none';
         document.getElementById('followup-section').style.display = 'none';
-        document.getElementById('followup-answer-input').value = '';
-
-        // Reset flip
+        
         const cardElem = document.getElementById('flashcard-card');
         cardElem.classList.remove('is-flipped');
         cardElem.style.transform = 'rotateY(0deg)';
 
-        // Pre-load answer on back face
-        let answerHtml = '';
-        if (card.answer) answerHtml += `<div style="margin-bottom: 1rem;"><strong>Correct Answer:</strong> ${card.answer}</div>`;
-        if (card.explanation) answerHtml += `<div><strong>Explanation:</strong><br/>${card.explanation.replace(/\\n/g, '<br/>')}</div>`;
         const answerElem = document.getElementById('flashcard-answer');
-        if (!card.answer && !card.explanation) {
-            answerElem.innerHTML = "<div style='text-align: center; color: var(--text-muted); margin-top: 2rem;'><div class='spinner' style='width: 24px; height: 24px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;'></div><i>Generating AI explanation...</i></div>";
-            fetch('/api/interview/explain?q=' + encodeURIComponent(card.question))
-                .then(r => r.json())
-                .then(data => {
-                    if (data.explanation) {
-                        answerElem.innerHTML = `<div><strong style="color: var(--secondary);">AI Explanation:</strong><br/><br/>${data.explanation.replace(/\\n/g, '<br/>').replace(/\n/g, '<br/>')}</div>`;
-                        card.explanation = data.explanation;
-                        if (window.lucide) lucide.createIcons();
-                    } else {
-                        answerElem.innerHTML = '<i>No detailed explanation available.</i>';
-                    }
-                }).catch(() => { answerElem.innerHTML = '<i>Error loading explanation.</i>'; });
-        } else {
-            answerElem.innerHTML = answerHtml;
-        }
-        if (window.lucide) lucide.createIcons();
+        answerElem.innerHTML = "<div style='text-align: center; color: var(--text-muted); margin-top: 2rem;'><div class='spinner' style='width: 24px; height: 24px; border: 3px solid var(--primary-glow); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;'></div><i>Generating AI explanation...</i></div>";
+        
+        // Background fetch official explanation
+        fetch('/api/interview/explain?q=' + encodeURIComponent(card.question))
+            .then(r => r.json())
+            .then(data => {
+                if (data.explanation) {
+                    answerElem.innerHTML = `<div>${data.explanation.replace(/\\n/g, '<br/>').replace(/\n/g, '<br/>')}</div>`;
+                } else answerElem.innerHTML = '<i>No explanation available.</i>';
+            }).catch(() => { answerElem.innerHTML = '<i>Error loading explanation.</i>'; });
     }
 
-    // ── Flip Card ──────────────────────────────────────────────────────
     function flipCard() {
         const cardElem = document.getElementById('flashcard-card');
         const isFlipped = cardElem.style.transform === 'rotateY(180deg)';
         cardElem.style.transform = isFlipped ? 'rotateY(0deg)' : 'rotateY(180deg)';
-        if (!isFlipped) {
-            // Flipped to answer side — show rating buttons without AI evaluation
-            document.getElementById('flashcard-controls').style.display = 'flex';
-        }
+        if (!isFlipped) document.getElementById('flashcard-controls').style.display = 'flex';
     }
 
-    // ── Submit Answer for AI Evaluation (Feature 3) ───────────────────
     async function submitFlashcardAnswer() {
         const userAnswer = document.getElementById('flashcard-user-answer').value.trim();
-        if (!userAnswer) { alert('Please type an answer before submitting.'); return; }
+        if (!userAnswer) { alert('Please type or record an answer first.'); return; }
         const question = flashcards[currentCardIndex].question;
         const btn = document.getElementById('flashcard-submit-btn');
-        btn.disabled = true;
-        btn.textContent = 'Evaluating...';
+        btn.disabled = true; btn.textContent = 'Evaluating...';
 
-        const feedbackEl = document.getElementById('flashcard-ai-feedback');
-        feedbackEl.style.display = 'block';
+        document.getElementById('flashcard-ai-feedback').style.display = 'block';
         document.getElementById('feedback-verdict-icon').textContent = '⏳';
         document.getElementById('feedback-verdict-label').textContent = 'Evaluating...';
         document.getElementById('feedback-score').textContent = '-';
         document.getElementById('feedback-text').textContent = '';
         document.getElementById('followup-section').style.display = 'none';
         document.getElementById('flashcard-controls').style.display = 'none';
-
-        // Color the header while waiting
-        document.getElementById('feedback-header').style.background = 'rgba(99,102,241,0.1)';
 
         try {
             const res = await fetch('/api/interview/followup', {
@@ -514,44 +511,36 @@
 
             const isComplete = data.verdict === 'complete';
             const score = data.score || 5;
-            const scoreColor = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
-
             document.getElementById('feedback-header').style.background = isComplete ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.08)';
             document.getElementById('feedback-verdict-icon').textContent = isComplete ? '✅' : '🔄';
             document.getElementById('feedback-verdict-label').textContent = isComplete ? 'Answer Complete!' : 'Good start — try the follow-up';
             document.getElementById('feedback-score').textContent = score;
-            document.getElementById('feedback-score').style.color = scoreColor;
+            document.getElementById('feedback-score').style.color = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
             document.getElementById('feedback-text').textContent = data.feedback;
 
-            // Update conversation history for follow-up chaining
-            conversationHistory.push({ role: 'user', content: `Question: ${question}\n\nCandidate's answer: ${userAnswer}` });
+            conversationHistory.push({ role: 'user', content: userAnswer });
             conversationHistory.push({ role: 'assistant', content: JSON.stringify(data) });
 
             if (isComplete) {
                 document.getElementById('flashcard-controls').style.display = 'flex';
+                // Speak positive feedback
+                speakText("Good job. " + data.feedback);
             } else if (data.followup) {
-                currentFollowupQuestion = data.followup;
                 document.getElementById('followup-question-text').textContent = data.followup;
                 document.getElementById('followup-answer-input').value = '';
                 document.getElementById('followup-section').style.display = 'block';
+                // Speak the follow-up question
+                speakText(data.followup);
             } else {
                 document.getElementById('flashcard-controls').style.display = 'flex';
             }
-            if (window.lucide) lucide.createIcons();
-        } catch (err) {
-            document.getElementById('feedback-text').textContent = 'Error: ' + err.message;
-            document.getElementById('flashcard-controls').style.display = 'flex';
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="send" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Submit & Evaluate';
-            if (window.lucide) lucide.createIcons();
-        }
+        } catch (err) { document.getElementById('feedback-text').textContent = 'Error: ' + err.message; document.getElementById('flashcard-controls').style.display = 'flex'; }
+        finally { btn.disabled = false; btn.innerHTML = '<i data-lucide="send" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Submit & Evaluate'; if(window.lucide) lucide.createIcons(); }
     }
 
-    // ── Submit Follow-up Answer ───────────────────────────────────────
     async function submitFollowup() {
         const userAnswer = document.getElementById('followup-answer-input').value.trim();
-        if (!userAnswer) { alert('Please type an answer to the follow-up.'); return; }
+        if (!userAnswer) return;
         const question = flashcards[currentCardIndex].question;
         const btn = document.getElementById('followup-submit-btn');
         btn.disabled = true; btn.textContent = 'Evaluating...';
@@ -559,23 +548,17 @@
             const res = await fetch('/api/interview/followup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    question,
-                    user_answer: userAnswer,
-                    conversation_history: conversationHistory
-                })
+                body: JSON.stringify({ question, user_answer: userAnswer, conversation_history: conversationHistory })
             });
             const data = await res.json();
             if (data.error) throw new Error(data.error);
 
             const isComplete = data.verdict === 'complete';
             const score = data.score || 5;
-            const scoreColor = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
-
             document.getElementById('feedback-verdict-icon').textContent = isComplete ? '✅' : '🔄';
             document.getElementById('feedback-verdict-label').textContent = isComplete ? 'Answer Complete!' : 'Keep going...';
             document.getElementById('feedback-score').textContent = score;
-            document.getElementById('feedback-score').style.color = scoreColor;
+            document.getElementById('feedback-score').style.color = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
             document.getElementById('feedback-text').textContent = data.feedback;
 
             conversationHistory.push({ role: 'user', content: userAnswer });
@@ -584,44 +567,52 @@
             if (isComplete || !data.followup) {
                 document.getElementById('followup-section').style.display = 'none';
                 document.getElementById('flashcard-controls').style.display = 'flex';
+                speakText("Great. " + data.feedback);
             } else {
-                currentFollowupQuestion = data.followup;
                 document.getElementById('followup-question-text').textContent = data.followup;
                 document.getElementById('followup-answer-input').value = '';
                 btn.disabled = false; btn.textContent = 'Submit Follow-up Answer';
+                speakText(data.followup);
             }
-        } catch (err) {
-            document.getElementById('feedback-text').textContent = 'Error: ' + err.message;
-            document.getElementById('flashcard-controls').style.display = 'flex';
-        } finally {
-            if (btn) { btn.disabled = false; btn.textContent = 'Submit Follow-up Answer'; }
-        }
+        } catch (err) { document.getElementById('feedback-text').textContent = 'Error: ' + err.message; document.getElementById('flashcard-controls').style.display = 'flex'; }
     }
 
-    function nextCard(rating) { currentCardIndex++; showCurrentCard(); }
+    function nextCard() { currentCardIndex++; showCurrentCard(); window.speechSynthesis.cancel(); }
     function exitFlashcards() {
+        window.speechSynthesis.cancel();
         document.getElementById('flashcard-container').style.display = 'none';
         document.getElementById('interview-flashcard-form').style.display = 'flex';
         const btn = document.getElementById('flashcard-start-btn');
-        btn.textContent = 'Session Complete — Start New';
-        btn.style.background = 'var(--primary)';
+        btn.innerHTML = '<i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate New Session';
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // BEHAVIORAL MODE (Feature 4)
+    // BEHAVIORAL MODE
     // ═══════════════════════════════════════════════════════════════
 
+    function toggleCustomBehavioralInput() {
+        const preset = document.getElementById('behavioral-preset').value;
+        const customInput = document.getElementById('behavioral-topic-custom');
+        if (preset === 'custom') {
+            customInput.style.display = 'block';
+            customInput.focus();
+        } else {
+            customInput.style.display = 'none';
+            customInput.value = '';
+        }
+    }
+
     async function generateBehavioralQuestions() {
-        const topic = document.getElementById('behavioral-topic').value.trim();
+        const preset = document.getElementById('behavioral-preset').value;
+        let topic = preset === 'custom' ? document.getElementById('behavioral-topic-custom').value.trim() : preset;
+        if (!topic) { alert("Please provide a topic."); return; }
+        
         const difficulty = document.getElementById('behavioral-difficulty').value;
-        if (!topic) return;
         const btn = document.getElementById('behavioral-generate-btn');
         btn.disabled = true;
         setLoader(true, 'Generating behavioral questions via AI...');
         hideError();
-        document.getElementById('behavioral-container').style.display = 'none';
-        document.getElementById('star-scorecard').style.display = 'none';
-
+        
         try {
             const res = await fetch('/api/interview/behavioral', {
                 method: 'POST',
@@ -637,13 +628,8 @@
             document.getElementById('interview-behavioral-form').style.display = 'none';
             document.getElementById('behavioral-container').style.display = 'flex';
             showCurrentBehavioralCard();
-        } catch (err) {
-            showError(err.message);
-            document.getElementById('interview-behavioral-form').style.display = 'flex';
-        } finally {
-            setLoader(false);
-            btn.disabled = false;
-        }
+        } catch (err) { showError(err.message); document.getElementById('interview-behavioral-form').style.display = 'flex'; } 
+        finally { setLoader(false); btn.disabled = false; }
     }
 
     function showCurrentBehavioralCard() {
@@ -656,12 +642,16 @@
         document.getElementById('star-scorecard').style.display = 'none';
         document.getElementById('star-submit-btn').disabled = false;
         document.getElementById('star-submit-btn').innerHTML = '<i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Evaluate My STAR Answer';
+        
+        // Optionally read behavioral question out loud
+        speakText(q.question);
+        
         if (window.lucide) lucide.createIcons();
     }
 
     async function submitStarAnswer() {
         const userAnswer = document.getElementById('behavioral-answer-input').value.trim();
-        if (!userAnswer) { alert('Please write your STAR answer before evaluating.'); return; }
+        if (!userAnswer) { alert('Please write or record your STAR answer before evaluating.'); return; }
         const question = behavioralQuestions[currentBehavioralIndex].question;
         const btn = document.getElementById('star-submit-btn');
         btn.disabled = true; btn.textContent = 'Analyzing STAR components...';
@@ -675,182 +665,97 @@
             const data = await res.json();
             if (data.error) throw new Error(data.error);
 
-            // Render STAR scorecard
             ['situation', 'task', 'action', 'result'].forEach(key => {
                 const comp = data[key] || { score: 0, comment: '' };
                 const score = comp.score || 0;
-                const barEl = document.getElementById(`star-bar-${key}`);
-                const scoreEl = document.getElementById(`star-score-${key}`);
-                const commentEl = document.getElementById(`star-comment-${key}`);
-                if (barEl) { barEl.style.width = `${score * 10}%`; }
-                if (scoreEl) { scoreEl.textContent = `${score}/10`; }
-                if (commentEl) { commentEl.textContent = comp.comment || ''; }
+                document.getElementById(`star-bar-${key}`).style.width = `${score * 10}%`;
+                document.getElementById(`star-score-${key}`).textContent = `${score}/10`;
+                document.getElementById(`star-comment-${key}`).textContent = comp.comment || '';
             });
             document.getElementById('star-overall-text').textContent = data.overall || '';
             document.getElementById('star-scorecard').style.display = 'block';
             document.getElementById('star-scorecard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            if (window.lucide) lucide.createIcons();
+            
+            speakText("Feedback generated. " + (data.overall || ""));
         } catch (err) {
             showError('STAR analysis failed: ' + err.message);
+        } finally {
             btn.disabled = false;
             btn.innerHTML = '<i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Evaluate My STAR Answer';
             if (window.lucide) lucide.createIcons();
         }
     }
 
-    function nextBehavioralCard() {
-        currentBehavioralIndex++;
-        showCurrentBehavioralCard();
-    }
-
+    function nextBehavioralCard() { currentBehavioralIndex++; window.speechSynthesis.cancel(); showCurrentBehavioralCard(); }
     function exitBehavioral() {
+        window.speechSynthesis.cancel();
         document.getElementById('behavioral-container').style.display = 'none';
         document.getElementById('interview-behavioral-form').style.display = 'flex';
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // SEARCH MODE (unchanged)
+    // SEARCH MODE (Static DB Search)
     // ═══════════════════════════════════════════════════════════════
-
     async function performSearch(e) {
         e.preventDefault();
         const query = document.getElementById('interview-query').value.trim();
         const difficulty = document.getElementById('interview-difficulty').value;
-        if (!query) return;
         const btn = document.getElementById('interview-search-btn');
-        btn.disabled = true;
-        setLoader(true);
-        hideError();
+        btn.disabled = true; setLoader(true); hideError();
         document.getElementById('interview-results-container').style.display = 'none';
         try {
             const res = await fetch(`/api/interview/search?q=${encodeURIComponent(query)}&difficulty=${encodeURIComponent(difficulty)}`);
             const data = await res.json();
             if (data.error) throw new Error(data.error);
-            populateAnalysisCards(data.analysis);
-            populateResultsList(data.results);
-            populateRecommendations(data.recommendations);
-            populateSkillGapCourses(data.related_courses);
+            
+            if (data.analysis) {
+                let cat = data.analysis.category?.category || '-';
+                if (cat.includes(' > ')) cat = cat.split(' > ').pop();
+                document.getElementById('analysis-category').textContent = cat.substring(0, 25);
+                document.getElementById('analysis-difficulty').textContent = data.analysis.difficulty?.difficulty || '-';
+                let primarySkill = '-';
+                if (data.analysis.skills && data.analysis.skills.length > 0) primarySkill = data.analysis.skills[0].replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                document.getElementById('analysis-skill').textContent = primarySkill;
+                document.getElementById('analysis-sentiment').textContent = data.analysis.sentiment?.label || '-';
+            }
+
+            const list = document.getElementById('results-list');
+            list.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(r => {
+                    const displayQ = escapeHtml(r.question).substring(0, 200);
+                    list.innerHTML += `
+                        <div class="glass-panel search-result-card" style="padding: 1.25rem; border-radius: 12px; cursor: pointer;" onclick="toggleAnswer(this, '${encodeURIComponent(r.question).replace(/'/g, "%27")}')">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                                <div><h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem;">${displayQ}</h4></div>
+                                <div style="font-size: 1.15rem; font-weight: 700; color: var(--secondary);">${r.relevance_percentage}%</div>
+                            </div>
+                            <div class="answer-container" style="display: none; margin-top: 1rem; border-top: 1px solid var(--border-glass); padding-top: 1rem;">
+                                <div class="answer-content"><div style="color: var(--text-muted);"><i data-lucide="loader-2" class="spin" style="width: 16px;"></i> Loading...</div></div>
+                            </div>
+                        </div>`;
+                });
+            }
             document.getElementById('interview-results-container').style.display = 'block';
             if (window.lucide) lucide.createIcons();
-        } catch (err) { showError(err.message); }
-        finally { setLoader(false); btn.disabled = false; }
+        } catch (err) { showError(err.message); } finally { setLoader(false); btn.disabled = false; }
     }
-
-    function populateAnalysisCards(analysis) {
-        if (!analysis) return;
-        let cat = analysis.category?.category || '-';
-        if (cat.includes(' > ')) cat = cat.split(' > ').pop();
-        document.getElementById('analysis-category').textContent = cat.substring(0, 25);
-        document.getElementById('analysis-difficulty').textContent = analysis.difficulty?.difficulty || '-';
-        let primarySkill = '-';
-        if (analysis.skills && analysis.skills.length > 0) {
-            primarySkill = analysis.skills[0].replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
-        }
-        document.getElementById('analysis-skill').textContent = primarySkill;
-        document.getElementById('analysis-sentiment').textContent = analysis.sentiment?.label || '-';
-    }
-
-    function populateSkillGapCourses(courses) {
-        const list = document.getElementById('skill-gap-list');
-        list.innerHTML = '';
-        if (courses && courses.length > 0) {
-            courses.forEach(c => {
-                list.innerHTML += `
-                    <div class="course-card" style="margin-bottom: 0;">
-                        <div class="card-content" style="padding: 1.25rem;">
-                            <div class="card-category" style="font-size: 0.75rem;">${c.provider}</div>
-                            <div class="card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem;">${c.title}</div>
-                            <div class="rating" style="margin-bottom: 0.75rem;">
-                                <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>
-                                <span style="font-weight: 700; color: var(--primary);">${c.stars}</span>
-                                <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.25rem;">(${c.ratings_count})</span>
-                            </div>
-                            <a href="${c.url}" target="_blank" class="btn btn-outline" style="width: 100%; text-align: center; padding: 0.5rem; font-size: 0.85rem;">View Course</a>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('skill-gap-courses-container').style.display = 'block';
-        } else {
-            document.getElementById('skill-gap-courses-container').style.display = 'none';
-        }
-    }
-
-    function populateResultsList(results) {
-        const list = document.getElementById('results-list');
-        list.innerHTML = '';
-        if (results && results.length > 0) {
-            results.forEach(r => {
-                const safeQ = escapeHtml(r.question);
-                const displayQ = safeQ.length > 200 ? safeQ.substring(0, 200) + '...' : safeQ;
-                list.innerHTML += `
-                    <div class="glass-panel search-result-card" style="padding: 1.25rem; border-radius: 12px; cursor: pointer; transition: all 0.2s;" onclick="toggleAnswer(this, '${encodeURIComponent(r.question).replace(/'/g, "%27")}')">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
-                            <div>
-                                <h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; font-weight: 600; color: var(--text-main); line-height: 1.4;">${displayQ}</h4>
-                                <div style="font-size: 0.85rem; color: var(--text-muted);">
-                                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; background: var(--bg-main); padding: 0.2rem 0.5rem; border-radius: 4px;"><i data-lucide="folder" style="width: 12px; height: 12px;"></i> ${escapeHtml(r.category.split(' > ').pop())}</span>
-                                </div>
-                            </div>
-                            <div style="text-align: right; min-width: 80px;">
-                                <div style="font-size: 1.15rem; font-weight: 700; color: var(--secondary);">${r.relevance_percentage}%</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">Relevance</div>
-                            </div>
-                        </div>
-                        <div class="answer-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-glass);">
-                            <div class="answer-content" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main); text-align: left;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted);"><i data-lucide="loader-2" class="spin" style="width: 16px; height: 16px;"></i> Generating AI explanation...</div>
-                            </div>
-                        </div>
-                    </div>`;
-            });
-        } else {
-            list.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">No specific questions found.</div>';
-        }
-    }
-
-    function populateRecommendations(recs) {
-        const list = document.getElementById('recommendations-list');
-        list.innerHTML = '';
-        if (recs && recs.length > 0) {
-            recs.forEach(r => {
-                const skills = (r.skills || []).slice(0, 2).map(s => s.replace('_', ' ')).join(', ');
-                const safeQ = escapeHtml(r.question);
-                list.innerHTML += `
-                    <div class="glass-panel" style="padding: 1rem; border-radius: 12px; border-left: 4px solid var(--primary);">
-                        <h5 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 600; line-height: 1.4;">${safeQ.length > 80 ? safeQ.substring(0, 80) + '...' : safeQ}</h5>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;"><strong>Level:</strong> ${r.difficulty} • <strong>Skills:</strong> ${skills}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; background: var(--bg-main); padding: 0.5rem; border-radius: 6px;">
-                            <i data-lucide="info" style="width: 12px; height: 12px; display: inline-block;"></i> ${r.why_recommended}
-                        </div>
-                    </div>`;
-            });
-        } else {
-            list.innerHTML = '<div style="color: var(--text-muted); font-style: italic;">No recommendations available.</div>';
-        }
-    }
-
+    
     window.toggleAnswer = async function(element, questionEncoded) {
-        const answerContainer = element.querySelector('.answer-container');
-        const answerContent = element.querySelector('.answer-content');
-        if (answerContainer.style.display === 'none') {
-            answerContainer.style.display = 'block';
-            element.style.borderColor = 'var(--primary)';
-            if (answerContent.dataset.loaded) return;
+        const container = element.querySelector('.answer-container');
+        const content = element.querySelector('.answer-content');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            if (content.dataset.loaded) return;
             try {
                 const res = await fetch(`/api/interview/explain?q=${questionEncoded}`);
                 const data = await res.json();
                 if (data.explanation) {
-                    const formatted = data.explanation.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    answerContent.innerHTML = `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; border-left: 3px solid var(--secondary);">
-                        <div style="font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">✨ AI Explanation</div>
-                        ${formatted}</div>`;
-                    answerContent.dataset.loaded = 'true';
-                } else { answerContent.innerHTML = '<div style="color: var(--danger);">Failed to generate explanation.</div>'; }
-            } catch (e) { answerContent.innerHTML = '<div style="color: var(--danger);">Error fetching explanation.</div>'; }
-        } else {
-            answerContainer.style.display = 'none';
-            element.style.borderColor = 'var(--border-glass)';
-        }
+                    content.innerHTML = `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px;">✨ AI Explanation<br/>${data.explanation.replace(/\n/g, '<br>')}</div>`;
+                    content.dataset.loaded = 'true';
+                }
+            } catch (e) { content.innerHTML = '<div style="color: red;">Error fetching explanation.</div>'; }
+        } else { container.style.display = 'none'; }
     };
 </script>
 {% endblock %}
