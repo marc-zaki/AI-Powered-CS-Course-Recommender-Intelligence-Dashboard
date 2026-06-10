@@ -35,7 +35,7 @@
         </form>
 
         <!-- Flashcard Mode Form (Hidden by default) -->
-        <form id="interview-flashcard-form" onsubmit="startFlashcards(event)" style="display: none; gap: 1rem; flex-wrap: wrap;">
+        <form id="interview-flashcard-form" onsubmit="return false;" style="display: none; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
             <div style="flex: 1; min-width: 250px;">
                 <input type="text" id="flashcard-topic" class="search-input" placeholder="Topic to practice (e.g., 'React', 'Databases')" required style="width: 100%;">
             </div>
@@ -46,8 +46,14 @@
                     <option value="Advanced">Advanced</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-secondary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; background: var(--accent-indigo); color: white; border: none; border-radius: 8px;">Start Session</button>
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                <button type="button" onclick="analyzeFlashcardTopic()" class="btn btn-primary" id="flashcard-analyze-btn" style="padding: 0.75rem 1.25rem; font-weight: 700;">
+                    <i data-lucide="microscope" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Analyze
+                </button>
+                <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-secondary" id="flashcard-start-btn" style="padding: 0.75rem 1.25rem; font-weight: 700; background: var(--accent-indigo); color: white; border: none; border-radius: 8px;">Start Session</button>
+            </div>
         </form>
+
     </div>
 
     <!-- Loader -->
@@ -159,8 +165,7 @@
             document.getElementById('flashcard-topic').value = q;
             // Trigger the form submit programmatically
             setTimeout(() => {
-                const btn = document.getElementById('flashcard-start-btn');
-                if(btn) btn.click();
+                startFlashcardsFromForm();
             }, 100);
         }
     });
@@ -173,6 +178,99 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+
+    // ── Analyze button in Flashcard mode ────────────────────────────
+    async function analyzeFlashcardTopic() {
+        const topic = document.getElementById('flashcard-topic').value.trim();
+        const difficulty = document.getElementById('flashcard-difficulty').value;
+        if (!topic) return;
+
+        const loader = document.getElementById('interview-loader');
+        const errorState = document.getElementById('interview-error');
+        const resultsContainer = document.getElementById('interview-results-container');
+        const analyzeBtn = document.getElementById('flashcard-analyze-btn');
+
+        loader.style.display = 'flex';
+        errorState.style.display = 'none';
+        resultsContainer.style.display = 'none';
+        analyzeBtn.disabled = true;
+
+        try {
+            const res = await fetch(`/api/interview/search?q=${encodeURIComponent(topic)}&difficulty=${encodeURIComponent(difficulty)}`);
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            // Populate Analysis summary cards (same as search mode)
+            if (data.analysis) {
+                let cat = data.analysis.category.category || "-";
+                if (cat.includes(' > ')) cat = cat.split(' > ').pop();
+                document.getElementById('analysis-category').textContent = cat.substring(0, 25);
+                document.getElementById('analysis-difficulty').textContent = data.analysis.difficulty.difficulty || "-";
+
+                let primarySkill = "-";
+                if (data.analysis.skills && data.analysis.skills.length > 0) {
+                    primarySkill = data.analysis.skills[0].replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+                document.getElementById('analysis-skill').textContent = primarySkill;
+                document.getElementById('analysis-sentiment').textContent = data.analysis.sentiment.label || "-";
+            }
+
+            // Populate skill-gap courses
+            const relatedCoursesList = document.getElementById('skill-gap-list');
+            relatedCoursesList.innerHTML = '';
+            if (data.related_courses && data.related_courses.length > 0) {
+                data.related_courses.forEach(c => {
+                    const html = `
+                        <div class="course-card" style="margin-bottom: 0;">
+                            <div class="card-content" style="padding: 1.25rem;">
+                                <div class="card-category" style="font-size: 0.75rem;">${c.provider}</div>
+                                <div class="card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem;">${c.title}</div>
+                                <div class="rating" style="margin-bottom: 0.75rem;">
+                                    <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i>
+                                    <span style="font-weight: 700; color: var(--primary);">${c.stars}</span>
+                                    <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.25rem;">(${c.ratings_count})</span>
+                                </div>
+                                <a href="${c.url}" target="_blank" class="btn btn-outline" style="width: 100%; text-align: center; padding: 0.5rem; font-size: 0.85rem;">View Course</a>
+                            </div>
+                        </div>
+                    `;
+                    relatedCoursesList.innerHTML += html;
+                });
+                document.getElementById('skill-gap-courses-container').style.display = 'block';
+            } else {
+                document.getElementById('skill-gap-courses-container').style.display = 'none';
+            }
+
+            // Show only the analysis + courses; hide question results for flashcard mode
+            document.getElementById('results-list').innerHTML = '';
+            document.getElementById('recommendations-list').innerHTML = '';
+            resultsContainer.style.display = 'block';
+
+            if (window.lucide) lucide.createIcons();
+
+        } catch (err) {
+            console.error(err);
+            errorState.style.display = 'block';
+            if (err.message) errorState.textContent = err.message;
+        } finally {
+            loader.style.display = 'none';
+            analyzeBtn.disabled = false;
+        }
+    }
+
+    // ── Start Session button (replaces old form submit) ──────────────
+    async function startFlashcardsFromForm() {
+        const topic = document.getElementById('flashcard-topic').value.trim();
+        const difficulty = document.getElementById('flashcard-difficulty').value;
+        if (!topic) return;
+
+        const fakeEvent = { preventDefault: () => {} };
+        fakeEvent.topic = topic;
+        fakeEvent.difficulty = difficulty;
+        await startFlashcards(fakeEvent);
+    }
+
 
     function switchInterviewTab(tab) {
         if (tab === 'search') {

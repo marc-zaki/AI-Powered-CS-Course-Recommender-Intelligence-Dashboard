@@ -110,6 +110,16 @@ tfidf_matrix = None
 mongo_client = None
 mongo_db = None
 
+# Global scraper state (shared across threads)
+scraper_state = {
+    "status": "idle",   # idle | running | done | error
+    "log": [],
+    "inserted": 0,
+    "found": 0,
+    "started_at": None,
+    "finished_at": None,
+}
+
 # Global variables for Interview Analyzer
 interview_ir_engine = None
 interview_ai_models = None
@@ -2840,5 +2850,240 @@ def edit_course():
         
     return jsonify({"success": False, "error": "Course not found"}), 404
 
+
+# ─────────────────────────────────────────────────────────────────
+# Admin: Live Scraper Control
+# ─────────────────────────────────────────────────────────────────
+
+def _run_scraper_background():
+    """Run the scraper in a background thread and update scraper_state."""
+    global scraper_state
+    try:
+        # Patch scraper to capture log output
+        import io as _io
+        import sys as _sys
+        from scraper import run_scraper as _run_scraper
+
+        scraper_state["status"] = "running"
+        scraper_state["log"] = ["[Scraper] Starting live scraper — this may take several minutes..."]
+        scraper_state["inserted"] = 0
+        scraper_state["found"] = 0
+        scraper_state["started_at"] = datetime.utcnow().isoformat()
+        scraper_state["finished_at"] = None
+
+        # Redirect stdout so we capture print() from scraper.py
+        old_stdout = _sys.stdout
+        _sys.stdout = captured = _io.StringIO()
+
+        try:
+            _run_scraper()
+        finally:
+            _sys.stdout = old_stdout
+
+        output = captured.getvalue()
+        lines = [l for l in output.splitlines() if l.strip()]
+        scraper_state["log"] = lines[-80:]  # keep last 80 lines
+
+        # Parse inserted count from output
+        for line in lines:
+            if "Inserted" in line and "new courses" in line:
+                try:
+                    parts = line.split()
+                    idx = parts.index("Inserted")
+                    scraper_state["inserted"] = int(parts[idx + 1])
+                except Exception:
+                    pass
+            if "Fetched" in line and "courses total" in line:
+                try:
+                    parts = line.split()
+                    scraper_state["found"] = int(parts[1])
+                except Exception:
+                    pass
+
+        scraper_state["log"].append(f"[Scraper] ✅ Done! Found {scraper_state['found']} courses, inserted {scraper_state['inserted']} new ones.")
+        scraper_state["status"] = "done"
+
+        # Reload AI model with new data
+        thread = threading.Thread(target=load_and_train_model)
+        thread.start()
+
+    except Exception as exc:
+        scraper_state["log"].append(f"[Scraper] ❌ Error: {exc}")
+        scraper_state["status"] = "error"
+    finally:
+        scraper_state["finished_at"] = datetime.utcnow().isoformat()
+
+
+@app.route('/api/admin/run_scraper', methods=['POST'])
+@admin_required
+def api_run_scraper():
+    global scraper_state
+    if scraper_state.get("status") == "running":
+        return jsonify({"success": False, "error": "Scraper is already running."}), 400
+
+    # Reset state
+    scraper_state = {
+        "status": "starting",
+        "log": ["[Scraper] Initializing..."],
+        "inserted": 0,
+        "found": 0,
+        "started_at": datetime.utcnow().isoformat(),
+        "finished_at": None,
+    }
+
+    t = threading.Thread(target=_run_scraper_background, daemon=True)
+    t.start()
+    return jsonify({"success": True, "message": "Scraper started in background."})
+
+
+@app.route('/api/admin/scraper_status', methods=['GET'])
+@admin_required
+def api_scraper_status():
+    global scraper_state
+    return jsonify({
+        "status": scraper_state.get("status", "idle"),
+        "log": scraper_state.get("log", []),
+        "inserted": scraper_state.get("inserted", 0),
+        "found": scraper_state.get("found", 0),
+        "started_at": scraper_state.get("started_at"),
+        "finished_at": scraper_state.get("finished_at"),
+    })
+
+
+# ─────────────────────────────────────────────────────────────────
+# Admin: CSV Upload & Clean
+# ─────────────────────────────────────────────────────────────────
+
+# Known column aliases (lowercase) → canonical field name
+_CSV_COLUMN_MAP = {
+    # title
+    "title": "title", "name": "title", "course_name": "title",
+    "course title": "title", "coursetitle": "title",
+    # url
+    "url": "url", "link": "url", "course_url": "url", "courseurl": "url",
+    "course link": "url",
+    # provider
+    "provider": "provider", "platform": "provider", "source": "provider",
+    "organization": "provider", "institution": "provider",
+    # stars / rating
+    "stars": "stars", "rating": "stars", "score": "stars",
+    "average rating": "stars", "avg_rating": "stars",
+    # description / content
+    "content_text": "content_text", "description": "content_text",
+    "desc": "content_text", "about": "content_text",
+    "content": "content_text", "overview": "content_text",
+    # ratings count
+    "ratings_count": "ratings_count", "num_ratings": "ratings_count",
+    "reviews": "ratings_count", "review_count": "ratings_count",
+}
+
+
+def _clean_csv_dataframe(raw_df):
+    """Normalize, clean, and validate a raw CSV DataFrame."""
+    # Build column rename mapping
+    rename_map = {}
+    for col in raw_df.columns:
+        canon = _CSV_COLUMN_MAP.get(col.strip().lower())
+        if canon:
+            rename_map[col] = canon
+
+    df_clean = raw_df.rename(columns=rename_map)
+
+    # Must have at least a title column after mapping
+    if "title" not in df_clean.columns:
+        raise ValueError("Could not detect a 'title' or 'name' column in the CSV.")
+
+    # Fill required fields
+    if "url" not in df_clean.columns:
+        df_clean["url"] = ""
+    if "provider" not in df_clean.columns:
+        df_clean["provider"] = "Unknown"
+    if "content_text" not in df_clean.columns:
+        df_clean["content_text"] = ""
+    if "stars" not in df_clean.columns:
+        df_clean["stars"] = 0.0
+    if "ratings_count" not in df_clean.columns:
+        df_clean["ratings_count"] = 0
+
+    # Clean strings
+    for col in ["title", "url", "provider", "content_text"]:
+        df_clean[col] = df_clean[col].astype(str).str.strip()
+
+    # Coerce numeric
+    df_clean["stars"] = pd.to_numeric(df_clean["stars"], errors="coerce").fillna(0.0).clip(0, 5)
+    df_clean["ratings_count"] = pd.to_numeric(df_clean["ratings_count"], errors="coerce").fillna(0).astype(int)
+
+    # Remove rows with blank title
+    df_clean = df_clean[df_clean["title"].str.len() > 0]
+    df_clean = df_clean.drop_duplicates(subset=["title"])
+
+    return df_clean
+
+
+@app.route('/api/admin/upload_csv', methods=['POST'])
+@admin_required
+def upload_csv():
+    if 'file' not in request.files:
+        return jsonify({"success": False, "error": "No file uploaded."}), 400
+
+    file = request.files['file']
+    if not file.filename or not file.filename.lower().endswith('.csv'):
+        return jsonify({"success": False, "error": "Please upload a .csv file."}), 400
+
+    try:
+        raw_df = pd.read_csv(file, encoding='utf-8', on_bad_lines='skip')
+    except Exception:
+        try:
+            file.seek(0)
+            raw_df = pd.read_csv(file, encoding='latin-1', on_bad_lines='skip')
+        except Exception as e:
+            return jsonify({"success": False, "error": f"Could not parse CSV: {e}"}), 400
+
+    try:
+        df_clean = _clean_csv_dataframe(raw_df)
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+    db = get_db()
+    if db is None:
+        return jsonify({"success": False, "error": "Database connection error."}), 500
+
+    inserted = 0
+    skipped = 0
+    for _, row in df_clean.iterrows():
+        doc = {
+            "title": row["title"],
+            "url": row["url"],
+            "provider": row["provider"],
+            "content_text": row["content_text"],
+            "stars": float(row["stars"]),
+            "ratings_count": int(row["ratings_count"]),
+        }
+        # Upsert by title to avoid duplicates
+        result = db.courses.update_one(
+            {"title": doc["title"]},
+            {"$set": doc},
+            upsert=True
+        )
+        if result.upserted_id:
+            inserted += 1
+        else:
+            skipped += 1
+
+    # Reload AI model asynchronously
+    if inserted > 0:
+        thread = threading.Thread(target=load_and_train_model)
+        thread.start()
+
+    return jsonify({
+        "success": True,
+        "inserted": inserted,
+        "skipped": skipped,
+        "total_in_file": len(df_clean),
+        "message": f"Imported {inserted} new courses, skipped {skipped} duplicates."
+    })
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
