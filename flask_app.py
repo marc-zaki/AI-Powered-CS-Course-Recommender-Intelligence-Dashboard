@@ -568,7 +568,254 @@ def api_interview_explain():
 
     return jsonify({"explanation": explanation})
 
+
+# ─────────────────────────────────────────────────────────────────
+# Interview: Dynamic Follow-up Questioning (Feature 3)
+# ─────────────────────────────────────────────────────────────────
+
+@app.route('/api/interview/followup', methods=['POST'])
+def api_interview_followup():
+    """
+    Evaluate user's answer to an interview question and optionally
+    return a follow-up probing question if the answer is incomplete.
+    """
+    data = request.get_json(force=True)
+    question = data.get('question', '').strip()
+    user_answer = data.get('user_answer', '').strip()
+    conversation_history = data.get('conversation_history', [])
+
+    if not question or not user_answer:
+        return jsonify({"error": "Missing question or user_answer"}), 400
+
+    system_prompt = (
+        "You are a rigorous technical interviewer. Evaluate the candidate's answer to a technical question. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"verdict\": \"complete\" | \"incomplete\",\n"
+        "  \"feedback\": \"<specific feedback about what is correct or missing>\",\n"
+        "  \"followup\": \"<a single probing follow-up question, or null if verdict is complete>\",\n"
+        "  \"score\": <integer 1-10>\n"
+        "}\n"
+        "Be strict: mark 'complete' only if the answer is technically accurate and covers all key concepts. "
+        "Score below 7 = incomplete unless the answer is genuinely thorough."
+    )
+
+    # Build conversation messages
+    messages = [{"role": "system", "content": system_prompt}]
+    for turn in conversation_history:
+        messages.append({"role": turn["role"], "content": turn["content"]})
+    messages.append({
+        "role": "user",
+        "content": f"Question: {question}\n\nCandidate's answer: {user_answer}"
+    })
+
+    result = None
+
+    # Tier 1: Groq (fastest)
+    if GROQ_API_KEY:
+        try:
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": messages,
+                "temperature": 0.3,
+                "max_tokens": 400,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
+            if res.status_code == 200:
+                import json as _json
+                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+        except Exception as e:
+            print(f"Groq followup error: {e}")
+
+    # Tier 2: Gemini
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(
+                model_name='gemini-2.5-flash',
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(
+                f"Question: {question}\n\nCandidate's answer: {user_answer}"
+            )
+            import json as _json
+            text = response.text.strip()
+            # Strip any markdown fences if present
+            if text.startswith("```"):
+                text = text.split("```")[1]
+                if text.startswith("json"):
+                    text = text[4:]
+            result = _json.loads(text)
+        except Exception as e:
+            print(f"Gemini followup error: {e}")
+
+    if not result:
+        return jsonify({"error": "AI model unavailable. Please try again."}), 503
+
+    # Ensure required keys are present
+    result.setdefault("verdict", "incomplete")
+    result.setdefault("feedback", "")
+    result.setdefault("followup", None)
+    result.setdefault("score", 5)
+
+    return jsonify(result)
+
+
+# ─────────────────────────────────────────────────────────────────
+# Interview: Behavioral STAR Mode (Feature 4)
+# ─────────────────────────────────────────────────────────────────
+
+@app.route('/api/interview/behavioral', methods=['POST'])
+def api_interview_behavioral():
+    """
+    Generate 5-7 behavioral interview questions for the given topic.
+    Each question includes STAR tips to guide the user.
+    """
+    data = request.get_json(force=True)
+    topic = data.get('topic', '').strip()
+    difficulty = data.get('difficulty', 'Intermediate')
+
+    if not topic:
+        return jsonify({"error": "Missing topic"}), 400
+
+    system_prompt = (
+        "You are an expert technical recruiter. Generate exactly 6 behavioral interview questions "
+        f"for the theme: '{topic}' at {difficulty} level. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"questions\": [\n"
+        "    {\n"
+        "      \"question\": \"<behavioral question starting with 'Tell me about a time...' or 'Describe a situation...'\",\n"
+        "      \"star_tips\": \"<one sentence tip for each STAR element: Situation, Task, Action, Result>\"\n"
+        "    }\n"
+        "  ]\n"
+        "}"
+    )
+
+    result = None
+
+    if GROQ_API_KEY:
+        try:
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "user", "content": system_prompt}],
+                "temperature": 0.7,
+                "max_tokens": 1200,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
+            if res.status_code == 200:
+                import json as _json
+                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+        except Exception as e:
+            print(f"Groq behavioral error: {e}")
+
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+            response = model.generate_content(system_prompt)
+            import json as _json
+            text = response.text.strip()
+            if text.startswith("```"):
+                text = text.split("```")[1]
+                if text.startswith("json"):
+                    text = text[4:]
+            result = _json.loads(text)
+        except Exception as e:
+            print(f"Gemini behavioral error: {e}")
+
+    if not result or "questions" not in result:
+        return jsonify({"error": "Could not generate behavioral questions."}), 503
+
+    return jsonify(result)
+
+
+@app.route('/api/interview/star_analyze', methods=['POST'])
+def api_interview_star_analyze():
+    """
+    Evaluate the user's STAR answer against a behavioral question.
+    Returns per-component scores (S/T/A/R) and overall feedback.
+    """
+    data = request.get_json(force=True)
+    question = data.get('question', '').strip()
+    user_answer = data.get('user_answer', '').strip()
+
+    if not question or not user_answer:
+        return jsonify({"error": "Missing question or user_answer"}), 400
+
+    system_prompt = (
+        "You are an expert behavioral interview coach who strictly evaluates answers using the STAR method "
+        "(Situation, Task, Action, Result). "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"situation\": {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
+        "  \"task\":      {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
+        "  \"action\":    {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
+        "  \"result\":    {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
+        "  \"overall\":   \"<2-3 sentence holistic summary with the most important improvement tip>\"\n"
+        "}\n"
+        "Be strict: a result score should only be high (8+) if the candidate quantified or clearly described the outcome."
+    )
+
+    user_prompt = f"Behavioral Question: {question}\n\nCandidate's Answer:\n{user_answer}"
+
+    result = None
+
+    if GROQ_API_KEY:
+        try:
+            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.2,
+                "max_tokens": 600,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
+            if res.status_code == 200:
+                import json as _json
+                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+        except Exception as e:
+            print(f"Groq STAR analyze error: {e}")
+
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(
+                model_name='gemini-2.5-flash',
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(user_prompt)
+            import json as _json
+            text = response.text.strip()
+            if text.startswith("```"):
+                text = text.split("```")[1]
+                if text.startswith("json"):
+                    text = text[4:]
+            result = _json.loads(text)
+        except Exception as e:
+            print(f"Gemini STAR analyze error: {e}")
+
+    if not result:
+        return jsonify({"error": "AI model unavailable. Please try again."}), 503
+
+    # Ensure all required keys exist
+    for component in ["situation", "task", "action", "result"]:
+        result.setdefault(component, {"score": 5, "comment": "No data"})
+    result.setdefault("overall", "")
+
+    return jsonify(result)
+
+
 @app.route('/api/stats')
+
 def api_stats():
     # Only allow admin access
     if 'user_id' not in session:
