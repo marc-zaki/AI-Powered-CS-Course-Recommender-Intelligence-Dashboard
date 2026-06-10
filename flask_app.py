@@ -2978,45 +2978,177 @@ _CSV_COLUMN_MAP = {
 }
 
 
+# Comprehensive list of Computer Science and Programming keywords from import_external_data.py
+CS_KEYWORDS = [
+    r"\bpython\b", r"\bprogramming\b", r"\bcode\b", r"\bcoding\b", r"\bsoftware\b", 
+    r"\bdeveloper\b", r"\bjava\b", r"\bjavascript\b", r"\bc\+\+\b", r"\bc#\b", r"\bhtml\b", 
+    r"\bcss\b", r"\breact\b", r"\bnode\b", r"\bweb dev\b", r"\bweb development\b", 
+    r"\bmachine learning\b", r"\bartificial intelligence\b", r"\bdata science\b", 
+    r"\bdatabase\b", r"\bsql\b", r"\bcybersecurity\b", r"\bcyber security\b", 
+    r"\bnetwork\b", r"\balgorithm\b", r"\bdata structures\b", r"\bcloud\b", r"\baws\b", 
+    r"\bgit\b", r"\blinux\b", r"\bdevops\b", r"\bdocker\b", r"\bkubernetes\b", 
+    r"\bflutter\b", r"\bandroid\b", r"\bios\b", r"\bswift\b", r"\bkotlin\b", 
+    r"\btypescript\b", r"\bruby\b", r"\bphp\b", r"\bgo\blang\b", r"\bgolang\b", 
+    r"\brust\b", r"\bcompiler\b", r"\boperating system\b", r"\bcomputer science\b",
+    r"\bfront\b-?end\b", r"\bback\b-?end\b", r"\bfull\b-?stack\b", r"\bdeep learning\b",
+    r"\bneural network\b", r"\bdata analytics\b", r"\bux/ui\b", r"\bagile\b"
+]
+
+def is_cs_related(title, description):
+    """
+    Checks if a course is CS/programming related by scanning title and description.
+    """
+    text_to_scan = f"{title} {description}".lower()
+    for kw in CS_KEYWORDS:
+        if re.search(kw, text_to_scan):
+            return True
+    return False
+
+
 def _clean_csv_dataframe(raw_df):
-    """Normalize, clean, and validate a raw CSV DataFrame."""
-    # Build column rename mapping
-    rename_map = {}
+    """Normalize, clean, and validate a raw CSV DataFrame based on import_external_data.py."""
+    # Find column names in raw_df matching canonical keys
+    col_mapping = {}
     for col in raw_df.columns:
         canon = _CSV_COLUMN_MAP.get(col.strip().lower())
         if canon:
-            rename_map[col] = canon
+            col_mapping[canon] = col
 
-    df_clean = raw_df.rename(columns=rename_map)
-
-    # Must have at least a title column after mapping
-    if "title" not in df_clean.columns:
+    # Check title column
+    title_col = col_mapping.get("title")
+    if not title_col:
+        # Fallback to check if any column contains 'title' or 'name' case-insensitively
+        for col in raw_df.columns:
+            if "title" in col.lower() or "name" in col.lower():
+                title_col = col
+                break
+    if not title_col:
         raise ValueError("Could not detect a 'title' or 'name' column in the CSV.")
 
-    # Fill required fields
-    if "url" not in df_clean.columns:
-        df_clean["url"] = ""
-    if "provider" not in df_clean.columns:
-        df_clean["provider"] = "Unknown"
-    if "content_text" not in df_clean.columns:
-        df_clean["content_text"] = ""
-    if "stars" not in df_clean.columns:
-        df_clean["stars"] = 0.0
-    if "ratings_count" not in df_clean.columns:
-        df_clean["ratings_count"] = 0
+    desc_col = col_mapping.get("content_text")
+    if not desc_col:
+        for col in raw_df.columns:
+            if any(k in col.lower() for k in ["desc", "about", "content", "overview"]):
+                desc_col = col
+                break
 
-    # Clean strings
-    for col in ["title", "url", "provider", "content_text"]:
-        df_clean[col] = df_clean[col].astype(str).str.strip()
+    url_col = col_mapping.get("url")
+    if not url_col:
+        for col in raw_df.columns:
+            if "url" in col.lower() or "link" in col.lower():
+                url_col = col
+                break
 
-    # Coerce numeric
-    df_clean["stars"] = pd.to_numeric(df_clean["stars"], errors="coerce").fillna(0.0).clip(0, 5)
-    df_clean["ratings_count"] = pd.to_numeric(df_clean["ratings_count"], errors="coerce").fillna(0).astype(int)
+    provider_col = col_mapping.get("provider")
+    if not provider_col:
+        for col in raw_df.columns:
+            if any(k in col.lower() for k in ["provider", "platform", "source", "org", "inst"]):
+                provider_col = col
+                break
 
-    # Remove rows with blank title
-    df_clean = df_clean[df_clean["title"].str.len() > 0]
+    clean_records = []
+    
+    for idx, row in raw_df.iterrows():
+        title = str(row.get(title_col, '')).strip() if title_col in raw_df.columns else ''
+        desc = str(row.get(desc_col, '')).strip() if desc_col in raw_df.columns else ''
+        url = str(row.get(url_col, '')).strip() if url_col in raw_df.columns else ''
+        
+        # Validation
+        if not title or title.lower() == 'nan':
+            continue
+        if not desc or desc.lower() == 'nan':
+            desc = "No description provided."
+        if not url or url.lower() == 'nan':
+            url = ""
+
+        # Check relevance (CS filter)
+        if not is_cs_related(title, desc):
+            continue
+
+        # Stars (rating)
+        stars = 0.0
+        if 'Stars' in raw_df.columns and pd.notnull(row.get('Stars')):
+            try:
+                stars = float(row.get('Stars'))
+            except:
+                pass
+        
+        # Fallback rating parsing
+        if (stars == 0.0 or stars is None) and 'Rating' in raw_df.columns and pd.notnull(row.get('Rating')):
+            val = str(row.get('Rating')).strip()
+            if 'stars' in val.lower():
+                try:
+                    stars = float(val.lower().replace('stars', '').strip())
+                except:
+                    pass
+            else:
+                try:
+                    f_val = float(val)
+                    if 0.0 <= f_val <= 5.0:
+                        stars = f_val
+                except:
+                    pass
+                    
+        # Check mapped stars if still 0
+        mapped_stars_col = col_mapping.get("stars")
+        if (stars == 0.0 or stars is None) and mapped_stars_col and mapped_stars_col in raw_df.columns and pd.notnull(row.get(mapped_stars_col)):
+            try:
+                stars = float(row.get(mapped_stars_col))
+            except:
+                pass
+
+        # Ratings count
+        ratings_count = 0
+        possible_rating_count_cols = ['Number of ratings', 'Number of Reviews', 'Rating', 'Number of viewers']
+        found_count = False
+        for col in possible_rating_count_cols:
+            if col in raw_df.columns and pd.notnull(row.get(col)):
+                val = str(row.get(col)).strip()
+                if col == 'Rating' and 'stars' in val.lower():
+                    continue
+                val_clean = val.replace(',', '').replace(' ', '').replace('+', '').strip()
+                try:
+                    ratings_count = int(float(val_clean))
+                    found_count = True
+                    break
+                except:
+                    pass
+        
+        # Fallback mapped count
+        mapped_count_col = col_mapping.get("ratings_count")
+        if not found_count and mapped_count_col and mapped_count_col in raw_df.columns and pd.notnull(row.get(mapped_count_col)):
+            val = str(row.get(mapped_count_col)).strip()
+            val_clean = val.replace(',', '').replace(' ', '').replace('+', '').strip()
+            try:
+                ratings_count = int(float(val_clean))
+            except:
+                pass
+
+        # Provider
+        provider = "Unknown"
+        if provider_col and provider_col in raw_df.columns and pd.notnull(row.get(provider_col)):
+            provider = str(row.get(provider_col)).strip()
+        
+        # Fallback university/site/school from import_external_data.py
+        for col in ['University', 'Site', 'School']:
+            if col in raw_df.columns and pd.notnull(row.get(col)) and str(row.get(col)).strip():
+                provider = str(row.get(col)).strip()
+                break
+
+        clean_records.append({
+            "title": title,
+            "url": url,
+            "provider": provider,
+            "content_text": desc,
+            "stars": min(max(stars, 0.0), 5.0),
+            "ratings_count": ratings_count
+        })
+
+    df_clean = pd.DataFrame(clean_records)
+    if df_clean.empty:
+        return df_clean
+        
     df_clean = df_clean.drop_duplicates(subset=["title"])
-
     return df_clean
 
 
@@ -3044,6 +3176,9 @@ def upload_csv():
     except ValueError as e:
         return jsonify({"success": False, "error": str(e)}), 400
 
+    if df_clean.empty:
+        return jsonify({"success": False, "error": "No CS-related courses found in the uploaded CSV."}), 400
+
     db = get_db()
     if db is None:
         return jsonify({"success": False, "error": "Database connection error."}), 500
@@ -3069,6 +3204,20 @@ def upload_csv():
             inserted += 1
         else:
             skipped += 1
+
+    # Sync back to local files to maintain consistency (datasets/CS_Dataset_Phase2.json / .xlsx)
+    try:
+        os.makedirs("datasets", exist_ok=True)
+        db_path = "datasets/CS_Dataset_Phase2.json"
+        xlsx_path = "datasets/CS_Dataset_Phase2.xlsx"
+        all_courses = list(db.courses.find({}, {'_id': 0}))
+        
+        with open(db_path, 'w') as f:
+            json.dump(all_courses, f, indent=4)
+        pd.DataFrame(all_courses).to_excel(xlsx_path, index=False)
+        print("Successfully updated local JSON and Excel backups.")
+    except Exception as file_err:
+        print(f"Failed to sync backups to local files: {file_err}")
 
     # Reload AI model asynchronously
     if inserted > 0:
