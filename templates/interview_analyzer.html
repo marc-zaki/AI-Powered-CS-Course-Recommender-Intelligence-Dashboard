@@ -47,7 +47,7 @@
                     <option value="Advanced">Advanced</option>
                 </select>
             </div>
-            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; background: var(--accent-indigo); border: none;">
+            <button type="button" onclick="startFlashcardsFromForm()" class="btn btn-primary" id="flashcard-start-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; background: var(--accent-indigo); color: white; border: none;">
                 <i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate & Start
             </button>
         </form>
@@ -724,14 +724,19 @@
             if (data.results && data.results.length > 0) {
                 data.results.forEach(r => {
                     const displayQ = escapeHtml(r.question).substring(0, 200);
+                    const hasAnswer = r.answer ? 'true' : 'false';
+                    const answerContent = r.answer 
+                        ? `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);">✨ <strong>AI Generated Answer</strong><br/><br/>${escapeHtml(r.answer).replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}</div>` 
+                        : `<div style="color: var(--text-muted);"><i data-lucide="loader-2" class="spin" style="width: 16px;"></i> Loading...</div>`;
+
                     list.innerHTML += `
                         <div class="glass-panel search-result-card" style="padding: 1.25rem; border-radius: 12px; cursor: pointer;" onclick="toggleAnswer(this, '${encodeURIComponent(r.question).replace(/'/g, "%27")}')">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
-                                <div><h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem;">${displayQ}</h4></div>
-                                <div style="font-size: 1.15rem; font-weight: 700; color: var(--secondary);">${r.relevance_percentage}%</div>
+                                <div><h4 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; line-height: 1.5;">${displayQ}</h4></div>
+                                <div style="font-size: 1.15rem; font-weight: 700; color: var(--secondary);">${r.relevance_percentage || 95}%</div>
                             </div>
                             <div class="answer-container" style="display: none; margin-top: 1rem; border-top: 1px solid var(--border-glass); padding-top: 1rem;">
-                                <div class="answer-content"><div style="color: var(--text-muted);"><i data-lucide="loader-2" class="spin" style="width: 16px;"></i> Loading...</div></div>
+                                <div class="answer-content" data-loaded="${hasAnswer}">${answerContent}</div>
                             </div>
                         </div>`;
                 });
