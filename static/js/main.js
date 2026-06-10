@@ -1262,8 +1262,10 @@ function triggerConfettiExplosion() {
 // Restore Tab state and Theme state
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    const activeTab = localStorage.getItem('activeDashboardTab') || 'catalog';
-    switchTab(activeTab);
+    if (window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') {
+        const activeTab = localStorage.getItem('activeDashboardTab') || 'catalog';
+        switchTab(activeTab);
+    }
 });
 
 // Save AI Generated Study Plan to Profile
