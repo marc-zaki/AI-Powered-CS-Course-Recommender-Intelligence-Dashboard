@@ -3205,6 +3205,20 @@ def upload_csv():
         else:
             skipped += 1
 
+    # Sync back to local files to maintain consistency (datasets/CS_Dataset_Phase2.json / .xlsx)
+    try:
+        os.makedirs("datasets", exist_ok=True)
+        db_path = "datasets/CS_Dataset_Phase2.json"
+        xlsx_path = "datasets/CS_Dataset_Phase2.xlsx"
+        all_courses = list(db.courses.find({}, {'_id': 0}))
+        
+        with open(db_path, 'w') as f:
+            json.dump(all_courses, f, indent=4)
+        pd.DataFrame(all_courses).to_excel(xlsx_path, index=False)
+        print("Successfully updated local JSON and Excel backups.")
+    except Exception as file_err:
+        print(f"Failed to sync backups to local files: {file_err}")
+
     # Reload AI model asynchronously
     if inserted > 0:
         thread = threading.Thread(target=load_and_train_model)
