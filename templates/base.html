@@ -29,7 +29,7 @@
             
             <nav class="app-sidebar-nav">
                 <!-- If on index page, these trigger tabs via JS. If on other pages, they go to index with a hash. -->
-                <a href="/" id="side-link-catalog" class="app-sidebar-link active" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('catalog'); event.preventDefault(); }">
+                <a href="/" id="side-link-catalog" class="app-sidebar-link {% if request.path in ['/', '/search', '/all'] %}active{% endif %}" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('catalog'); event.preventDefault(); }">
                     <i data-lucide="book"></i> Course Catalog
                 </a>
                 <a href="/#ai-path" id="side-link-ai-path" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('ai-path'); window.history.pushState(null, '', '/#ai-path'); event.preventDefault(); }">
