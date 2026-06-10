@@ -1162,6 +1162,12 @@ select.search-input {
     100% { transform: rotate(360deg); }
 }
 
+.spin {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+
 .compare-modal-close {
     position: absolute;
     top: 1.5rem;
