@@ -1,4 +1,4 @@
-# 🚀 AI-Powered CS Course Recommender & Intelligence Dashboard
+# 🚀 MASARI - CS Course Recommender & Intelligence Dashboard
 
 An intelligent, full-stack web application that serves as a comprehensive career and educational companion for Computer Science students and professionals. By merging advanced Large Language Models (LLMs), dynamic data visualization, real-time scraping, and interactive mock interview simulations, the platform acts as a personalized mentor—guiding users from learning new skills to acing technical and behavioral interviews.
 
