@@ -637,11 +637,12 @@ def api_interview_followup():
         return jsonify({"error": "Missing question or user_answer"}), 400
 
     system_prompt = (
-        "You are a rigorous technical interviewer. Evaluate the candidate's answer to a technical question. "
+        "You are a rigorous technical interviewer. Evaluate the candidate's answer (which may be text or code) to a technical question. "
+        "If the candidate provides code, you MUST evaluate its Time Complexity (Big-O), Space Complexity, and identify any missed edge cases. "
         "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
         "{\n"
         "  \"verdict\": \"complete\" | \"incomplete\",\n"
-        "  \"feedback\": \"<specific feedback about what is correct or missing>\",\n"
+        "  \"feedback\": \"<specific feedback about what is correct or missing. Include Big-O if code is provided.>\",\n"
         "  \"followup\": \"<a single probing follow-up question, or null if verdict is complete>\",\n"
         "  \"score\": <integer 1-10>\n"
         "}\n"
@@ -708,6 +709,20 @@ def api_interview_followup():
     result.setdefault("feedback", "")
     result.setdefault("followup", None)
     result.setdefault("score", 5)
+
+    # Save to Historical Progress if complete
+    if result.get("verdict") == "complete" and 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            try:
+                db.interview_results.insert_one({
+                    "user_id": ObjectId(session['user_id']),
+                    "category": "Technical",
+                    "score": result.get("score", 5),
+                    "date": datetime.utcnow()
+                })
+            except Exception as e:
+                print(f"Error saving technical result: {e}")
 
     return jsonify(result)
 
@@ -972,7 +987,67 @@ def api_interview_star_analyze():
         result.setdefault(component, {"score": 5, "comment": "No data"})
     result.setdefault("overall", "")
 
+    # Calculate average score for the radar chart
+    try:
+        avg_score = sum([result[c].get("score", 5) for c in ["situation", "task", "action", "result"]]) / 4.0
+        if 'user_id' in session:
+            db = get_db()
+            if db is not None:
+                db.interview_results.insert_one({
+                    "user_id": ObjectId(session['user_id']),
+                    "category": "Behavioral",
+                    "score": round(avg_score, 1),
+                    "date": datetime.utcnow()
+                })
+    except Exception as e:
+        print(f"Error saving behavioral result: {e}")
+
     return jsonify(result)
+
+@app.route('/api/interview/stats', methods=['GET'])
+def api_interview_stats():
+    """
+    Returns the user's historical interview score averages grouped by category.
+    """
+    if 'user_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+        
+    db = get_db()
+    if db is None:
+        return jsonify({"error": "Database error"}), 500
+        
+    try:
+        pipeline = [
+            {"$match": {"user_id": ObjectId(session['user_id'])}},
+            {"$group": {
+                "_id": "$category",
+                "average_score": {"$avg": "$score"},
+                "attempts": {"$sum": 1}
+            }}
+        ]
+        stats = list(db.interview_results.aggregate(pipeline))
+        
+        # Format for Chart.js Radar
+        categories = ["Technical", "Behavioral", "System Design", "Algorithms", "Data Structures"]
+        # Seed with 0s if they don't have records yet
+        results = {c: 0 for c in categories}
+        for s in stats:
+            cat = s["_id"]
+            if cat in results:
+                results[cat] = round(s["average_score"], 1)
+            else:
+                results[cat] = round(s["average_score"], 1)
+                categories.append(cat)
+                
+        labels = list(results.keys())
+        data = list(results.values())
+        
+        return jsonify({
+            "labels": labels,
+            "data": data
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/stats')
