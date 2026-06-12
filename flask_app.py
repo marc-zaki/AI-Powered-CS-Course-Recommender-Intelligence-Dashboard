@@ -23,6 +23,8 @@ from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import google.generativeai as genai
 import pymongo
+from pdfminer.high_level import extract_text
+import tempfile
 
 from interview_analyzer.phase2_ir_engine import IREngine
 from interview_analyzer.phase2_ai_models import AIModels
@@ -1546,6 +1548,116 @@ def register():
         return redirect(url_for('onboarding'))
         
     return render_template('register.html')
+# ─────────────────────────────────────────────────────────────────
+# Premium Feature: Resume ATS Optimizer
+# ─────────────────────────────────────────────────────────────────
+
+@app.route('/resume-optimizer')
+def resume_optimizer():
+    return render_template('resume_optimizer.html')
+
+@app.route('/api/resume/analyze', methods=['POST'])
+def api_resume_analyze():
+    if 'resume' not in request.files:
+        return jsonify({"error": "No resume file uploaded"}), 400
+    
+    job_description = request.form.get('job_description', '').strip()
+    if not job_description:
+        return jsonify({"error": "No job description provided"}), 400
+
+    resume_file = request.files['resume']
+    if not resume_file.filename.lower().endswith('.pdf'):
+        return jsonify({"error": "Resume must be a PDF file"}), 400
+
+    # Save PDF temporarily to parse
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        resume_file.save(temp_pdf.name)
+        temp_path = temp_pdf.name
+
+    try:
+        # Extract text using pdfminer
+        resume_text = extract_text(temp_path)
+    except Exception as e:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        return jsonify({"error": f"Failed to parse PDF: {str(e)}"}), 500
+
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
+
+    if not resume_text.strip():
+        return jsonify({"error": "Could not extract text from the PDF. It might be an image-based PDF."}), 400
+
+    system_prompt = (
+        "You are an expert technical recruiter and Applicant Tracking System (ATS). "
+        "Analyze the candidate's resume against the target Job Description. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"ats_score\": <integer 0-100>,\n"
+        "  \"missing_keywords\": [\"<keyword1>\", \"<keyword2>\"],\n"
+        "  \"bullet_rewrites\": [\n"
+        "    {\n"
+        "      \"original\": \"<weak bullet point from resume>\",\n"
+        "      \"improved\": \"<rewritten bullet using STAR method tailored to the JD>\",\n"
+        "      \"reasoning\": \"<why this is better>\"\n"
+        "    }\n"
+        "  ],\n"
+        "  \"recommended_upskilling\": [\"<CS concept or project to learn/build>\"]\n"
+        "}\n"
+        "Provide exactly 3 bullet_rewrites for the weakest bullet points in the resume."
+    )
+
+    user_prompt = f"### TARGET JOB DESCRIPTION ###\n{job_description}\n\n### CANDIDATE RESUME ###\n{resume_text}"
+
+    result = None
+
+    if OPENROUTER_API_KEY:
+        try:
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "google/gemini-2.5-flash",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.3,
+                "max_tokens": 1500,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=20.0)
+            if res.status_code == 200:
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+        except Exception as e:
+            print(f"OpenRouter ATS error: {e}")
+
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(
+                model_name='gemini-2.5-flash',
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(user_prompt)
+            result = extract_json_from_llm(response.text)
+        except Exception as e:
+            print(f"Gemini ATS error: {e}")
+
+    if not result:
+        return jsonify({"error": "AI model unavailable or failed to generate analysis. Please try again."}), 503
+
+    # Add default fallbacks if LLM fails strict schema adherence
+    result.setdefault("ats_score", 0)
+    result.setdefault("missing_keywords", [])
+    result.setdefault("bullet_rewrites", [])
+    result.setdefault("recommended_upskilling", [])
+
+    return jsonify(result)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
