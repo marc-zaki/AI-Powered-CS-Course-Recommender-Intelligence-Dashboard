@@ -38,6 +38,20 @@ load_dotenv()  # Load API keys from .env file
 SERPAPI_KEY = os.environ.get("SERPAPI_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+
+def extract_json_from_llm(text):
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+    import json
+    try:
+        return json.loads(text.strip())
+    except Exception as e:
+        print(f"JSON parsing error: {e}")
+        return {}
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
@@ -513,8 +527,7 @@ def api_interview_search():
             }
             res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
             if res.status_code == 200:
-                import json as _json
-                data = _json.loads(res.json()["choices"][0]["message"]["content"])
+                data = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
                 results = data.get("results", [])
         except Exception:
             pass
@@ -523,13 +536,7 @@ def api_interview_search():
         try:
             model = genai.GenerativeModel(model_name='gemini-2.5-flash')
             response = model.generate_content(system_prompt)
-            import json as _json
-            text = response.text.strip()
-            if text.startswith("```"):
-                text = text.split("```")[1]
-                if text.startswith("json"):
-                    text = text[4:]
-            data = _json.loads(text)
+            data = extract_json_from_llm(response.text)
             results = data.get("results", [])
         except Exception:
             pass
@@ -677,8 +684,7 @@ def api_interview_followup():
             }
             res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
             if res.status_code == 200:
-                import json as _json
-                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception as e:
             print(f"Groq followup error: {e}")
 
@@ -692,14 +698,7 @@ def api_interview_followup():
             response = model.generate_content(
                 f"Question: {question}\n\nCandidate's answer: {user_answer}"
             )
-            import json as _json
-            text = response.text.strip()
-            # Strip any markdown fences if present
-            if text.startswith("```"):
-                text = text.split("```")[1]
-                if text.startswith("json"):
-                    text = text[4:]
-            result = _json.loads(text)
+            result = extract_json_from_llm(response.text)
         except Exception as e:
             print(f"Gemini followup error: {e}")
 
@@ -771,8 +770,7 @@ def api_interview_generate_technical():
             }
             res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
             if res.status_code == 200:
-                import json as _json
-                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception:
             pass
 
@@ -780,13 +778,7 @@ def api_interview_generate_technical():
         try:
             model = genai.GenerativeModel(model_name='gemini-2.5-flash')
             response = model.generate_content(system_prompt)
-            import json as _json
-            text = response.text.strip()
-            if text.startswith("```"):
-                text = text.split("```")[1]
-                if text.startswith("json"):
-                    text = text[4:]
-            result = _json.loads(text)
+            result = extract_json_from_llm(response.text)
         except Exception:
             pass
 
@@ -804,8 +796,8 @@ def api_interview_transcribe():
     if 'audio' not in request.files:
         return jsonify({"error": "No audio file provided"}), 400
         
-    if not OPENROUTER_API_KEY:
-        return jsonify({"error": "OPENROUTER_API_KEY is required for voice transcription"}), 503
+    if not GROQ_API_KEY:
+        return jsonify({"error": "GROQ_API_KEY is required for voice transcription"}), 503
 
     audio_file = request.files['audio']
     
@@ -818,7 +810,7 @@ def api_interview_transcribe():
     try:
         url = "https://api.groq.com/openai/v1/audio/transcriptions"
         headers = {
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}"
+            "Authorization": f"Bearer {GROQ_API_KEY}"
         }
         with open(temp_path, "rb") as file_stream:
             files = {
@@ -887,8 +879,7 @@ def api_interview_behavioral():
             }
             res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
             if res.status_code == 200:
-                import json as _json
-                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception as e:
             print(f"Groq behavioral error: {e}")
 
@@ -896,13 +887,7 @@ def api_interview_behavioral():
         try:
             model = genai.GenerativeModel(model_name='gemini-2.5-flash')
             response = model.generate_content(system_prompt)
-            import json as _json
-            text = response.text.strip()
-            if text.startswith("```"):
-                text = text.split("```")[1]
-                if text.startswith("json"):
-                    text = text[4:]
-            result = _json.loads(text)
+            result = extract_json_from_llm(response.text)
         except Exception as e:
             print(f"Gemini behavioral error: {e}")
 
@@ -959,8 +944,7 @@ def api_interview_star_analyze():
             }
             res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
             if res.status_code == 200:
-                import json as _json
-                result = _json.loads(res.json()["choices"][0]["message"]["content"])
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception as e:
             print(f"Groq STAR analyze error: {e}")
 
@@ -971,13 +955,7 @@ def api_interview_star_analyze():
                 system_instruction=system_prompt
             )
             response = model.generate_content(user_prompt)
-            import json as _json
-            text = response.text.strip()
-            if text.startswith("```"):
-                text = text.split("```")[1]
-                if text.startswith("json"):
-                    text = text[4:]
-            result = _json.loads(text)
+            result = extract_json_from_llm(response.text)
         except Exception as e:
             print(f"Gemini STAR analyze error: {e}")
 
