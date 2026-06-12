@@ -41,10 +41,6 @@
                 <a href="/interview-prep" id="side-link-interview" class="app-sidebar-link {% if request.path == '/interview-prep' %}active{% endif %}">
                     <i data-lucide="message-circle"></i> Interview Analyzer
                 </a>
-                <a href="/resume-optimizer" id="side-link-resume" class="app-sidebar-link {% if request.path == '/resume-optimizer' %}active{% endif %}" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span><i data-lucide="file-text"></i> Resume ATS Optimizer</span>
-                    <span style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase;">PRO</span>
-                </a>
                 {% if current_user and current_user.role == 'admin' %}
                 <a href="/#dashboard" id="side-link-dashboard" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('dashboard'); window.history.pushState(null, '', '/#dashboard'); event.preventDefault(); }">
                     <i data-lucide="trending-up"></i> Intelligence EDA
