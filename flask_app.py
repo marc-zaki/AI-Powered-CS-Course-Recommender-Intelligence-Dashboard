@@ -37,7 +37,7 @@ load_dotenv()  # Load API keys from .env file
 # Configuration loaded from .env file
 SERPAPI_KEY = os.environ.get("SERPAPI_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
@@ -580,16 +580,18 @@ def api_interview_explain():
 
     explanation = None
     
-    # Tier 1: Groq
-    if GROQ_API_KEY:
+    # Tier 1: OpenRouter
+    if OPENROUTER_API_KEY:
         try:
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {
-                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -597,7 +599,7 @@ def api_interview_explain():
                 "temperature": 0.3,
                 "max_tokens": 500
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=5.0)
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=5.0)
             if res.status_code == 200:
                 explanation = res.json()["choices"][0]["message"]["content"].strip()
         except Exception:
@@ -1404,17 +1406,19 @@ def generate_path():
     """
 
     # ── Multi-Tier Study Plan Generator ──────────────────────────────
-    # Tier 1: Groq Cloud API (Llama-3.1-70b-versatile) — Extremely fast, generous 30 RPM free limit!
-    if GROQ_API_KEY:
+    # Tier 1: OpenRouter API (Llama-3.1-70b-versatile) — Extremely fast, generous 30 RPM free limit!
+    if OPENROUTER_API_KEY:
         try:
-            print("Querying Groq Cloud API for study plan...")
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            print("Querying OpenRouter API for study plan...")
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {
-                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -1422,7 +1426,7 @@ def generate_path():
                 "temperature": 0.3,
                 "max_tokens": 2048
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=12.0)
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=12.0)
             if res.status_code == 200:
                 res_data = res.json()
                 path_html = res_data["choices"][0]["message"]["content"].strip()
@@ -1430,17 +1434,17 @@ def generate_path():
                 path_html = re.sub(r"^```html\n", "", path_html)
                 path_html = re.sub(r"\n```$", "", path_html)
                 
-                print("Successfully generated study plan using Groq Cloud API!")
+                print("Successfully generated study plan using OpenRouter API!")
                 return jsonify({
                     "success": True,
                     "goal": user_goal,
                     "path_html": path_html,
-                    "engine": "groq"
+                    "engine": "openrouter"
                 })
             else:
-                print(f"Groq API returned error status {res.status_code}. Routing to Tier 2 (Gemini)...")
-        except Exception as groq_err:
-            print(f"Groq Cloud connection error: {groq_err}. Routing to Tier 2 (Gemini)...")
+                print(f"OpenRouter API returned error status {res.status_code}. Routing to Tier 2 (Gemini)...")
+        except Exception as openrouter_err:
+            print(f"OpenRouter Cloud connection error: {openrouter_err}. Routing to Tier 2 (Gemini)...")
 
     # Tier 2: Gemini Cloud API (gemini-2.5-flash) — Standard Google cloud endpoint
     if GEMINI_API_KEY:
@@ -2856,30 +2860,32 @@ def chat_assistant():
         "Formatting tip: Use standard Markdown formatting like **bold** or `code` snippets where appropriate."
     )
     
-    # Tier 1: Groq Cloud API
-    if GROQ_API_KEY:
+    # Tier 1: OpenRouter API
+    if OPENROUTER_API_KEY:
         try:
-            print("Querying Groq Cloud API for chat assistant...")
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            print("Querying OpenRouter API for chat assistant...")
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {
-                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [{"role": "system", "content": system_prompt}] + messages,
                 "temperature": 0.5,
                 "max_tokens": 1024
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=10.0)
             if res.status_code == 200:
                 res_data = res.json()
                 reply = res_data["choices"][0]["message"]["content"].strip()
-                return jsonify({"success": True, "response": reply, "engine": "groq"})
+                return jsonify({"success": True, "response": reply, "engine": "openrouter"})
             else:
-                print(f"Groq API returned status {res.status_code}. Routing to Tier 2 (Gemini)...")
+                print(f"OpenRouter API returned status {res.status_code}. Routing to Tier 2 (Gemini)...")
         except Exception as e:
-            print(f"Groq Cloud connection error: {e}. Routing to Tier 2 (Gemini)...")
+            print(f"OpenRouter Cloud connection error: {e}. Routing to Tier 2 (Gemini)...")
             
     # Tier 2: Gemini Cloud API
     if GEMINI_API_KEY:
@@ -2942,17 +2948,19 @@ def generate_quiz():
     
     user_prompt = f"Please generate a quiz for the track: '{track}' at the level: '{skill_level}'."
     
-    # Tier 1: Groq Cloud API
-    if GROQ_API_KEY:
+    # Tier 1: OpenRouter API
+    if OPENROUTER_API_KEY:
         try:
-            print("Querying Groq Cloud API for quiz generation...")
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
+            print("Querying OpenRouter API for quiz generation...")
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {
-                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -2961,7 +2969,7 @@ def generate_quiz():
                 "max_tokens": 1500,
                 "response_format": {"type": "json_object"}
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=12.0)
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=12.0)
             if res.status_code == 200:
                 res_data = res.json()
                 reply = res_data["choices"][0]["message"]["content"].strip()
@@ -2974,12 +2982,12 @@ def generate_quiz():
                         "track": track,
                         "skill_level": skill_level,
                         "questions": quiz_data["questions"],
-                        "engine": "groq"
+                        "engine": "openrouter"
                     })
             else:
-                print(f"Groq API returned error status {res.status_code}. Routing to Tier 2 (Gemini)...")
+                print(f"OpenRouter API returned error status {res.status_code}. Routing to Tier 2 (Gemini)...")
         except Exception as e:
-            print(f"Groq Quiz Generation failed: {e}. Routing to Tier 2 (Gemini)...")
+            print(f"OpenRouter Quiz Generation failed: {e}. Routing to Tier 2 (Gemini)...")
             
     # Tier 2: Gemini Cloud API
     if GEMINI_API_KEY:
