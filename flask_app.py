@@ -500,12 +500,12 @@ def api_interview_search():
 
     results = []
     
-    if GROQ_API_KEY:
+    if OPENROUTER_API_KEY:
         try:
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            groq_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [{"role": "user", "content": system_prompt}],
                 "temperature": 0.5,
                 "max_tokens": 1500,
@@ -664,12 +664,12 @@ def api_interview_followup():
     result = None
 
     # Tier 1: Groq (fastest)
-    if GROQ_API_KEY:
+    if OPENROUTER_API_KEY:
         try:
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            groq_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": messages,
                 "temperature": 0.3,
                 "max_tokens": 400,
@@ -758,12 +758,12 @@ def api_interview_generate_technical():
     )
 
     result = None
-    if GROQ_API_KEY:
+    if OPENROUTER_API_KEY:
         try:
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            groq_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [{"role": "user", "content": system_prompt}],
                 "temperature": 0.5,
                 "max_tokens": 800,
@@ -804,8 +804,8 @@ def api_interview_transcribe():
     if 'audio' not in request.files:
         return jsonify({"error": "No audio file provided"}), 400
         
-    if not GROQ_API_KEY:
-        return jsonify({"error": "GROQ_API_KEY is required for voice transcription"}), 503
+    if not OPENROUTER_API_KEY:
+        return jsonify({"error": "OPENROUTER_API_KEY is required for voice transcription"}), 503
 
     audio_file = request.files['audio']
     
@@ -818,7 +818,7 @@ def api_interview_transcribe():
     try:
         url = "https://api.groq.com/openai/v1/audio/transcriptions"
         headers = {
-            "Authorization": f"Bearer {GROQ_API_KEY}"
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}"
         }
         with open(temp_path, "rb") as file_stream:
             files = {
@@ -874,12 +874,12 @@ def api_interview_behavioral():
 
     result = None
 
-    if GROQ_API_KEY:
+    if OPENROUTER_API_KEY:
         try:
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            groq_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [{"role": "user", "content": system_prompt}],
                 "temperature": 0.7,
                 "max_tokens": 1200,
@@ -943,12 +943,12 @@ def api_interview_star_analyze():
 
     result = None
 
-    if GROQ_API_KEY:
+    if OPENROUTER_API_KEY:
         try:
-            groq_url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
+            groq_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.3-70b-versatile",
+                "model": "google/gemini-2.5-flash",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
