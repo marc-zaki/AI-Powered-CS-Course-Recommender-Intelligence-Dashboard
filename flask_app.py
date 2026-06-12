@@ -24,12 +24,10 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import pymongo
 
-import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Interview-Question-Analyzer-main'))
-from phase2_ir_engine import IREngine
-from phase2_ai_models import AIModels
-from phase2_recommendation import RecommendationEngine
-from phase2_eda_analysis import EDAAnalysis
+from interview_analyzer.phase2_ir_engine import IREngine
+from interview_analyzer.phase2_ai_models import AIModels
+from interview_analyzer.phase2_recommendation import RecommendationEngine
+from interview_analyzer.phase2_eda_analysis import EDAAnalysis
 
 load_dotenv()  # Load API keys from .env file
 
@@ -306,7 +304,7 @@ def load_interview_system():
     global interview_ir_engine, interview_ai_models, interview_rec_engine, interview_eda, interview_questions
     print("Loading Interview Analyzer system...")
     try:
-        dataset_path = os.path.join(os.path.dirname(__file__), 'Interview-Question-Analyzer-main', 'storage', 'dataset_2.json')
+        dataset_path = os.path.join(os.path.dirname(__file__), 'interview_analyzer', 'storage', 'dataset_2.json')
         with open(dataset_path, 'r', encoding='utf-8') as f:
             interview_questions = json.load(f)
         
@@ -316,7 +314,7 @@ def load_interview_system():
         interview_eda = EDAAnalysis(interview_questions, interview_ir_engine, interview_ai_models)
         
         # Load indexes
-        storage_path = os.path.join(os.path.dirname(__file__), 'Interview-Question-Analyzer-main', 'storage')
+        storage_path = os.path.join(os.path.dirname(__file__), 'interview_analyzer', 'storage')
         interview_ir_engine.load_index(storage_path)
         interview_ai_models.load_models(storage_path)
         

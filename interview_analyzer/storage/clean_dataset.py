@@ -2,7 +2,7 @@ import json
 import re
 
 def clean_dataset():
-    input_path = '/Users/marczaki/AI-Powered-CS-Course-Recommender-Intelligence-Dashboard/Interview-Question-Analyzer-main/storage/dataset_2.json'
+    input_path = '/Users/marczaki/AI-Powered-CS-Course-Recommender-Intelligence-Dashboard/interview_analyzer/storage/dataset_2.json'
     
     with open(input_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
