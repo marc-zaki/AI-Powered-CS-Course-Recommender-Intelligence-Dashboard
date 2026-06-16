@@ -909,7 +909,7 @@ function exportPlanToPDF() {
 
 let dashboardCharts = {};
 
-function initDashboardCharts() {
+function initDashboardCharts(difficulty = 'all') {
     if (!document.getElementById('stat-total-courses')) return;
     
     // If charts already exist, destroy them to support clean re-rendering
@@ -919,7 +919,7 @@ function initDashboardCharts() {
         }
     });
     
-    fetch('/api/stats')
+    fetch(`/api/stats?difficulty=${encodeURIComponent(difficulty)}`)
         .then(response => response.json())
         .then(data => {
             if (!data.success) {
@@ -931,6 +931,9 @@ function initDashboardCharts() {
             document.getElementById('stat-total-courses').innerText = data.metrics.total_courses.toLocaleString();
             document.getElementById('stat-avg-rating').innerHTML = data.metrics.avg_rating.toFixed(2) + ' <i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i>';
             document.getElementById('stat-total-reviews').innerText = data.metrics.total_reviews.toLocaleString();
+            if (document.getElementById('stat-top-topic')) {
+                document.getElementById('stat-top-topic').innerText = data.metrics.top_topic || "Software";
+            }
             
             // Check active theme to customize text/axes colors dynamically!
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -962,6 +965,12 @@ function initDashboardCharts() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true,
+                        duration: 1200,
+                        easing: 'easeOutQuart'
+                    },
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -994,6 +1003,10 @@ function initDashboardCharts() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutBounce'
+                    },
                     scales: {
                         x: {
                             ticks: { color: labelColor, font: { family: 'Inter', weight: '600', size: 10 } },
@@ -1045,6 +1058,12 @@ function initDashboardCharts() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true,
+                        duration: 1200,
+                        easing: 'easeOutQuart'
+                    },
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -1075,6 +1094,10 @@ function initDashboardCharts() {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutBounce'
+                    },
                     scales: {
                         x: {
                             ticks: { color: labelColor, font: { family: 'Inter', weight: '600' } },

@@ -268,32 +268,35 @@
     <!-- Tab 4: Intelligence Dashboard & EDA -->
     {% if current_user and current_user.role == 'admin' %}
     <div id="tab-pane-dashboard" class="tab-pane">
-        <!-- Metrics Row -->
-        <div class="metrics-grid"
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="glass-panel"
-                style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
-                <div style="font-size: 2.25rem; font-weight: 800; color: var(--primary); margin-bottom: 0.25rem;"
-                    id="stat-total-courses">-</div>
-                <div
-                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">
-                    Courses Indexed</div>
+        <!-- Top Stats Row & Filter -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+            <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                <div style="padding: 1.5rem; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-glass); min-width: 160px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;"><i data-lucide="book-open" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Total Courses</div>
+                    <div id="stat-total-courses" style="font-size: 2rem; font-weight: 800; color: var(--text-main);">-</div>
+                </div>
+                <div style="padding: 1.5rem; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-glass); min-width: 160px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;"><i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Avg Rating</div>
+                    <div id="stat-avg-rating" style="font-size: 2rem; font-weight: 800; color: var(--accent-emerald);">-</div>
+                </div>
+                <div style="padding: 1.5rem; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-glass); min-width: 160px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;"><i data-lucide="users" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Total Reviews</div>
+                    <div id="stat-total-reviews" style="font-size: 2rem; font-weight: 800; color: var(--text-main);">-</div>
+                </div>
+                <div style="padding: 1.5rem; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-glass); min-width: 160px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem;"><i data-lucide="code" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Trending Topic</div>
+                    <div id="stat-top-topic" style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); margin-top:0.25rem;">-</div>
+                </div>
             </div>
-            <div class="glass-panel"
-                style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
-                <div style="font-size: 2.25rem; font-weight: 800; color: var(--secondary); margin-bottom: 0.25rem;"
-                    id="stat-avg-rating">-</div>
-                <div
-                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">
-                    Average Quality Rating</div>
-            </div>
-            <div class="glass-panel"
-                style="padding: 1.5rem; text-align: center; border: 1px solid var(--border-glass); border-radius: 16px; background: var(--bg-card);">
-                <div style="font-size: 2.25rem; font-weight: 800; color: #10B981; margin-bottom: 0.25rem;"
-                    id="stat-total-reviews">-</div>
-                <div
-                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700;">
-                    Total Student Reviews</div>
+            
+            <div style="margin-top: 1rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Filter By Difficulty:</label>
+                <select id="difficulty-filter" class="search-input" style="padding: 0.5rem 1rem; border-radius: 8px; width: auto; font-weight: 600;" onchange="initDashboardCharts(this.value)">
+                    <option value="all">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
             </div>
         </div>
 
@@ -302,46 +305,50 @@
             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
             <!-- Chart 1: Provider Share -->
             <div class="glass-panel"
-                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); position: relative; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
+                <div style="position: absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: var(--secondary); filter: blur(80px); opacity: 0.15; border-radius: 50%;"></div>
                 <h3
-                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
-                    <i data-lucide="pie-chart" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Course Provider Distribution</h3>
-                <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left; position: relative;">
+                    <i data-lucide="pie-chart" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; color: var(--secondary);"></i> Course Provider Distribution</h3>
+                <div style="height: 300px; display: flex; justify-content: center; align-items: center; position: relative;">
                     <canvas id="chart-provider"></canvas>
                 </div>
             </div>
 
             <!-- Chart 2: Keyword Statistics -->
             <div class="glass-panel"
-                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); position: relative; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
+                <div style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: var(--primary); filter: blur(80px); opacity: 0.15; border-radius: 50%;"></div>
                 <h3
-                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
-                    <i data-lucide="search"></i> Top CS Terms (IR Frequency Statistics)</h3>
-                <div style="height: 300px;">
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left; position: relative;">
+                    <i data-lucide="search" style="color: var(--primary);"></i> Top CS Terms (IR Frequency)</h3>
+                <div style="height: 300px; position: relative;">
                     <canvas id="chart-keywords"></canvas>
                 </div>
             </div>
 
             <!-- Chart 3: Difficulty Ratio -->
             <div class="glass-panel"
-                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); position: relative; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
+                <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--accent-emerald); filter: blur(80px); opacity: 0.1; border-radius: 50%;"></div>
                 <h3
-                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
-                    <i data-lucide="bar-chart-2" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle;"></i> Curriculum Difficulty Ratio</h3>
-                <div style="height: 300px; display: flex; justify-content: center; align-items: center;">
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left; position: relative;">
+                    <i data-lucide="bar-chart-2" style="width: 18px; height: 18px; display: inline-block; vertical-align: middle; color: var(--accent-emerald);"></i> Curriculum Difficulty Ratio</h3>
+                <div style="height: 300px; display: flex; justify-content: center; align-items: center; position: relative;">
                     <canvas id="chart-difficulty"></canvas>
                 </div>
             </div>
 
             <!-- Chart 4: Ratings Histogram -->
             <div class="glass-panel"
-                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card);">
+                style="padding: 2rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); position: relative; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.15);">
+                <div style="position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: var(--text-main); filter: blur(80px); opacity: 0.1; border-radius: 50%;"></div>
                 <h3
-                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left;">
+                    style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main); text-align: left; position: relative;">
                     <i data-lucide="star"
-                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block;"></i> Course
+                        style="width: 14px; height: 14px; fill: currentColor; display: inline-block; color: var(--accent-emerald);"></i> Course
                     Quality Score Distribution</h3>
-                <div style="height: 300px;">
+                <div style="height: 300px; position: relative;">
                     <canvas id="chart-ratings"></canvas>
                 </div>
             </div>
@@ -349,47 +356,67 @@
 
         <!-- EDA & Methodology Panel -->
         <div class="glass-panel"
-            style="padding: 2.5rem; border: 1px solid var(--border-glass); border-radius: 20px; background: var(--bg-card); text-align: left; line-height: 1.7; margin-bottom: 2rem;">
-            <h2
-                style="color: var(--primary); font-weight: 800; font-size: 2rem; margin-bottom: 1.5rem; letter-spacing: -0.03em;">
-                Exploratory Data Analysis & Project Workflow</h2>
-
-            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">1. Data
-                Collection & Processing</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                To support robust recommendations, we collected and integrated external datasets spanning major
-                professional educational platforms (including Udemy, Coursera, EdX, and Online Courses) with a total
-                dataset repository of <strong>thousands of computer science courses</strong>. The data ingestion engine
-                filters courses using descriptive heuristics to eliminate unrelated fields (such as cooking or finance)
-                and stores unified records in a local dataset.
+            style="padding: 3rem; border: 1px solid var(--border-glass); border-radius: 24px; background: var(--bg-card); text-align: left; line-height: 1.8; margin-bottom: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.2); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent-emerald));"></div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(50, 130, 184, 0.1); display: flex; align-items: center; justify-content: center; color: var(--secondary);">
+                    <i data-lucide="microscope" style="width: 28px; height: 28px;"></i>
+                </div>
+                <h2 style="color: var(--text-main); font-weight: 800; font-size: 2.2rem; margin: 0; letter-spacing: -0.03em;">
+                    Exploratory Data Analysis & System Architecture
+                </h2>
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2.5rem; max-width: 900px;">
+                MASARI's intelligence dashboard is powered by a robust backend pipeline that transforms unstructured educational data into highly tailored, actionable learning paths. Explore the four foundational pillars of our system below.
             </p>
 
-            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">2.
-                Information Retrieval (IR) Framework</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                The recommendation engine uses a mathematical <strong>TF-IDF Vector Space Model</strong> combined with
-                <strong>Cosine Similarity Ranking</strong>. When a student inputs a search query, it is dynamically
-                tokenized and transformed into a term-frequency vector. Cosine similarity coefficients are calculated
-                across the entire document corpus to return highly relevant course results.
-            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- Pillar 1 -->
+                <div style="background: rgba(0,0,0,0.15); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(50, 130, 184, 0.2); color: var(--secondary); padding: 0.4rem; border-radius: 8px;"><i data-lucide="database" style="width: 20px; height: 20px;"></i></span>
+                        <h3 style="color: var(--text-main); font-size: 1.25rem; font-weight: 700; margin: 0;">1. Data Processing Pipeline</h3>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                        We aggregate millions of data points from premier platforms (Coursera, EdX, Udemy). Our ingestion engine applies strict descriptive heuristics and NLP filtering to eliminate noise, ensuring only high-quality Computer Science curricula enter our primary MongoDB repository.
+                    </p>
+                </div>
 
-            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">3. Neural
-                Network & Visualizations</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                Course-to-course relationships are built using pairwise cosine similarity vectors. Pairs with similarity
-                weights exceeding a threshold of <code>0.13</code> are compiled into a D3-based force-directed
-                networking graph. This enables organic node-clustering of computer science topics (like Web Dev, AI/ML,
-                and Cybersecurity) in an interactive visual interface.
-            </p>
+                <!-- Pillar 2 -->
+                <div style="background: rgba(0,0,0,0.15); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(15, 76, 117, 0.2); color: var(--primary); padding: 0.4rem; border-radius: 8px;"><i data-lucide="search-code" style="width: 20px; height: 20px;"></i></span>
+                        <h3 style="color: var(--text-main); font-size: 1.25rem; font-weight: 700; margin: 0;">2. TF-IDF IR Framework</h3>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                        Queries are vectorized using a mathematical <strong>TF-IDF Vector Space Model</strong>. We compute <strong>Cosine Similarity</strong> coefficients across our entire corpus in real-time, matching student intents to highly relevant course syllables with extreme precision.
+                    </p>
+                </div>
 
-            <h3 style="color: var(--secondary); margin-top: 1.5rem; font-size: 1.25rem; font-weight: 700;">4. LLM Study
-                Plan Orchestrator</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1rem;">
-                The generative path planner uses <strong>Gemini-2.5-Flash</strong> acting as an expert academic advisor.
-                It maps the IR search findings directly to the student's career target, composing a highly customized
-                week-by-week learning syllabus, complete with descriptive explanations and weekly hands-on practical
-                exercises.
-            </p>
+                <!-- Pillar 3 -->
+                <div style="background: rgba(0,0,0,0.15); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); padding: 0.4rem; border-radius: 8px;"><i data-lucide="network" style="width: 20px; height: 20px;"></i></span>
+                        <h3 style="color: var(--text-main); font-size: 1.25rem; font-weight: 700; margin: 0;">3. Neural Embeddings Graph</h3>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                        Course relationships are modeled using pairwise similarity vectors. Nodes exceeding a <code>0.13</code> threshold are clustered in a D3.js force-directed graph. This maps out organic learning ecosystems (e.g., how Python transitions into Machine Learning).
+                    </p>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div style="background: rgba(0,0,0,0.15); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <span style="background: rgba(251, 191, 36, 0.2); color: #FBBF24; padding: 0.4rem; border-radius: 8px;"><i data-lucide="bot" style="width: 20px; height: 20px;"></i></span>
+                        <h3 style="color: var(--text-main); font-size: 1.25rem; font-weight: 700; margin: 0;">4. LLM Study Orchestrator</h3>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                        Powered by <strong>Gemini-2.5-Flash</strong>, our orchestrator acts as a virtual academic advisor. It synthesizes IR search results with user career goals to automatically generate week-by-week, personalized syllabi containing practical labs and milestones.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
     {% endif %}
@@ -535,7 +562,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}?v=3"></script>
 <script>
     function toggleTaken(url, btn) {
         fetch('/api/toggle_taken', {

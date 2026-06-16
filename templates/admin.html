@@ -16,6 +16,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
+                                <th>Premium</th>
                                 <th>Track</th>
                                 <th>Level</th>
                                 <th>Taken</th>
@@ -30,11 +31,25 @@
                                 <td data-label="Role">
                                     <span class="admin-role-badge {% if u.role == 'admin' %}admin-role-admin{% else %}admin-role-user{% endif %}">{{ u.role|upper }}</span>
                                 </td>
+                                <td data-label="Premium">
+                                    {% if u.role == 'admin' %}
+                                    <span style="color: var(--primary); font-weight: bold;"><i data-lucide="shield" style="width: 14px; height: 14px; vertical-align: text-bottom;"></i> Admin Access</span>
+                                    {% elif u.is_premium %}
+                                    <span style="color: #10b981; font-weight: bold;"><i data-lucide="check-circle" style="width: 14px; height: 14px; vertical-align: text-bottom;"></i> Yes</span>
+                                    {% else %}
+                                    <span style="color: var(--text-muted);">No</span>
+                                    {% endif %}
+                                </td>
                                 <td data-label="Track">{{ u.track }}</td>
                                 <td data-label="Level">{{ u.current_skill_level }}</td>
                                 <td data-label="Courses Taken">{{ u.taken_courses|length }}</td>
                                 <td data-label="Actions">
                                     <div class="admin-actions">
+                                        {% if u.role != 'admin' %}
+                                        <button onclick="togglePremium('{{ u._id }}', {{ 'true' if u.is_premium else 'false' }}, this)" class="btn btn-outline admin-action-btn" style="border-color: var(--secondary); color: var(--secondary);">
+                                            {% if u.is_premium %}Remove Pro{% else %}Give Pro{% endif %}
+                                        </button>
+                                        {% endif %}
                                         <button onclick="toggleUserRole('{{ u._id }}', '{{ u.role }}', this)" class="btn btn-outline admin-action-btn">
                                             {% if u.role == 'admin' %}Demote{% else %}Make Admin{% endif %}
                                         </button>
@@ -364,6 +379,30 @@ function deleteCourse(url, btn) {
                 if(row) row.remove();
             } else {
                 showCustomAlert("Error", "Error deleting course: " + data.error);
+            }
+        })
+        .catch(err => console.error(err));
+    });
+}
+
+function togglePremium(userId, isPremium, btn) {
+    const newStatus = !isPremium;
+    const msg = isPremium 
+        ? "Are you sure you want to remove Premium access from this user?"
+        : "Are you sure you want to grant Premium access to this user?";
+    
+    showCustomConfirm("Change Premium Status", msg, () => {
+        fetch('/api/admin/toggle_premium', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({user_id: userId, is_premium: newStatus})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                window.location.reload();
+            } else {
+                showCustomAlert("Error", data.error);
             }
         })
         .catch(err => console.error(err));

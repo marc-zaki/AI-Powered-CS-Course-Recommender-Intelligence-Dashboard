@@ -23,6 +23,13 @@ from bson.objectid import ObjectId
 from dotenv import load_dotenv
 import google.generativeai as genai
 import pymongo
+from pdfminer.high_level import extract_text
+import tempfile
+import requests
+
+LEMON_SQUEEZY_API_KEY = os.environ.get("LEMON_SQUEEZY_API_KEY", "")
+LEMON_SQUEEZY_STORE_ID = os.environ.get("LEMON_SQUEEZY_STORE_ID", "")
+LEMON_SQUEEZY_VARIANT_ID = os.environ.get("LEMON_SQUEEZY_VARIANT_ID", "")
 
 from interview_analyzer.phase2_ir_engine import IREngine
 from interview_analyzer.phase2_ai_models import AIModels
@@ -1031,28 +1038,13 @@ def api_interview_stats():
 @app.route('/api/stats')
 
 def api_stats():
-    # Only allow admin access
-    if 'user_id' not in session:
-        return jsonify({"success": False, "error": "Unauthorized. Please log in."}), 401
-    db = get_db()
-    if db is not None:
-        user = db.users.find_one({"_id": session['user_id']})
-        if not user or (user.get('role') != 'admin' and not check_is_super_admin(user)):
-            return jsonify({"success": False, "error": "Forbidden. Admin access required."}), 403
-    else:
-        return jsonify({"success": False, "error": "Database connection error."}), 500
+    # Make stats public so it can be displayed on the EDA Dashboard
 
     if df is None or len(df) == 0:
         return jsonify({"success": False, "error": "Database is not loaded."}), 500
         
     try:
-        # 1. Total metric values
-        total_courses = int(len(df))
-        avg_rating = round(float(df['stars'].mean()), 2) if 'stars' in df.columns else 4.2
-        total_reviews = int(df['ratings_count'].sum()) if 'ratings_count' in df.columns else 0
-        
-        # 2. Provider Distribution
-        provider_counts = df['provider'].value_counts().to_dict()
+        filter_diff = request.args.get('difficulty', 'all').lower()
         
         # 3. Difficulty Distribution (Classifying on-the-fly via title & description keywords)
         def classify_row(row):
@@ -1066,17 +1058,34 @@ def api_stats():
             return "Intermediate"
             
         diff_series = df.apply(classify_row, axis=1)
-        difficulty_share = diff_series.value_counts().to_dict()
+        
+        filtered_df = df.copy()
+        filtered_df['calculated_difficulty'] = diff_series
+        if filter_diff != 'all':
+            filtered_df = filtered_df[filtered_df['calculated_difficulty'].str.lower() == filter_diff]
+            if len(filtered_df) == 0:
+                filtered_df = df.copy()  # fallback if empty
+        
+        # 1. Total metric values
+        total_courses = int(len(filtered_df))
+        avg_rating = round(float(filtered_df['stars'].mean()), 2) if 'stars' in filtered_df.columns else 4.2
+        total_reviews = int(filtered_df['ratings_count'].sum()) if 'ratings_count' in filtered_df.columns else 0
+        
+        # 2. Provider Distribution
+        provider_counts = filtered_df['provider'].value_counts().to_dict()
+        difficulty_share = filtered_df['calculated_difficulty'].value_counts().to_dict()
         
         # 4. Keyword Frequency Statistics (Information Retrieval statistics!)
         keywords = ["python", "javascript", "data science", "machine learning", "algorithms", "web development", "databases", "security", "cloud", "artificial intelligence", "c++", "software"]
         keyword_frequencies = {}
         for kw in keywords:
-            desc_col = 'content_text' if 'content_text' in df.columns else 'description'
-            keyword_frequencies[kw] = int(df[desc_col].str.contains(kw, case=False, na=False).sum())
+            desc_col = 'content_text' if 'content_text' in filtered_df.columns else 'description'
+            keyword_frequencies[kw] = int(filtered_df[desc_col].str.contains(kw, case=False, na=False).sum())
+            
+        top_topic = max(keyword_frequencies, key=keyword_frequencies.get).title() if keyword_frequencies else "Software"
             
         # 5. Rating Histogram Bins
-        stars = df['stars'].fillna(0)
+        stars = filtered_df['stars'].fillna(0)
         ratings_bins = {
             "4.5 - 5.0": int((stars >= 4.5).sum()),
             "4.0 - 4.5": int(((stars >= 4.0) & (stars < 4.5)).sum()),
@@ -1089,7 +1098,8 @@ def api_stats():
             "metrics": {
                 "total_courses": total_courses,
                 "avg_rating": avg_rating,
-                "total_reviews": total_reviews
+                "total_reviews": total_reviews,
+                "top_topic": top_topic
             },
             "provider_distribution": provider_counts,
             "difficulty_distribution": difficulty_share,
@@ -1492,13 +1502,15 @@ def admin_required(f):
 def inject_user():
     user = None
     is_super = False
+    is_premium_user = False
     if 'user_id' in session:
         db = get_db()
         if db is not None:
             user = db.users.find_one({"_id": session['user_id']})
             if user:
                 is_super = check_is_super_admin(user)
-    return dict(current_user=user, is_super_admin=is_super)
+                is_premium_user = user.get('is_premium', False) or user.get('role') == 'admin' or is_super
+    return dict(current_user=user, is_super_admin=is_super, is_premium_user=is_premium_user)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -1546,6 +1558,140 @@ def register():
         return redirect(url_for('onboarding'))
         
     return render_template('register.html')
+# ─────────────────────────────────────────────────────────────────
+# Premium Feature: Resume ATS Optimizer
+# ─────────────────────────────────────────────────────────────────
+
+@app.route('/resume-optimizer')
+def resume_optimizer():
+    return render_template('resume_optimizer.html')
+
+@app.route('/checkout/premium')
+def checkout_premium():
+    if 'user_id' not in session:
+        flash("Please log in to upgrade.", "warning")
+        return redirect(url_for('login'))
+        
+    db = get_db()
+    user = db.users.find_one({"_id": session['user_id']})
+    
+    # Render the new Simulated Checkout page instead of hitting an external API
+    return render_template('simulated_checkout.html', current_user=user)
+
+@app.route('/checkout/success')
+def checkout_success():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    # TODO: In a production app, verify the order via a Lemon Squeezy webhook instead of trusting the redirect
+    db = get_db()
+    db.users.update_one({"_id": session['user_id']}, {"$set": {"is_premium": True, "subscription_type": "pro"}})
+    
+    flash("Payment successful! You are now a PRO user.", "success")
+    return redirect(url_for('resume_optimizer'))
+
+@app.route('/api/resume/analyze', methods=['POST'])
+def api_resume_analyze():
+    if 'resume' not in request.files:
+        return jsonify({"error": "No resume file uploaded"}), 400
+    
+    job_description = request.form.get('job_description', '').strip()
+    if not job_description:
+        return jsonify({"error": "No job description provided"}), 400
+
+    resume_file = request.files['resume']
+    if not resume_file.filename.lower().endswith('.pdf'):
+        return jsonify({"error": "Resume must be a PDF file"}), 400
+
+    # Save PDF temporarily to parse
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        resume_file.save(temp_pdf.name)
+        temp_path = temp_pdf.name
+
+    try:
+        # Extract text using pdfminer
+        resume_text = extract_text(temp_path)
+    except Exception as e:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        return jsonify({"error": f"Failed to parse PDF: {str(e)}"}), 500
+
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
+
+    if not resume_text.strip():
+        return jsonify({"error": "Could not extract text from the PDF. It might be an image-based PDF."}), 400
+
+    system_prompt = (
+        "You are an expert technical recruiter and Applicant Tracking System (ATS). "
+        "Analyze the candidate's resume against the target Job Description. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"ats_score\": <integer 0-100>,\n"
+        "  \"missing_keywords\": [\"<keyword1>\", \"<keyword2>\"],\n"
+        "  \"bullet_rewrites\": [\n"
+        "    {\n"
+        "      \"original\": \"<weak bullet point from resume>\",\n"
+        "      \"improved\": \"<rewritten bullet using STAR method tailored to the JD>\",\n"
+        "      \"reasoning\": \"<why this is better>\"\n"
+        "    }\n"
+        "  ],\n"
+        "  \"recommended_upskilling\": [\"<CS concept or project to learn/build>\"]\n"
+        "}\n"
+        "Provide exactly 3 bullet_rewrites for the weakest bullet points in the resume."
+    )
+
+    user_prompt = f"### TARGET JOB DESCRIPTION ###\n{job_description}\n\n### CANDIDATE RESUME ###\n{resume_text}"
+
+    result = None
+
+    if OPENROUTER_API_KEY:
+        try:
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "google/gemini-2.5-flash",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.3,
+                "max_tokens": 1500,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=20.0)
+            if res.status_code == 200:
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+        except Exception as e:
+            print(f"OpenRouter ATS error: {e}")
+
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(
+                model_name='gemini-2.5-flash',
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(user_prompt)
+            result = extract_json_from_llm(response.text)
+        except Exception as e:
+            print(f"Gemini ATS error: {e}")
+
+    if not result:
+        return jsonify({"error": "AI model unavailable or failed to generate analysis. Please try again."}), 503
+
+    # Add default fallbacks if LLM fails strict schema adherence
+    result.setdefault("ats_score", 0)
+    result.setdefault("missing_keywords", [])
+    result.setdefault("bullet_rewrites", [])
+    result.setdefault("recommended_upskilling", [])
+
+    return jsonify(result)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -1671,9 +1817,16 @@ def google_callback():
             flash("Failed to retrieve user email from Google.", "danger")
             return redirect(url_for('login'))
             
+        # Check if email is a student email
+        is_student_email = email.endswith('.edu') or email.endswith('.ac.uk') or '.edu.' in email
+
         # Check if user exists in database
         user = db.users.find_one({"email": email})
         if user:
+            # Retroactively grant premium to existing students who log in
+            if is_student_email and not user.get('is_premium'):
+                db.users.update_one({"_id": user["_id"]}, {"$set": {"is_premium": True, "subscription_type": "student"}})
+            
             session['user_id'] = user['_id']
             flash(f"Welcome back, {user['name']}!", "success")
             return redirect(url_for('index'))
@@ -1692,7 +1845,9 @@ def google_callback():
                 "current_skill_level": "Beginner",
                 "role": "user",
                 "taken_courses": [],
-                "onboarding_preferences": {}
+                "onboarding_preferences": {},
+                "is_premium": is_student_email,
+                "subscription_type": "student" if is_student_email else "none"
             }
             
             db.users.insert_one(user_doc)
@@ -3195,6 +3350,25 @@ def toggle_user_role():
     if result.modified_count > 0:
         return jsonify({"success": True})
     return jsonify({"success": False, "error": "Role already set to this value"}), 400
+
+@app.route('/api/admin/toggle_premium', methods=['POST'])
+@admin_required
+def toggle_premium():
+    data = request.get_json() or {}
+    user_id = data.get('user_id')
+    new_status = data.get('is_premium')
+    
+    if not user_id:
+        return jsonify({"success": False, "error": "Missing user ID"}), 400
+        
+    db = get_db()
+    target_user = db.users.find_one({"_id": user_id})
+        
+    if not target_user:
+        return jsonify({"success": False, "error": "User not found"}), 404
+        
+    db.users.update_one({"_id": user_id}, {"$set": {"is_premium": new_status}})
+    return jsonify({"success": True, "message": "Premium status updated"})
 
 @app.route('/api/admin/delete_user', methods=['POST'])
 @admin_required

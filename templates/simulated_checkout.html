@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | MASARI Pro</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            overflow: hidden;
+            margin: 2rem;
+        }
+
+        .order-summary {
+            background: #0f172a;
+            color: white;
+            padding: 3rem;
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-form {
+            padding: 3rem;
+            width: 60%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 3rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        .product-name {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .features {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+            flex-grow: 1;
+        }
+
+        .features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .features i {
+            color: #38bdf8;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            background: #f8fafc;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+            background: white;
+        }
+
+        .card-element {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .btn-pay:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-pay:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .notice {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                flex-direction: column;
+            }
+            .order-summary, .payment-form {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <!-- Left Side: Order Summary -->
+        <div class="order-summary">
+            <div class="logo">
+                <i data-lucide="layers"></i> MASARI
+            </div>
+            
+            <div class="product-name">Subscribe to</div>
+            <div class="price">$9.99<span>/month</span></div>
+            
+            <ul class="features">
+                <li><i data-lucide="check-circle-2"></i> Unlimited Resume Analysis</li>
+                <li><i data-lucide="check-circle-2"></i> ATS Keyword Optimization</li>
+                <li><i data-lucide="check-circle-2"></i> AI Interview Simulations</li>
+                <li><i data-lucide="check-circle-2"></i> Priority Support</li>
+            </ul>
+
+            <div style="font-size: 0.8rem; color: #64748b; margin-top: auto;">
+                Powered by Simulated Checkout Engine
+            </div>
+        </div>
+
+        <!-- Right Side: Payment Form -->
+        <div class="payment-form">
+            <h2 style="margin-top: 0; margin-bottom: 2rem; color: var(--text-main);">Payment Details</h2>
+            
+            <form id="simulated-checkout-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" value="{{ current_user.email if current_user else '' }}" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Name on Card</label>
+                    <input type="text" id="name" placeholder="Jane Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Card Information</label>
+                    <input type="text" id="card_number" placeholder="0000 0000 0000 0000" maxlength="19" required style="margin-bottom: 1rem; font-family: monospace; font-size: 1.1rem;">
+                    <div class="card-element">
+                        <input type="text" placeholder="MM / YY" maxlength="5" required style="width: 50%;">
+                        <input type="text" placeholder="CVC" maxlength="4" required style="width: 50%;">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-pay" id="pay-btn">
+                    <span id="btn-text">Pay $9.99</span>
+                    <i data-lucide="loader-2" class="spinner" id="spinner"></i>
+                </button>
+
+                <div class="notice">
+                    <i data-lucide="lock" style="width: 14px; height: 14px;"></i>
+                    Payments are secure and encrypted.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Format card number with spaces
+        const cardInput = document.getElementById('card_number');
+        cardInput.addEventListener('input', function (e) {
+            let target = e.target;
+            let val = target.value.replace(/\D/g, '').substring(0, 16);
+            target.value = val != '' ? val.match(/.{1,4}/g).join(' ') : '';
+        });
+
+        // Simulate checkout process
+        document.getElementById('simulated-checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('pay-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('spinner');
+
+            // UI Loading State
+            btn.disabled = true;
+            btnText.innerText = "Processing...";
+            spinner.style.display = "inline-block";
+
+            // Simulate network/bank delay of 2.5 seconds
+            setTimeout(() => {
+                btnText.innerText = "Success! Redirecting...";
+                spinner.style.display = "none";
+                btn.style.background = "var(--success)";
+                
+                // Redirect to the actual success route to upgrade user
+                setTimeout(() => {
+                    window.location.href = "/checkout/success";
+                }, 1000);
+            }, 2500);
+        });
+    </script>
+</body>
+</html>
