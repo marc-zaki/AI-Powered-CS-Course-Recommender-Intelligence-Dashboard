@@ -1565,7 +1565,7 @@ def register():
             flash("Email already registered.", "danger")
             return redirect(url_for('register'))
             
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         
         user_id = str(hashlib.sha256(email.encode()).hexdigest())[:16]
         
@@ -2017,7 +2017,7 @@ def reset_password(token):
             return render_template('reset_password.html', token=token)
             
         # Hash new password and clear token fields
-        hashed_password = generate_password_hash(password)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         db.users.update_one(
             {"_id": user["_id"]},
             {
