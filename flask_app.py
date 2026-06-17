@@ -553,7 +553,7 @@ def api_interview_search():
             groq_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [{"role": "user", "content": system_prompt}],
                 "temperature": 0.5,
                 "max_tokens": 1500,
@@ -633,7 +633,7 @@ def api_interview_explain():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -711,7 +711,7 @@ def api_interview_followup():
             groq_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": messages,
                 "temperature": 0.3,
                 "max_tokens": 400,
@@ -797,7 +797,7 @@ def api_interview_generate_technical():
             groq_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [{"role": "user", "content": system_prompt}],
                 "temperature": 0.5,
                 "max_tokens": 800,
@@ -906,7 +906,7 @@ def api_interview_behavioral():
             groq_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [{"role": "user", "content": system_prompt}],
                 "temperature": 0.7,
                 "max_tokens": 1200,
@@ -968,7 +968,7 @@ def api_interview_star_analyze():
             groq_url = "https://openrouter.ai/api/v1/chat/completions"
             headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -1434,7 +1434,7 @@ def generate_path():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -1685,7 +1685,7 @@ def api_resume_analyze():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -3033,7 +3033,7 @@ def chat_assistant():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [{"role": "system", "content": system_prompt}] + messages,
                 "temperature": 0.5,
                 "max_tokens": 1024
@@ -3121,7 +3121,7 @@ def generate_quiz():
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "qwen/qwen3-coder:free",
+                "model": "meta-llama/llama-4-scout",
                 "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
