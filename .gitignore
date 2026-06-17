@@ -17,3 +17,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Model / Data Cache
+datasets/tfidf_cache.pkl

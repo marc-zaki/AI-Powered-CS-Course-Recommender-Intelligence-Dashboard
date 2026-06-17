@@ -155,6 +155,14 @@ def get_db():
         mongo_client = pymongo.MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
         mongo_client.server_info()
         mongo_db = mongo_client["cs_recommender"]
+        try:
+            mongo_db.users.create_index("email", unique=True, sparse=True)
+            mongo_db.courses.create_index("url")
+            mongo_db.course_analyses.create_index("cache_key")
+            mongo_db.link_status.create_index("url")
+            mongo_db.interview_results.create_index("user_id")
+        except Exception as idx_err:
+            print(f"Database index creation warning: {idx_err}")
         return mongo_db
     except Exception as e:
         print(f"MongoDB connection failed: {e}")
@@ -176,6 +184,28 @@ def check_is_super_admin(user):
 
 def load_and_train_model():
     global df, vectorizer, tfidf_matrix, global_featured_courses
+    
+    # Path to cache file
+    cache_dir = "datasets"
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+    cache_file = os.path.join(cache_dir, "tfidf_cache.pkl")
+    
+    if os.path.exists(cache_file):
+        try:
+            print("Loading TF-IDF vectorizer and model from disk cache...")
+            import pickle
+            with open(cache_file, "rb") as f:
+                cache_data = pickle.load(f)
+            df = cache_data["df"]
+            vectorizer = cache_data["vectorizer"]
+            tfidf_matrix = cache_data["tfidf_matrix"]
+            global_featured_courses = cache_data["global_featured_courses"]
+            print(f"Successfully loaded {len(df)} courses from disk cache!")
+            return
+        except Exception as cache_err:
+            print(f"Disk cache load failed, rebuilding model: {cache_err}")
+
     print("Loading data and training AI model...")
     
     db_name = "cs_recommender"
@@ -306,6 +336,21 @@ def load_and_train_model():
     df['has_review'] = df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
     global_featured_courses = df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
     
+    # Save to disk cache
+    try:
+        import pickle
+        cache_data = {
+            "df": df,
+            "vectorizer": vectorizer,
+            "tfidf_matrix": tfidf_matrix,
+            "global_featured_courses": global_featured_courses
+        }
+        with open(cache_file, "wb") as f:
+            pickle.dump(cache_data, f)
+        print("Successfully cached TF-IDF vectorizer and model to disk.")
+    except Exception as save_err:
+        print(f"Warning: Could not save TF-IDF model cache to disk: {save_err}")
+
     print(f"Successfully loaded {len(df)} courses!")
 
 
@@ -453,6 +498,57 @@ def search():
 
     return render_template('index.html', courses=recs.to_dict('records'), interview_results=interview_results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
 
+def check_link_cached(url, title, provider):
+    db = get_db()
+    fallback_url = url
+    if provider.lower() == 'udemy':
+        fallback_url = f"https://www.udemy.com/courses/search/?q={urllib.parse.quote(title)}"
+    elif provider.lower() == 'coursera':
+        fallback_url = f"https://www.coursera.org/search?query={urllib.parse.quote(title)}"
+    elif provider.lower() == 'edx':
+        fallback_url = f"https://www.edx.org/search?q={urllib.parse.quote(title)}"
+        
+    if db is not None:
+        try:
+            cached = db.link_status.find_one({"url": url})
+            if cached:
+                created_at = cached.get("created_at")
+                if created_at and (datetime.utcnow() - created_at < timedelta(days=30)):
+                    return cached.get("valid", False), cached.get("fallback_url", fallback_url)
+        except Exception as e:
+            print(f"Link status cache check error: {e}")
+            
+    # Perform actual HTTP validation check
+    valid = False
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        res = requests.head(url, headers=headers, timeout=1.5, allow_redirects=True)
+        if res.status_code == 404 or res.status_code == 403:
+            res = requests.get(url, headers=headers, timeout=1.5, allow_redirects=True)
+        valid = (res.status_code != 404)
+    except Exception:
+        valid = False
+        
+    # Write result to cache
+    if db is not None:
+        try:
+            db.link_status.update_one(
+                {"url": url},
+                {"$set": {
+                    "url": url,
+                    "valid": valid,
+                    "fallback_url": fallback_url,
+                    "created_at": datetime.utcnow()
+                }},
+                upsert=True
+            )
+        except Exception as e:
+            print(f"Link status cache save error: {e}")
+            
+    return valid, fallback_url
+
 @app.route('/validate_link')
 def validate_link():
     url = request.args.get('url', '').strip()
@@ -462,32 +558,8 @@ def validate_link():
     if not url:
         return jsonify({"valid": False, "fallback_url": "/"})
         
-    # Generate foolproof search fallback URLs
-    fallback_url = url
-    if provider.lower() == 'udemy':
-        fallback_url = f"https://www.udemy.com/courses/search/?q={urllib.parse.quote(title)}"
-    elif provider.lower() == 'coursera':
-        fallback_url = f"https://www.coursera.org/search?query={urllib.parse.quote(title)}"
-    elif provider.lower() == 'edx':
-        fallback_url = f"https://www.edx.org/search?q={urllib.parse.quote(title)}"
-        
-    # We do a quick check
-    try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        # Use HEAD request for speed, follow redirects, timeout of 2.0s
-        res = requests.head(url, headers=headers, timeout=2.0, allow_redirects=True)
-        # If HEAD fails or is not allowed, try GET
-        if res.status_code == 404 or res.status_code == 403:
-            res = requests.get(url, headers=headers, timeout=2.0, allow_redirects=True)
-            
-        if res.status_code == 404:
-            return jsonify({"valid": False, "fallback_url": fallback_url})
-        return jsonify({"valid": True, "fallback_url": url})
-    except Exception as e:
-        # On connection errors or timeout, fallback to the search page just to be safe!
-        return jsonify({"valid": False, "fallback_url": fallback_url})
+    valid, fallback_url = check_link_cached(url, title, provider)
+    return jsonify({"valid": valid, "fallback_url": url if valid else fallback_url})
 
 @app.route('/verify_link')
 def verify_link():
@@ -498,25 +570,8 @@ def verify_link():
     if not url:
         return redirect('/')
         
-    fallback_url = url
-    if provider.lower() == 'udemy':
-        fallback_url = f"https://www.udemy.com/courses/search/?q={urllib.parse.quote(title)}"
-    elif provider.lower() == 'coursera':
-        fallback_url = f"https://www.coursera.org/search?query={urllib.parse.quote(title)}"
-    elif provider.lower() == 'edx':
-        fallback_url = f"https://www.edx.org/search?q={urllib.parse.quote(title)}"
-        
-    try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        # Use HEAD request for maximum speed, timeout of 1.5s
-        res = requests.head(url, headers=headers, timeout=1.5, allow_redirects=True)
-        if res.status_code == 404:
-            return redirect(fallback_url)
-        return redirect(url)
-    except Exception:
-        return redirect(fallback_url)
+    valid, fallback_url = check_link_cached(url, title, provider)
+    return redirect(url if valid else fallback_url)
 
 @app.route('/interview-prep')
 def interview_prep():
@@ -1854,55 +1909,92 @@ def api_course_analyze():
         "Evaluate this course and return the JSON analysis."
     )
 
-    result = None
+    # Generate cache key and query MongoDB to check for a cached evaluation
+    cache_key = f"{course.get('url', '')}_{hashlib.md5(user_goals.encode('utf-8')).hexdigest()}"
+    db = get_db()
+    cached_result = None
 
-    # Tier 1: OpenRouter
-    if OPENROUTER_API_KEY:
+    if db is not None:
         try:
-            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
-            headers = {
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "HTTP-Referer": "https://cs-recommender.com",
-                "X-Title": "MASARI",
-                "Content-Type": "application/json"
-            }
-            payload = {
-                "model": "meta-llama/llama-4-scout",
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                "temperature": 0.25,
-                "max_tokens": 900,
-                "response_format": {"type": "json_object"}
-            }
-            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=25.0)
-            if res.status_code == 200:
-                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
-        except Exception as e:
-            print(f"OpenRouter course analyzer error: {e}")
+            cached_doc = db.course_analyses.find_one({"cache_key": cache_key})
+            if cached_doc:
+                created_at = cached_doc.get("created_at")
+                if created_at and (datetime.utcnow() - created_at < timedelta(days=7)):
+                    cached_result = cached_doc.get("analysis_result")
+                    print(f"Cache HIT for course analysis: {title}")
+        except Exception as cache_read_err:
+            print(f"Cache read error: {cache_read_err}")
 
-    # Tier 2: Gemini
-    if not result and GEMINI_API_KEY:
-        try:
-            model = genai.GenerativeModel(
-                model_name='gemini-1.5-flash',
-                system_instruction=system_prompt
-            )
-            response = model.generate_content(user_prompt)
-            result = extract_json_from_llm(response.text)
-        except Exception as e:
-            print(f"Gemini course analyzer error: {e}")
+    if cached_result:
+        result = cached_result
+    else:
+        result = None
 
-    if not result:
-        return jsonify({"error": "AI model unavailable. Please try again in a moment."}), 503
+        # Tier 1: OpenRouter
+        if OPENROUTER_API_KEY:
+            try:
+                openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                    "HTTP-Referer": "https://cs-recommender.com",
+                    "X-Title": "MASARI",
+                    "Content-Type": "application/json"
+                }
+                payload = {
+                    "model": "meta-llama/llama-4-scout",
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    "temperature": 0.25,
+                    "max_tokens": 900,
+                    "response_format": {"type": "json_object"}
+                }
+                res = requests.post(openrouter_url, json=payload, headers=headers, timeout=25.0)
+                if res.status_code == 200:
+                    result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+            except Exception as e:
+                print(f"OpenRouter course analyzer error: {e}")
 
-    # Defaults
-    result.setdefault("verdict", "maybe")
-    result.setdefault("verdict_reason", "")
-    result.setdefault("scores", {"content_depth": 50, "provider_reputation": 50, "career_relevance": 50, "value_for_money": 50})
-    result.setdefault("pros", [])
-    result.setdefault("cons", [])
+        # Tier 2: Gemini
+        if not result and GEMINI_API_KEY:
+            try:
+                model = genai.GenerativeModel(
+                    model_name='gemini-1.5-flash',
+                    system_instruction=system_prompt
+                )
+                response = model.generate_content(user_prompt)
+                result = extract_json_from_llm(response.text)
+            except Exception as e:
+                print(f"Gemini course analyzer error: {e}")
+
+        if not result:
+            return jsonify({"error": "AI model unavailable. Please try again in a moment."}), 503
+
+        # Defaults
+        result.setdefault("verdict", "maybe")
+        result.setdefault("verdict_reason", "")
+        result.setdefault("scores", {"content_depth": 50, "provider_reputation": 50, "career_relevance": 50, "value_for_money": 50})
+        result.setdefault("pros", [])
+        result.setdefault("cons", [])
+        result.setdefault("summary", "")
+        result.setdefault("topic_keywords", [])
+
+        # Store the successful analysis in cache
+        if db is not None:
+            try:
+                db.course_analyses.update_one(
+                    {"cache_key": cache_key},
+                    {"$set": {
+                        "cache_key": cache_key,
+                        "analysis_result": result,
+                        "created_at": datetime.utcnow()
+                    }},
+                    upsert=True
+                )
+                print(f"Cached course analysis to MongoDB: {title}")
+            except Exception as cache_write_err:
+                print(f"Cache write error: {cache_write_err}")
     result.setdefault("summary", "")
     result.setdefault("topic_keywords", [])
 
@@ -3324,6 +3416,96 @@ def chat_assistant():
         "3. **Take assessments**: Try the Skill Assessment quiz under your profile page to rank up!"
     )
     return jsonify({"success": True, "response": fallback_response, "engine": "static"})
+
+@app.route('/api/chat_assistant_stream', methods=['POST'])
+@login_required
+def chat_assistant_stream():
+    from flask import Response, stream_with_context
+    data = request.get_json() or {}
+    messages = data.get('messages', [])
+    if not messages:
+        return jsonify({"success": False, "error": "No messages provided"}), 400
+        
+    system_prompt = (
+        "You are an elite Computer Science Academic Advisor and tutor.\n"
+        "Answer the student's questions concisely, helpfully, and professionally.\n"
+        "Explain complex CS concepts clearly, suggest appropriate learning habits, "
+        "and mention matching courses or track guidelines when appropriate.\n"
+        "Formatting tip: Use standard Markdown formatting like **bold** or `code` snippets where appropriate."
+    )
+    
+    def generate():
+        # Tier 1: OpenRouter Stream
+        if OPENROUTER_API_KEY:
+            try:
+                print("Streaming OpenRouter API for chat assistant...")
+                openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                    "HTTP-Referer": "https://cs-recommender.com",
+                    "X-Title": "MASARI",
+                    "Content-Type": "application/json"
+                }
+                payload = {
+                    "model": "meta-llama/llama-4-scout",
+                    "messages": [{"role": "system", "content": system_prompt}] + messages,
+                    "temperature": 0.5,
+                    "max_tokens": 1024,
+                    "stream": True
+                }
+                res = requests.post(openrouter_url, json=payload, headers=headers, stream=True, timeout=15.0)
+                if res.status_code == 200:
+                    for line in res.iter_lines():
+                        if line:
+                            decoded = line.decode('utf-8').strip()
+                            if decoded.startswith("data: "):
+                                data_str = decoded[6:]
+                                if data_str == "[DONE]":
+                                    break
+                                try:
+                                    chunk = json.loads(data_str)
+                                    delta = chunk["choices"][0]["delta"].get("content", "")
+                                    if delta:
+                                        yield f"data: {json.dumps({'content': delta})}\n\n"
+                                except Exception:
+                                    pass
+                    return
+            except Exception as e:
+                print(f"OpenRouter streaming connection error: {e}")
+
+        # Tier 2: Gemini Stream
+        if GEMINI_API_KEY:
+            try:
+                print("Streaming Gemini Cloud API for chat assistant...")
+                transcript = ""
+                for m in messages:
+                    role = "Student" if m['role'] == 'user' else "Advisor"
+                    transcript += f"{role}: {m['content']}\n"
+                user_prompt = f"Dialogue history:\n{transcript}\nAdvisor:"
+                
+                model = genai.GenerativeModel(
+                    model_name='gemini-2.5-flash',
+                    system_instruction=system_prompt
+                )
+                response = model.generate_content(user_prompt, stream=True)
+                for chunk in response:
+                    yield f"data: {json.dumps({'content': chunk.text})}\n\n"
+                return
+            except Exception as e:
+                print(f"Gemini streaming error: {e}")
+
+        # Tier 3: Static Fallback Stream
+        fallback_response = (
+            "Hello! I am currently running in offline mode. Here are a few general CS study tips:\n"
+            "1. **Practice coding daily**: Sites like LeetCode or building small personal projects help cement syntax.\n"
+            "2. **Optimize your learning path**: Complete your saved plans week-by-week.\n"
+            "3. **Take assessments**: Try the Skill Assessment quiz under your profile page to rank up!"
+        )
+        for char in fallback_response:
+            yield f"data: {json.dumps({'content': char})}\n\n"
+            time.sleep(0.01)
+
+    return Response(stream_with_context(generate()), mimetype='text/event-stream')
 
 @app.route('/api/generate_quiz', methods=['GET'])
 @login_required

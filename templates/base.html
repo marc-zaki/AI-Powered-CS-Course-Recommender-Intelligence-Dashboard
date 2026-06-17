@@ -301,24 +301,67 @@
             const typingIndicator = appendChatMessage('Assistant is thinking...', 'bot typing');
             
             // Send to backend API
-            fetch('/api/chat_assistant', {
+            fetch('/api/chat_assistant_stream', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ messages: chatHistory })
             })
-            .then(res => res.json())
-            .then(data => {
-                // Remove typing indicator
+            .then(res => {
                 if (typingIndicator) typingIndicator.remove();
-                
-                if (data.success) {
-                    appendChatMessage(data.response, 'bot');
-                    chatHistory.push({ role: 'assistant', content: data.response });
-                } else {
-                    appendChatMessage(data.error || "Sorry, I had trouble connecting. Please try again.", 'bot');
+                if (!res.ok) {
+                    throw new Error("HTTP error " + res.status);
                 }
+                
+                // Create a new empty bot message in UI that we will stream into
+                const botMsgDiv = appendChatMessage('', 'bot');
+                let fullText = '';
+                
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                
+                function read() {
+                    return reader.read().then(({ done, value }) => {
+                        if (done) {
+                            chatHistory.push({ role: 'assistant', content: fullText });
+                            return;
+                        }
+                        
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop(); // Keep partial line in buffer
+                        
+                        for (let line of lines) {
+                            line = line.trim();
+                            if (line.startsWith('data: ')) {
+                                try {
+                                    const parsed = JSON.parse(line.substring(6));
+                                    const chunkText = parsed.content || '';
+                                    fullText += chunkText;
+                                    
+                                    // Update the bot message UI with parsed markdown
+                                    let formatted = fullText
+                                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                        .replace(/`(.*?)`/g, '<code>$1</code>')
+                                        .replace(/\n/g, '<br>');
+                                    botMsgDiv.innerHTML = formatted;
+                                    
+                                    // Auto-scroll chat window
+                                    const messagesContainer = document.getElementById('chat-messages');
+                                    if (messagesContainer) {
+                                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                                    }
+                                } catch (e) {
+                                    // skip incomplete/malformed chunks
+                                }
+                            }
+                        }
+                        return read();
+                    });
+                }
+                return read();
             })
             .catch(err => {
                 console.error(err);
