@@ -174,7 +174,7 @@ def check_is_super_admin(user):
     return False
 
 def load_and_train_model():
-    global df, vectorizer, tfidf_matrix
+    global df, vectorizer, tfidf_matrix, global_featured_courses
     print("Loading data and training AI model...")
     
     db_name = "cs_recommender"
@@ -300,6 +300,11 @@ def load_and_train_model():
     df['search_profile'] = df.apply(build_search_profile, axis=1)
     vectorizer = TfidfVectorizer(stop_words='english', ngram_range=(1, 2))
     tfidf_matrix = vectorizer.fit_transform(df['search_profile'])
+    
+    # Pre-compute featured courses globally so the index route is instant
+    df['has_review'] = df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
+    global_featured_courses = df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+    
     print(f"Successfully loaded {len(df)} courses!")
 
 
@@ -377,7 +382,6 @@ def index():
         if db is not None:
             user = db.users.find_one({"_id": session['user_id']})
 
-    featured_df = df.copy()
     is_personalized = False
     
     if user:
@@ -393,12 +397,9 @@ def index():
             featured = search_df.sort_values(by=['match_score', 'stars'], ascending=[False, False]).head(12)
             is_personalized = True
         else:
-            featured_df = featured_df[~featured_df['url'].isin(taken_courses)]
-            featured_df['has_review'] = featured_df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
-            featured = featured_df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+            featured = global_featured_courses[~global_featured_courses['url'].isin(taken_courses)].head(12)
     else:
-        featured_df['has_review'] = featured_df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
-        featured = featured_df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
+        featured = global_featured_courses
 
     courses = featured.to_dict('records')
     return render_template('index.html', courses=courses, query="", is_search=False, show_all=False, total_courses=len(df), page=1, total_pages=1, is_personalized=is_personalized)

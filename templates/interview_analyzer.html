@@ -427,12 +427,42 @@
 
     // ── Helpers ───────────────────────────────────────────────────────
     function escapeHtml(unsafe) { return (unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
-    function setLoader(visible, text = 'Analyzing questions via AI Models...') {
-        document.getElementById('interview-loader').style.display = visible ? 'flex' : 'none';
-        document.getElementById('loader-text').textContent = text;
+    // ── Utility Functions ─────────────────────────────────────────────
+    let loaderInterval = null;
+    function setLoader(visible, texts = ['Connecting to Gemini 2.5 Flash...', 'Generating detailed questions...', 'Parsing AI response...']) {
+        const loaderEl = document.getElementById('interview-loader');
+        const textEl = document.getElementById('loader-text');
+        
+        if (loaderInterval) clearInterval(loaderInterval);
+        
+        if (visible) {
+            loaderEl.style.display = 'flex';
+            if (Array.isArray(texts)) {
+                let idx = 0;
+                textEl.textContent = texts[0];
+                loaderInterval = setInterval(() => {
+                    idx = (idx + 1) % texts.length;
+                    textEl.textContent = texts[idx];
+                }, 2500);
+            } else {
+                textEl.textContent = texts;
+            }
+        } else {
+            loaderEl.style.display = 'none';
+        }
     }
     function showError(msg) { const el = document.getElementById('interview-error'); el.style.display = 'block'; el.textContent = msg || 'Error.'; }
     function hideError() { document.getElementById('interview-error').style.display = 'none'; }
+
+    function formatMarkdown(text) {
+        if (!text) return '';
+        let html = text.replace(/\n/g, '<br/>');
+        // Fix for bold text **text** 
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Fix for literal backslash asterisks if present
+        html = html.replace(/\\\*\\\*(.*?)\\\*\\\*/g, '<strong>$1</strong>');
+        return html;
+    }
 
     // ── Tab Switching ─────────────────────────────────────────────────
     function switchInterviewTab(tab) {
@@ -787,7 +817,7 @@
         const query = document.getElementById('interview-query').value.trim();
         const difficulty = document.getElementById('interview-difficulty').value;
         const btn = document.getElementById('interview-search-btn');
-        btn.disabled = true; setLoader(true); hideError();
+        btn.disabled = true; setLoader(true, ['Connecting to Gemini 2.5 Flash...', 'Generating FAANG-level questions...', 'Analyzing difficulty...', 'Formatting response...']); hideError();
         document.getElementById('interview-results-container').style.display = 'none';
         try {
             const res = await fetch(`/api/interview/search?q=${encodeURIComponent(query)}&difficulty=${encodeURIComponent(difficulty)}`);
@@ -812,7 +842,7 @@
                     const displayQ = escapeHtml(r.question).substring(0, 200);
                     const hasAnswer = r.answer ? 'true' : 'false';
                     const answerContent = r.answer 
-                        ? `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> <strong>AI Generated Answer</strong><br/><br/>${escapeHtml(r.answer).replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')}</div>` 
+                        ? `<div style="padding: 1rem; background: var(--bg-main); border-radius: 8px; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> <strong>AI Generated Answer</strong><br/><br/>${formatMarkdown(escapeHtml(r.answer))}</div>` 
                         : `<div style="color: var(--text-muted);"><i data-lucide="loader-2" class="spin" style="width: 16px;"></i> Loading...</div>`;
 
                     list.innerHTML += `
