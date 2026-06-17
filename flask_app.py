@@ -161,6 +161,8 @@ def get_db():
             mongo_db.course_analyses.create_index("cache_key")
             mongo_db.link_status.create_index("url")
             mongo_db.interview_results.create_index("user_id")
+            mongo_db.interview_prep_cache.create_index("key")
+            mongo_db.study_plans_cache.create_index("key")
         except Exception as idx_err:
             print(f"Database index creation warning: {idx_err}")
         return mongo_db
@@ -476,27 +478,44 @@ def search():
     if not query:
         return redirect(url_for('index'))
 
-    query_vector = vectorizer.transform([query.lower()])
-    
-    search_df = df.copy()
-    search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
-    
-    # Try strict search (0.15) first
-    recs = search_df[search_df['match_score'] > 0.15].sort_values(by=['stars', 'match_score'], ascending=[False, False])
-    
-    # If nothing found, try loose search (0.02)
-    if recs.empty:
-        recs = search_df[search_df['match_score'] > 0.02].sort_values(by=['stars', 'match_score'], ascending=[False, False])
-        
-    # Feature 4: Unified Global Search
-    interview_results = []
-    if interview_ir_engine:
-        try:
-            interview_results = interview_ir_engine.search(query, top_k=5, method='hybrid')
-        except Exception:
-            pass
+    import concurrent.futures
 
-    return render_template('index.html', courses=recs.to_dict('records'), interview_results=interview_results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
+    def run_course_search(q):
+        try:
+            query_vector = vectorizer.transform([q.lower()])
+            search_df = df.copy()
+            search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+            
+            # Try strict search (0.15) first
+            recs = search_df[search_df['match_score'] > 0.15].sort_values(by=['stars', 'match_score'], ascending=[False, False])
+            
+            # If nothing found, try loose search (0.02)
+            if recs.empty:
+                recs = search_df[search_df['match_score'] > 0.02].sort_values(by=['stars', 'match_score'], ascending=[False, False])
+                
+            return recs.to_dict('records')
+        except Exception as e:
+            print(f"Error in parallel course search: {e}")
+            return []
+
+    def run_interview_search(q):
+        if not interview_ir_engine:
+            return []
+        try:
+            return interview_ir_engine.search(q, top_k=5, method='hybrid')
+        except Exception as e:
+            print(f"Error in parallel interview search: {e}")
+            return []
+
+    # Execute searches concurrently
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        future_courses = executor.submit(run_course_search, query)
+        future_interviews = executor.submit(run_interview_search, query)
+        
+        courses = future_courses.result()
+        interview_results = future_interviews.result()
+
+    return render_template('index.html', courses=courses, interview_results=interview_results, query=query, is_search=True, show_all=False, total_courses=len(df), page=1, total_pages=1)
 
 def check_link_cached(url, title, provider):
     db = get_db()
@@ -601,35 +620,69 @@ def api_interview_search():
         "}"
     )
 
-    results = []
-    
-    if OPENROUTER_API_KEY:
+    # Check database cache for generated Q&As
+    cache_key = f"search_{hashlib.md5(f'{query.lower()}_{difficulty.lower()}'.encode('utf-8')).hexdigest()}"
+    db = get_db()
+    cached_results = None
+    if db is not None:
         try:
-            groq_url = "https://openrouter.ai/api/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
-            payload = {
-                "model": "meta-llama/llama-4-scout",
-                "messages": [{"role": "user", "content": system_prompt}],
-                "temperature": 0.5,
-                "max_tokens": 1500,
-                "response_format": {"type": "json_object"}
-            }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
-            if res.status_code == 200:
-                data = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
-                results = data.get("results", [])
-        except Exception:
-            pass
+            cached_doc = db.interview_prep_cache.find_one({"key": cache_key})
+            if cached_doc:
+                created_at = cached_doc.get("created_at")
+                if created_at and (datetime.utcnow() - created_at < timedelta(days=14)):
+                    cached_results = cached_doc.get("results")
+                    print(f"Cache HIT for interview prep search: {query} ({difficulty})")
+        except Exception as e:
+            print(f"Cache check error in api_interview_search: {e}")
 
-    if not results and GEMINI_API_KEY:
-        try:
-            # Fallback to 1.5-flash because 2.5-flash is not natively supported in genai 0.3.1
-            model = genai.GenerativeModel(model_name='gemini-1.5-flash')
-            response = model.generate_content(system_prompt)
-            data = extract_json_from_llm(response.text)
-            results = data.get("results", [])
-        except Exception:
-            pass
+    if cached_results:
+        results = cached_results
+    else:
+        results = []
+        
+        if OPENROUTER_API_KEY:
+            try:
+                groq_url = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
+                payload = {
+                    "model": "meta-llama/llama-4-scout",
+                    "messages": [{"role": "user", "content": system_prompt}],
+                    "temperature": 0.5,
+                    "max_tokens": 1500,
+                    "response_format": {"type": "json_object"}
+                }
+                res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
+                if res.status_code == 200:
+                    data = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+                    results = data.get("results", [])
+            except Exception:
+                pass
+
+        if not results and GEMINI_API_KEY:
+            try:
+                # Fallback to 1.5-flash because 2.5-flash is not natively supported in genai 0.3.1
+                model = genai.GenerativeModel(model_name='gemini-1.5-flash')
+                response = model.generate_content(system_prompt)
+                data = extract_json_from_llm(response.text)
+                results = data.get("results", [])
+            except Exception:
+                pass
+
+        # Write to cache
+        if results and db is not None:
+            try:
+                db.interview_prep_cache.update_one(
+                    {"key": cache_key},
+                    {"$set": {
+                        "key": cache_key,
+                        "results": results,
+                        "created_at": datetime.utcnow()
+                    }},
+                    upsert=True
+                )
+                print(f"Cached generated Q&As for: {query} ({difficulty})")
+            except Exception as e:
+                print(f"Cache write error in api_interview_search: {e}")
 
     # Perform AI Analysis on the query (Keep existing logic)
     analysis = None
@@ -846,34 +899,68 @@ def api_interview_generate_technical():
         "}"
     )
 
-    result = None
-    if OPENROUTER_API_KEY:
+    # Check cache first
+    cache_key = f"generate_{hashlib.md5(f'{topic.lower()}_{difficulty.lower()}'.encode('utf-8')).hexdigest()}"
+    db = get_db()
+    cached_result = None
+    if db is not None:
         try:
-            groq_url = "https://openrouter.ai/api/v1/chat/completions"
-            headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
-            payload = {
-                "model": "meta-llama/llama-4-scout",
-                "messages": [{"role": "user", "content": system_prompt}],
-                "temperature": 0.5,
-                "max_tokens": 800,
-                "response_format": {"type": "json_object"}
-            }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
-            if res.status_code == 200:
-                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
-        except Exception:
-            pass
+            cached_doc = db.interview_prep_cache.find_one({"key": cache_key})
+            if cached_doc:
+                created_at = cached_doc.get("created_at")
+                if created_at and (datetime.utcnow() - created_at < timedelta(days=14)):
+                    cached_result = cached_doc.get("results")
+                    print(f"Cache HIT for generative technical interview: {topic} ({difficulty})")
+        except Exception as e:
+            print(f"Cache check error in api_interview_generate_technical: {e}")
 
-    if not result and GEMINI_API_KEY:
-        try:
-            model = genai.GenerativeModel(model_name='gemini-1.5-flash')
-            response = model.generate_content(system_prompt)
-            result = extract_json_from_llm(response.text)
-        except Exception:
-            pass
+    if cached_result:
+        result = cached_result
+    else:
+        result = None
+        if OPENROUTER_API_KEY:
+            try:
+                groq_url = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
+                payload = {
+                    "model": "meta-llama/llama-4-scout",
+                    "messages": [{"role": "user", "content": system_prompt}],
+                    "temperature": 0.5,
+                    "max_tokens": 800,
+                    "response_format": {"type": "json_object"}
+                }
+                res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
+                if res.status_code == 200:
+                    result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+            except Exception:
+                pass
 
-    if not result or "questions" not in result:
-        return jsonify({"error": "Could not generate technical questions."}), 503
+        if not result and GEMINI_API_KEY:
+            try:
+                model = genai.GenerativeModel(model_name='gemini-1.5-flash')
+                response = model.generate_content(system_prompt)
+                result = extract_json_from_llm(response.text)
+            except Exception:
+                pass
+
+        if not result or "questions" not in result:
+            return jsonify({"error": "Could not generate technical questions."}), 503
+
+        # Save to database cache
+        if db is not None:
+            try:
+                db.interview_prep_cache.update_one(
+                    {"key": cache_key},
+                    {"$set": {
+                        "key": cache_key,
+                        "results": result,
+                        "created_at": datetime.utcnow()
+                    }},
+                    upsert=True
+                )
+                print(f"Cached generated questions for: {topic} ({difficulty})")
+            except Exception as e:
+                print(f"Cache write error in api_interview_generate_technical: {e}")
 
     return jsonify(result)
 
@@ -1404,6 +1491,26 @@ def generate_path():
     if not user_goal:
         return jsonify({"success": False, "error": "Please enter a learning goal or career target."}), 400
 
+    # Cache check
+    clean_goal = re.sub(r'\s+', ' ', user_goal.lower().strip())
+    cache_key = hashlib.md5(clean_goal.encode('utf-8')).hexdigest()
+    db = get_db()
+    if db is not None:
+        try:
+            cached_plan = db.study_plans_cache.find_one({"key": cache_key})
+            if cached_plan:
+                created_at = cached_plan.get("created_at")
+                if created_at and (datetime.utcnow() - created_at < timedelta(days=30)):
+                    print(f"Cache HIT for study plan goal: {user_goal}")
+                    return jsonify({
+                        "success": True,
+                        "goal": user_goal,
+                        "path_html": cached_plan.get("path_html"),
+                        "engine": "cache"
+                    })
+        except Exception as e:
+            print(f"Cache check error in generate_path: {e}")
+
     # 1. Use TF-IDF to retrieve top 12 relevant courses
     query_vector = vectorizer.transform([user_goal.lower()])
     search_df = df.copy()
@@ -1412,17 +1519,6 @@ def generate_path():
 
     if not matched_courses:
         return jsonify({"success": False, "error": "No related courses found in our database to build a path."}), 404
-
-    # Fallback instantly if Gemini API Key is missing
-    if not GEMINI_API_KEY:
-        print("Gemini API key not found. Seamlessly generating local academic study plan fallback.")
-        path_html = generate_local_fallback_path(user_goal, matched_courses)
-        return jsonify({
-            "success": True,
-            "goal": user_goal,
-            "path_html": path_html,
-            "fallback": True
-        })
 
     # 2. Format the courses data to pass to the LLM (including stars & ratings)
     courses_context = []
@@ -1476,8 +1572,12 @@ def generate_path():
     Please build a premium week-by-week curriculum using these courses and injecting one relevant mock interview question per week.
     """
 
+    path_html = None
+    engine = None
+    fallback = False
+
     # ── Multi-Tier Study Plan Generator ──────────────────────────────
-    # Tier 1: OpenRouter API (Llama-3.1-70b-versatile) — Extremely fast, generous 30 RPM free limit!
+    # Tier 1: OpenRouter API
     if OPENROUTER_API_KEY:
         try:
             print("Querying OpenRouter API for study plan...")
@@ -1501,61 +1601,65 @@ def generate_path():
             if res.status_code == 200:
                 res_data = res.json()
                 path_html = res_data["choices"][0]["message"]["content"].strip()
-                
                 path_html = re.sub(r"^```html\n", "", path_html)
                 path_html = re.sub(r"\n```$", "", path_html)
-                
+                engine = "openrouter"
                 print("Successfully generated study plan using OpenRouter API!")
-                return jsonify({
-                    "success": True,
-                    "goal": user_goal,
-                    "path_html": path_html,
-                    "engine": "openrouter"
-                })
             else:
                 print(f"OpenRouter API returned error status {res.status_code}. Routing to Tier 2 (Gemini)...")
         except Exception as openrouter_err:
             print(f"OpenRouter Cloud connection error: {openrouter_err}. Routing to Tier 2 (Gemini)...")
 
-    # Tier 2: Gemini Cloud API (gemini-2.5-flash) — Standard Google cloud endpoint
-    if GEMINI_API_KEY:
+    # Tier 2: Gemini Cloud API (gemini-2.5-flash)
+    if not path_html and GEMINI_API_KEY:
         try:
             print("Querying Gemini Cloud API for study plan...")
             model = genai.GenerativeModel(
                 model_name='gemini-2.5-flash',
                 system_instruction=system_prompt
             )
-
             response = model.generate_content(user_prompt)
             path_html = response.text.strip()
-            
             path_html = re.sub(r"^```html\n", "", path_html)
             path_html = re.sub(r"\n```$", "", path_html)
-
+            engine = "gemini"
             print("Successfully generated study plan using Gemini Cloud API!")
-            return jsonify({
-                "success": True,
-                "goal": user_goal,
-                "path_html": path_html,
-                "engine": "gemini"
-            })
         except Exception as gemini_err:
             print(f"Gemini API returned error: {gemini_err}. Routing to Tier 3 (Local VSM Academic Planner)...")
 
-    # Tier 3: Local VSM Academic Planner — Robust, instant, offline-capable fallback
-    try:
-        print("Routing to local high-fidelity VSM Academic Planner fallback...")
-        path_html = generate_local_fallback_path(user_goal, matched_courses)
-        return jsonify({
-            "success": True,
-            "goal": user_goal,
-            "path_html": path_html,
-            "fallback": True,
-            "engine": "local"
-        })
-    except Exception as fallback_err:
-        print(f"Fallback generation error: {fallback_err}")
-        return jsonify({"success": False, "error": f"Failed to generate study plan: {str(fallback_err)}"}), 500
+    # Tier 3: Local VSM Academic Planner fallback
+    if not path_html:
+        try:
+            print("Routing to local high-fidelity VSM Academic Planner fallback...")
+            path_html = generate_local_fallback_path(user_goal, matched_courses)
+            engine = "local"
+            fallback = True
+        except Exception as fallback_err:
+            return jsonify({"success": False, "error": f"Failed to build a path: {fallback_err}"}), 500
+
+    # Write to cache
+    if db is not None and path_html:
+        try:
+            db.study_plans_cache.update_one(
+                {"key": cache_key},
+                {"$set": {
+                    "key": cache_key,
+                    "path_html": path_html,
+                    "created_at": datetime.utcnow()
+                }},
+                upsert=True
+            )
+            print(f"Cached generated study plan for: {user_goal}")
+        except Exception as e:
+            print(f"Cache write error in generate_path: {e}")
+
+    return jsonify({
+        "success": True,
+        "goal": user_goal,
+        "path_html": path_html,
+        "engine": engine,
+        "fallback": fallback
+    })
 
 # --- User Authentication and Profile Management ---
 from functools import wraps
