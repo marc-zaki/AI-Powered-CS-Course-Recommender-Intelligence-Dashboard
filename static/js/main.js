@@ -567,7 +567,11 @@ function generateAIPath() {
         if (loader) loader.style.display = "none";
 
         if (data.success) {
-            if (pathContent) pathContent.innerHTML = data.path_html;
+            let pathHtml = data.path_html || "";
+            pathHtml = pathHtml.replace(/⭐/g, '<i data-lucide="star" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;fill:currentColor;color:#FBBF24;"></i>');
+            pathHtml = pathHtml.replace(/💡/g, '<i data-lucide="lightbulb" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>');
+            
+            if (pathContent) pathContent.innerHTML = pathHtml;
             if (outputContainer) outputContainer.style.display = "block";
 
             // Make custom curriculum checks interactive
@@ -594,9 +598,9 @@ function generateAIPath() {
                         header.style.textDecoration = 'none';
                         header.style.opacity = '1';
                     }
-                });
             });
 
+            if (window.lucide) window.lucide.createIcons();
             if (outputContainer) outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             showToast(data.error || "An error occurred while generating your learning path.", "error");

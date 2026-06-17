@@ -374,38 +374,107 @@
     <p>Search any course from our catalog — AI will score it on content depth, provider reputation, career value, and cost-effectiveness.</p>
 </section>
 
-<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem;">
+<div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 4rem;">
 
     <!-- Input Card -->
-    <div class="input-card">
-        <!-- Search box -->
-        <div class="search-wrap">
-            <i data-lucide="search" class="search-icon"></i>
-            <input
-                type="text"
-                id="catalog-search"
-                placeholder="Search courses… e.g. Machine Learning, React, Python, Algorithms"
-                autocomplete="off"
-            >
-            <div id="search-dropdown"></div>
+    <div class="input-card" style="max-width: 100%;">
+        <!-- Mode Selector -->
+        <div class="mode-selector" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.03); padding: 0.35rem; border-radius: 12px; border: 1px solid var(--border-glass);">
+            <button class="mode-btn active" id="mode-single" onclick="switchMode('single')" style="flex: 1; padding: 0.6rem 1rem; border-radius: 9px; border: none; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                <i data-lucide="book-open" style="width:16px;height:16px;"></i> Single Course
+            </button>
+            <button class="mode-btn" id="mode-compare" onclick="switchMode('compare')" style="flex: 1; padding: 0.6rem 1rem; border-radius: 9px; border: none; font-weight: 700; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                <i data-lucide="git-pull-request" style="width:16px;height:16px;transform: rotate(90deg);"></i> Compare Side-by-Side
+            </button>
         </div>
 
-        <!-- Selected course display -->
-        <div id="selected-course-card">
-            <div class="selected-header">
-                <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Selected Course
+        <!-- Single search wrapper -->
+        <div id="single-search-fields">
+            <div class="search-wrap">
+                <i data-lucide="search" class="search-icon"></i>
+                <input
+                    type="text"
+                    id="catalog-search"
+                    placeholder="Search courses… e.g. Machine Learning, React, Python, Algorithms"
+                    autocomplete="off"
+                >
+                <div id="search-dropdown"></div>
             </div>
-            <div class="selected-title" id="sel-title"></div>
-            <div class="selected-meta">
-                <span id="sel-provider"></span>
-                &bull;
-                <span class="selected-stars" id="sel-stars"></span>
-                <span id="sel-count" style="margin-left:0.3rem;"></span>
+
+            <!-- Selected course display -->
+            <div id="selected-course-card">
+                <div class="selected-header">
+                    <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Selected Course
+                </div>
+                <div class="selected-title" id="sel-title"></div>
+                <div class="selected-meta">
+                    <span id="sel-provider"></span>
+                    &bull;
+                    <span class="selected-stars" id="sel-stars"></span>
+                    <span id="sel-count" style="margin-left:0.3rem;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compare search wrapper -->
+        <div id="compare-search-fields" style="display: none; flex-direction: column; gap: 1.25rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <!-- Course A search block -->
+                <div style="position: relative;">
+                    <label style="font-size:0.85rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.5rem;">Course A</label>
+                    <div class="search-wrap" style="max-width:100%;">
+                        <i data-lucide="search" class="search-icon" style="left:0.85rem;"></i>
+                        <input
+                            type="text"
+                            id="catalog-search-a"
+                            placeholder="Search course A..."
+                            autocomplete="off"
+                            style="padding-left: 2.5rem; font-size: 0.9rem; padding-top: 0.85rem; padding-bottom: 0.85rem; border-radius: 10px;"
+                        >
+                        <div id="search-dropdown-a" style="position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 14px; box-shadow: 0 16px 48px rgba(0,0,0,0.35); z-index: 999; max-height: 250px; overflow-y: auto; display: none;"></div>
+                    </div>
+                    <!-- Selected course A card -->
+                    <div id="selected-course-card-a" style="display: none; background: rgba(99,102,241,0.04); border: 1px solid var(--primary); border-radius: 12px; padding: 0.75rem 1rem; margin-top: 0.75rem; position: relative;">
+                        <div class="selected-header" style="font-size:0.65rem;">
+                            <i data-lucide="check-circle" style="width:12px;height:12px;"></i> Selected A
+                        </div>
+                        <div class="selected-title" id="sel-title-a" style="font-size:0.92rem; font-weight:700; margin-bottom:0.15rem;"></div>
+                        <div class="selected-meta" style="font-size:0.8rem; color:var(--text-muted);">
+                            <span id="sel-provider-a"></span> &bull; <span class="selected-stars" id="sel-stars-a"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course B search block -->
+                <div style="position: relative;">
+                    <label style="font-size:0.85rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:0.5rem;">Course B</label>
+                    <div class="search-wrap" style="max-width:100%;">
+                        <i data-lucide="search" class="search-icon" style="left:0.85rem;"></i>
+                        <input
+                            type="text"
+                            id="catalog-search-b"
+                            placeholder="Search course B..."
+                            autocomplete="off"
+                            style="padding-left: 2.5rem; font-size: 0.9rem; padding-top: 0.85rem; padding-bottom: 0.85rem; border-radius: 10px;"
+                        >
+                        <div id="search-dropdown-b" style="position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 14px; box-shadow: 0 16px 48px rgba(0,0,0,0.35); z-index: 999; max-height: 250px; overflow-y: auto; display: none;"></div>
+                    </div>
+                    <!-- Selected course B card -->
+                    <div id="selected-course-card-b" style="display: none; background: rgba(139,92,246,0.04); border: 1px solid var(--secondary); border-radius: 12px; padding: 0.75rem 1rem; margin-top: 0.75rem; position: relative;">
+                        <div class="selected-header" style="font-size:0.65rem; color:var(--secondary);">
+                            <i data-lucide="check-circle" style="width:12px;height:12px;"></i> Selected B
+                        </div>
+                        <div class="selected-title" id="sel-title-b" style="font-size:0.92rem; font-weight:700; margin-bottom:0.15rem;"></div>
+                        <div class="selected-meta" style="font-size:0.8rem; color:var(--text-muted);">
+                            <span id="sel-provider-b"></span> &bull; <span class="selected-stars" id="sel-stars-b"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Optional goals -->
-        <div style="margin-top: 1rem;">
+        <div style="margin-top: 1.25rem;">
             <label style="font-size:0.82rem;color:var(--text-muted);display:block;margin-bottom:0.35rem;">
                 Your goals <em>(optional — personalizes the Career Value score)</em>
             </label>
@@ -418,7 +487,7 @@
         </div>
 
         <!-- Trending searches -->
-        <div class="trending-section">
+        <div class="trending-section" id="trending-searches-row">
             <span class="trending-label" style="display:flex;align-items:center;gap:0.3rem;"><i data-lucide="flame" style="width:14px;height:14px;color:var(--text-muted);"></i> Popular searches:</span>
             <div class="trending-chips">
                 <span class="trending-chip" onclick="quickSearch('Machine Learning')">Machine Learning</span>
@@ -452,7 +521,7 @@
     <!-- Error -->
     <div class="error-banner" id="error-banner"></div>
 
-    <!-- Results -->
+    <!-- Single Results -->
     <div id="results-section">
         <div class="verdict-banner" id="verdict-banner">
             <div class="verdict-icon" id="verdict-icon"></div>
@@ -496,11 +565,133 @@
         </div>
     </div>
 
+    <!-- Compare Results Section -->
+    <div id="compare-results-section" style="display: none; margin-top: 2rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Column Course A -->
+            <div class="glass-panel" style="padding: 1.5rem; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-glass);">
+                <div style="text-align: center; margin-bottom: 1.25rem;">
+                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Course A</span>
+                    <h3 id="comp-title-a" style="margin: 0.25rem 0 0.5rem; font-size: 1.25rem; font-weight: 800; color: var(--text-main); line-height:1.4;"></h3>
+                </div>
+                <div class="verdict-banner" id="verdict-banner-a" style="padding: 1rem; border-radius:12px; margin-bottom: 1rem;">
+                    <div class="verdict-icon" id="verdict-icon-a" style="width:40px; height:40px; font-size: 1.3rem;"></div>
+                    <div class="verdict-text">
+                        <h2 id="verdict-title-a" style="font-size: 1.1rem; margin-bottom:0.15rem;"></h2>
+                        <p id="verdict-reason-a" style="font-size: 0.8rem; line-height: 1.4;"></p>
+                    </div>
+                </div>
+                <div class="scores-grid" id="scores-grid-a" style="grid-template-columns: repeat(2,1fr); gap: 0.75rem; margin-bottom:1rem;"></div>
+                <div class="pros-cons-grid" style="grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div class="pros-panel" style="padding: 1rem; border-radius:12px;">
+                        <div class="panel-header" style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i data-lucide="thumbs-up" style="width:14px;height:14px;color:#10b981;"></i> Strengths</div>
+                        <ul class="fact-list" id="pros-list-a" style="font-size: 0.82rem;"></ul>
+                    </div>
+                    <div class="cons-panel" style="padding: 1rem; border-radius:12px;">
+                        <div class="panel-header" style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i data-lucide="thumbs-down" style="width:14px;height:14px;color:#ef4444;"></i> Weaknesses</div>
+                        <ul class="fact-list" id="cons-list-a" style="font-size: 0.82rem;"></ul>
+                    </div>
+                </div>
+                <div class="summary-card" style="margin-bottom: 0; padding: 1rem; border-radius:12px;">
+                    <h3 style="font-size: 0.85rem; margin-bottom:0.5rem;"><i data-lucide="sparkles" style="width:14px;height:14px;color:var(--secondary);"></i> Verdict Summary</h3>
+                    <p id="ai-summary-text-a" style="font-size: 0.85rem; line-height: 1.6;"></p>
+                </div>
+            </div>
+
+            <!-- Column Course B -->
+            <div class="glass-panel" style="padding: 1.5rem; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-glass);">
+                <div style="text-align: center; margin-bottom: 1.25rem;">
+                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--secondary); letter-spacing: 0.05em;">Course B</span>
+                    <h3 id="comp-title-b" style="margin: 0.25rem 0 0.5rem; font-size: 1.25rem; font-weight: 800; color: var(--text-main); line-height:1.4;"></h3>
+                </div>
+                <div class="verdict-banner" id="verdict-banner-b" style="padding: 1rem; border-radius:12px; margin-bottom: 1rem;">
+                    <div class="verdict-icon" id="verdict-icon-b" style="width:40px; height:40px; font-size: 1.3rem;"></div>
+                    <div class="verdict-text">
+                        <h2 id="verdict-title-b" style="font-size: 1.1rem; margin-bottom:0.15rem;"></h2>
+                        <p id="verdict-reason-b" style="font-size: 0.8rem; line-height: 1.4;"></p>
+                    </div>
+                </div>
+                <div class="scores-grid" id="scores-grid-b" style="grid-template-columns: repeat(2,1fr); gap: 0.75rem; margin-bottom:1rem;"></div>
+                <div class="pros-cons-grid" style="grid-template-columns: 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div class="pros-panel" style="padding: 1rem; border-radius:12px;">
+                        <div class="panel-header" style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i data-lucide="thumbs-up" style="width:14px;height:14px;color:#10b981;"></i> Strengths</div>
+                        <ul class="fact-list" id="pros-list-b" style="font-size: 0.82rem;"></ul>
+                    </div>
+                    <div class="cons-panel" style="padding: 1rem; border-radius:12px;">
+                        <div class="panel-header" style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i data-lucide="thumbs-down" style="width:14px;height:14px;color:#ef4444;"></i> Weaknesses</div>
+                        <ul class="fact-list" id="cons-list-b" style="font-size: 0.82rem;"></ul>
+                    </div>
+                </div>
+                <div class="summary-card" style="margin-bottom: 0; padding: 1rem; border-radius:12px;">
+                    <h3 style="font-size: 0.85rem; margin-bottom:0.5rem;"><i data-lucide="sparkles" style="width:14px;height:14px;color:var(--secondary);"></i> Verdict Summary</h3>
+                    <p id="ai-summary-text-b" style="font-size: 0.85rem; line-height: 1.6;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
+    let currentMode = 'single';
     let selectedCourse = null;
+    let selectedCourseA = null;
+    let selectedCourseB = null;
     let searchTimeout = null;
+
+    // ── Mode Switcher ──────────────────────────────────────────
+    function switchMode(mode) {
+        currentMode = mode;
+        const singleBtn = document.getElementById('mode-single');
+        const compareBtn = document.getElementById('mode-compare');
+        const singleFields = document.getElementById('single-search-fields');
+        const compareFields = document.getElementById('compare-search-fields');
+        const trendingRow = document.getElementById('trending-searches-row');
+        const actionBtn = document.getElementById('analyze-btn');
+
+        // Reset display of results
+        document.getElementById('results-section').style.display = 'none';
+        document.getElementById('compare-results-section').style.display = 'none';
+        document.getElementById('error-banner').style.display = 'none';
+
+        if (mode === 'single') {
+            singleBtn.style.background = 'var(--primary)';
+            singleBtn.style.color = 'white';
+            singleBtn.classList.add('active');
+            compareBtn.style.background = 'transparent';
+            compareBtn.style.color = 'var(--text-muted)';
+            compareBtn.classList.remove('active');
+
+            singleFields.style.display = 'block';
+            compareFields.style.display = 'none';
+            trendingRow.style.display = 'block';
+            actionBtn.innerHTML = '<i data-lucide="zap" style="width:18px;height:18px;"></i> Analyze This Course';
+        } else {
+            compareBtn.style.background = 'var(--primary)';
+            compareBtn.style.color = 'white';
+            compareBtn.classList.add('active');
+            singleBtn.style.background = 'transparent';
+            singleBtn.style.color = 'var(--text-muted)';
+            singleBtn.classList.remove('active');
+
+            singleFields.style.display = 'none';
+            compareFields.style.display = 'flex';
+            trendingRow.style.display = 'none';
+            actionBtn.innerHTML = '<i data-lucide="git-pull-request" style="width:18px;height:18px;transform: rotate(90deg);"></i> Compare These Courses';
+        }
+
+        checkAnalyzeButtonState();
+        lucide.createIcons();
+    }
+
+    function checkAnalyzeButtonState() {
+        const btn = document.getElementById('analyze-btn');
+        if (currentMode === 'single') {
+            btn.disabled = !selectedCourse;
+        } else {
+            btn.disabled = !(selectedCourseA && selectedCourseB);
+        }
+    }
 
     // ── Quick chip search ───────────────────────────────────────
     function quickSearch(term) {
@@ -510,7 +701,7 @@
         input.focus();
     }
 
-    // ── Live search ─────────────────────────────────────────────
+    // ── Live search (Single Mode) ────────────────────────────────
     const searchInput = document.getElementById('catalog-search');
     const dropdown   = document.getElementById('search-dropdown');
 
@@ -526,47 +717,74 @@
         dropdown.innerHTML = `<div class="dropdown-searching"><div class="loader-spinner" style="width:16px;height:16px;border-width:2px;"></div> Searching…</div>`;
         dropdown.style.display = 'block';
 
-        searchTimeout = setTimeout(() => fetchCatalog(q), 280);
+        searchTimeout = setTimeout(() => fetchCatalog(q, 'single'), 280);
     });
 
-    searchInput.addEventListener('keydown', (e) => {
-        const items = dropdown.querySelectorAll('.dropdown-item');
-        const focused = dropdown.querySelector('.dropdown-item.focused');
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            if (!focused) items[0]?.classList.add('focused');
-            else { focused.classList.remove('focused'); focused.nextElementSibling?.classList.add('focused'); }
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            if (focused) { focused.classList.remove('focused'); focused.previousElementSibling?.classList.add('focused'); }
-        } else if (e.key === 'Enter') {
-            const f = dropdown.querySelector('.dropdown-item.focused');
-            if (f) f.click();
-        } else if (e.key === 'Escape') {
+    // ── Live search (Course A) ───────────────────────────────────
+    const searchInputA = document.getElementById('catalog-search-a');
+    const dropdownA   = document.getElementById('search-dropdown-a');
+
+    searchInputA.addEventListener('input', () => {
+        const q = searchInputA.value.trim();
+        clearTimeout(searchTimeout);
+
+        if (q.length < 2) {
+            dropdownA.style.display = 'none';
+            return;
+        }
+
+        dropdownA.innerHTML = `<div class="dropdown-searching"><div class="loader-spinner" style="width:16px;height:16px;border-width:2px;"></div> Searching…</div>`;
+        dropdownA.style.display = 'block';
+
+        searchTimeout = setTimeout(() => fetchCatalog(q, 'a'), 280);
+    });
+
+    // ── Live search (Course B) ───────────────────────────────────
+    const searchInputB = document.getElementById('catalog-search-b');
+    const dropdownB   = document.getElementById('search-dropdown-b');
+
+    searchInputB.addEventListener('input', () => {
+        const q = searchInputB.value.trim();
+        clearTimeout(searchTimeout);
+
+        if (q.length < 2) {
+            dropdownB.style.display = 'none';
+            return;
+        }
+
+        dropdownB.innerHTML = `<div class="dropdown-searching"><div class="loader-spinner" style="width:16px;height:16px;border-width:2px;"></div> Searching…</div>`;
+        dropdownB.style.display = 'block';
+
+        searchTimeout = setTimeout(() => fetchCatalog(q, 'b'), 280);
+    });
+
+    // Dismiss dropdowns
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-wrap')) {
             closeDropdown();
+            dropdownA.style.display = 'none';
+            dropdownB.style.display = 'none';
         }
     });
 
-    document.addEventListener('click', (e) => {
-        if (!document.querySelector('.search-wrap').contains(e.target)) closeDropdown();
-    });
-
-    async function fetchCatalog(q) {
+    async function fetchCatalog(q, target) {
         try {
             const res = await fetch(`/api/course/quick_search?q=${encodeURIComponent(q)}`);
             const data = await res.json();
-            renderDropdown(data.courses || []);
+            renderTargetDropdown(data.courses || [], target);
         } catch {
-            dropdown.innerHTML = `<div class="dropdown-empty">Search unavailable.</div>`;
+            const dd = target === 'single' ? dropdown : (target === 'a' ? dropdownA : dropdownB);
+            dd.innerHTML = `<div class="dropdown-empty">Search unavailable.</div>`;
         }
     }
 
-    function renderDropdown(courses) {
+    function renderTargetDropdown(courses, target) {
+        const dd = target === 'single' ? dropdown : (target === 'a' ? dropdownA : dropdownB);
         if (!courses.length) {
-            dropdown.innerHTML = `<div class="dropdown-empty">No courses found. Try a different keyword.</div>`;
+            dd.innerHTML = `<div class="dropdown-empty">No courses found. Try a different keyword.</div>`;
             return;
         }
-        dropdown.innerHTML = '';
+        dd.innerHTML = '';
         courses.forEach(c => {
             const stars = '★'.repeat(Math.round(c.stars || 4)) + '☆'.repeat(5 - Math.round(c.stars || 4));
             const item = document.createElement('div');
@@ -586,8 +804,12 @@
                     </div>
                 </div>
             `;
-            item.addEventListener('click', () => selectCourse(c));
-            dropdown.appendChild(item);
+            item.addEventListener('click', () => {
+                if (target === 'single') selectCourse(c);
+                else if (target === 'a') selectCourseA(c);
+                else if (target === 'b') selectCourseB(c);
+            });
+            dd.appendChild(item);
         });
         lucide.createIcons();
     }
@@ -606,13 +828,64 @@
         document.getElementById('sel-count').textContent = c.ratings_count ? `(${c.ratings_count.toLocaleString()} ratings)` : '';
         card.style.display = 'block';
 
-        // Enable button
-        document.getElementById('analyze-btn').disabled = false;
-
-        // Hide old results
+        checkAnalyzeButtonState();
         document.getElementById('results-section').style.display = 'none';
         document.getElementById('error-banner').style.display = 'none';
+        lucide.createIcons();
+    }
 
+    function selectCourseA(c) {
+        selectedCourseA = c;
+        dropdownA.style.display = 'none';
+        searchInputA.value = c.title;
+
+        const card = document.getElementById('selected-course-card-a');
+        document.getElementById('sel-title-a').textContent = c.title;
+        document.getElementById('sel-provider-a').textContent = c.provider;
+        const stars = '★'.repeat(Math.round(c.stars || 4)) + '☆'.repeat(5 - Math.round(c.stars || 4));
+        document.getElementById('sel-stars-a').textContent = stars;
+        card.style.display = 'block';
+
+        checkAnalyzeButtonState();
+        document.getElementById('compare-results-section').style.display = 'none';
+        document.getElementById('error-banner').style.display = 'none';
+        lucide.createIcons();
+    }
+
+    // Handlers for keyboard navigation on catalog search
+    searchInput.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.dropdown-item');
+        const focused = dropdown.querySelector('.dropdown-item.focused');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!focused) items[0]?.classList.add('focused');
+            else { focused.classList.remove('focused'); focused.nextElementSibling?.classList.add('focused'); }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (focused) { focused.classList.remove('focused'); focused.previousElementSibling?.classList.add('focused'); }
+        } else if (e.key === 'Enter') {
+            const f = dropdown.querySelector('.dropdown-item.focused');
+            if (f) f.click();
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+        }
+    });
+
+    function selectCourseB(c) {
+        selectedCourseB = c;
+        dropdownB.style.display = 'none';
+        searchInputB.value = c.title;
+
+        const card = document.getElementById('selected-course-card-b');
+        document.getElementById('sel-title-b').textContent = c.title;
+        document.getElementById('sel-provider-b').textContent = c.provider;
+        const stars = '★'.repeat(Math.round(c.stars || 4)) + '☆'.repeat(5 - Math.round(c.stars || 4));
+        document.getElementById('sel-stars-b').textContent = stars;
+        card.style.display = 'block';
+
+        checkAnalyzeButtonState();
+        document.getElementById('compare-results-section').style.display = 'none';
+        document.getElementById('error-banner').style.display = 'none';
         lucide.createIcons();
     }
 
@@ -663,42 +936,65 @@
     });
 
     async function runAnalysis() {
-        if (!selectedCourse) return;
-
         const btn = document.getElementById('analyze-btn');
         const loader = document.getElementById('loader-wrap');
         const errorBanner = document.getElementById('error-banner');
         const resultsSection = document.getElementById('results-section');
+        const compareResultsSection = document.getElementById('compare-results-section');
         const goals = document.getElementById('user-goals').value.trim();
 
         btn.disabled = true;
         errorBanner.style.display = 'none';
         resultsSection.style.display = 'none';
+        compareResultsSection.style.display = 'none';
         loader.style.display = 'flex';
 
         const loaderInterval = animateLoader();
 
-        try {
-            const res = await fetch('/api/course/analyze', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ course: selectedCourse, goals })
-            });
-            const data = await res.json();
-            if (!res.ok || data.error) throw new Error(data.error || 'Analysis failed.');
-            renderResults(data);
-        } catch(err) {
-            errorBanner.innerHTML = `<i data-lucide="alert-triangle" style="width:16px;height:16px;vertical-align:middle;margin-right:0.5rem;"></i> ${err.message}`;
-            errorBanner.style.display = 'block';
-            lucide.createIcons();
-        } finally {
-            clearInterval(loaderInterval);
-            loader.style.display = 'none';
-            btn.disabled = false;
+        if (currentMode === 'single') {
+            if (!selectedCourse) return;
+            try {
+                const res = await fetch('/api/course/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ course: selectedCourse, goals })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) throw new Error(data.error || 'Analysis failed.');
+                renderResults(data);
+            } catch(err) {
+                errorBanner.innerHTML = `<i data-lucide="alert-triangle" style="width:16px;height:16px;vertical-align:middle;margin-right:0.5rem;"></i> ${err.message}`;
+                errorBanner.style.display = 'block';
+                lucide.createIcons();
+            } finally {
+                clearInterval(loaderInterval);
+                loader.style.display = 'none';
+                btn.disabled = false;
+            }
+        } else {
+            if (!selectedCourseA || !selectedCourseB) return;
+            try {
+                const res = await fetch('/api/course/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ course_a: selectedCourseA, course_b: selectedCourseB, goals })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) throw new Error(data.error || 'Comparison failed.');
+                renderComparisonResults(data);
+            } catch(err) {
+                errorBanner.innerHTML = `<i data-lucide="alert-triangle" style="width:16px;height:16px;vertical-align:middle;margin-right:0.5rem;"></i> ${err.message}`;
+                errorBanner.style.display = 'block';
+                lucide.createIcons();
+            } finally {
+                clearInterval(loaderInterval);
+                loader.style.display = 'none';
+                btn.disabled = false;
+            }
         }
     }
 
-    // ── Render ──────────────────────────────────────────────────
+    // ── Render Helpers ──────────────────────────────────────────
     function scoreColor(s) {
         return s >= 75 ? '#10b981' : s >= 50 ? '#f59e0b' : '#ef4444';
     }
@@ -815,6 +1111,85 @@
         document.getElementById('results-section').style.display = 'block';
         lucide.createIcons();
         document.getElementById('results-section').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function renderComparisonResults(data) {
+        const renderColumn = (colSuffix, courseData, titleText) => {
+            document.getElementById(`comp-title-${colSuffix}`).textContent = titleText;
+
+            // Verdict banner
+            const banner = document.getElementById(`verdict-banner-${colSuffix}`);
+            const icon   = document.getElementById(`verdict-icon-${colSuffix}`);
+            const title  = document.getElementById(`verdict-title-${colSuffix}`);
+            const reason = document.getElementById(`verdict-reason-${colSuffix}`);
+
+            banner.className = 'verdict-banner';
+            const v = (courseData.verdict || 'maybe').toLowerCase();
+            if (v === 'yes') {
+                banner.classList.add('yes');
+                icon.innerHTML = '<i data-lucide="check-circle" style="width:24px;height:24px;color:#10b981;"></i>';
+                title.textContent = 'Worth It!';
+            } else if (v === 'no') {
+                banner.classList.add('no');
+                icon.innerHTML = '<i data-lucide="x-circle" style="width:24px;height:24px;color:#ef4444;"></i>';
+                title.textContent = 'Skip';
+            } else {
+                banner.classList.add('maybe');
+                icon.innerHTML = '<i data-lucide="alert-triangle" style="width:24px;height:24px;color:#f59e0b;"></i>';
+                title.textContent = 'Maybe';
+            }
+            reason.textContent = courseData.verdict_reason || '';
+
+            // Score rings
+            const grid = document.getElementById(`scores-grid-${colSuffix}`);
+            grid.innerHTML = '';
+            SCORE_META.forEach(m => {
+                const score = Math.round(courseData.scores?.[m.key] ?? 50);
+                const color = scoreColor(score);
+                const card = document.createElement('div');
+                card.className = 'score-card';
+                card.style.padding = '0.75rem 0.5rem';
+                card.innerHTML = `
+                    <div class="score-ring" style="width:64px; height:64px;">
+                        <svg width="64" height="64" viewBox="0 0 80 80">
+                            <circle class="ring-bg" cx="40" cy="40" r="32"/>
+                            <circle class="ring-fill" cx="40" cy="40" r="32" stroke="${color}" stroke-dasharray="${(score/100)*2*Math.PI*32} ${2*Math.PI*32}"/>
+                        </svg>
+                        <div class="score-ring-label" style="color:${color}; font-size:1rem;">${score}</div>
+                    </div>
+                    <div class="score-card-title" style="font-size:0.68rem; margin-top:0.35rem;">${m.label}</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Pros
+            const prosList = document.getElementById(`pros-list-${colSuffix}`);
+            prosList.innerHTML = '';
+            (courseData.pros || []).forEach(p => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="dot" style="background:#10b981;"></span><span>${p}</span>`;
+                prosList.appendChild(li);
+            });
+
+            // Cons
+            const consList = document.getElementById(`cons-list-${colSuffix}`);
+            consList.innerHTML = '';
+            (courseData.cons || []).forEach(c => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="dot" style="background:#ef4444;"></span><span>${c}</span>`;
+                consList.appendChild(li);
+            });
+
+            // Summary
+            document.getElementById(`ai-summary-text-${colSuffix}`).textContent = courseData.summary || '';
+        };
+
+        renderColumn('a', data.course_a, selectedCourseA.title);
+        renderColumn('b', data.course_b, selectedCourseB.title);
+
+        document.getElementById('compare-results-section').style.display = 'block';
+        lucide.createIcons();
+        document.getElementById('compare-results-section').scrollIntoView({ behavior:'smooth', block:'start' });
     }
 </script>
 {% endblock %}

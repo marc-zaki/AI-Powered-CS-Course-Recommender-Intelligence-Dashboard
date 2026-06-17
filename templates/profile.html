@@ -57,174 +57,65 @@
         </div>
     </div>
 
-    <div class="profile-layout-grid">
+    <div class="profile-layout-grid" style="grid-template-columns: 1.6fr 1fr;">
 
-        <!-- Left Column: Settings and Preferences -->
+        <!-- Left Column: Learning Hub Dashboard (Saved Courses & Study Plans) -->
         <div style="display: flex; flex-direction: column; gap: 2rem;">
-            <!-- Profile Settings Card -->
-            <div class="glass-panel"
-                style="padding: 2.5rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
-                <div
-                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1.25rem;">
-                    <i data-lucide="settings" style="width: 24px; height: 24px; color: var(--primary);"></i>
-                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Account
-                        Information</h2>
-                </div>
-
-                <form action="{{ url_for('profile') }}" method="POST">
-                    <div class="profile-form-row" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
-                        <div class="form-group" style="flex: 1;">
-                            <label for="name"
-                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Full
-                                Name</label>
-                            <input type="text" id="name" name="name" value="{{ user.name }}" class="search-input"
-                                style="width: 100%;">
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label
-                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">Email
-                                Address (Immutable)</label>
-                            <input type="email" value="{{ user.email }}" class="search-input" style="width: 100%;"
-                                disabled>
-                        </div>
-                    </div>
-
-                    <div class="profile-form-row" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
-                        <div class="form-group" style="flex: 1;">
-                            <label for="track"
-                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Preferred
-                                Track</label>
-                            <select id="track" name="track" class="search-input" style="width: 100%;">
-                                <option value="Artificial Intelligence" {% if user.track=='Artificial Intelligence'
-                                    %}selected{% endif %}>Artificial Intelligence</option>
-                                <option value="Web Development" {% if user.track=='Web Development' %}selected{% endif
-                                    %}>Web Development</option>
-                                <option value="Data Science" {% if user.track=='Data Science' %}selected{% endif %}>Data
-                                    Science</option>
-                                <option value="Cybersecurity" {% if user.track=='Cybersecurity' %}selected{% endif %}>
-                                    Cybersecurity</option>
-                                <option value="Software Engineering" {% if user.track=='Software Engineering'
-                                    %}selected{% endif %}>Software Engineering</option>
-                                <option value="General CS" {% if user.track=='General CS' %}selected{% endif %}>General
-                                    Computer Science</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label for="current_skill_level"
-                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Current
-                                Skill Level</label>
-                            <select id="current_skill_level" name="current_skill_level" class="search-input"
-                                style="width: 100%;">
-                                <option value="Beginner" {% if user.current_skill_level=='Beginner' %}selected{% endif
-                                    %}>Beginner</option>
-                                <option value="Intermediate" {% if user.current_skill_level=='Intermediate' %}selected{%
-                                    endif %}>Intermediate</option>
-                                <option value="Advanced" {% if user.current_skill_level=='Advanced' %}selected{% endif
-                                    %}>Advanced</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 2rem;">
-                        <label for="career_goals"
-                            style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Career
-                            Goals & Ambitions</label>
-                        <textarea id="career_goals" name="career_goals" class="search-input"
-                            style="min-height: 120px; resize: vertical; width: 100%;">{{ user.career_goals }}</textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary"
-                        style="width: 100%; padding: 1rem; font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; transition: var(--transition-premium);">
-                        <i data-lucide="save" style="width: 18px; height: 18px;"></i> Save Changes
-                    </button>
-                </form>
-            </div>
-
-            <!-- Danger Zone Card -->
-            <div class="glass-panel"
-                style="padding: 2rem; background: rgba(239, 68, 68, 0.03); border-radius: 24px; border: 1px solid rgba(239, 68, 68, 0.2); box-shadow: 0 8px 32px rgba(239, 68, 68, 0.05);">
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;">
-                    <i data-lucide="alert-triangle" style="color: #ef4444; width: 22px; height: 22px;"></i>
-                    <h3 style="color: #ef4444; font-weight: 800; font-size: 1.25rem; margin: 0;">Danger Zone</h3>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
-                    Deleting your profile is permanent. All your saved study plans, custom course metrics, progress
-                    configurations, and history records will be completely erased.</p>
-                <button type="button" onclick="document.getElementById('delete-account-modal').style.display='flex'"
-                    class="btn btn-outline"
-                    style="width: 100%; color: #ef4444; border-color: rgba(239, 68, 68, 0.4); padding: 0.75rem; font-weight: 700; transition: var(--transition-premium);"
-                    onmouseenter="this.style.background='rgba(239, 68, 68, 0.08)'"
-                    onmouseleave="this.style.background='transparent'">Delete Account</button>
-            </div>
-        </div>
-
-        <!-- Right Column: Learning Hub Dashboard -->
-        <div style="display: flex; flex-direction: column; gap: 2rem;">
-
-            <!-- Skill Testing Center -->
-            <div class="glass-panel"
-                style="padding: 2rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass); position: relative; overflow: hidden;">
-                <!-- Decorative glow behind button -->
-                <div
-                    style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); pointer-events: none; z-index: 1;">
-                </div>
-
-                <div
-                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
-                    <i data-lucide="brain" style="width: 24px; height: 24px; color: var(--secondary);"></i>
-                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Skill
-                        Assessment Center</h2>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.6;">
-                    Take an adaptive multiple-choice assessment generated specifically for your track (<strong style="color: var(--secondary); font-weight: 700;">{{ user.track or 'General CS' }}</strong>) at the <strong style="color: var(--primary); font-weight: 700;">{{ user.current_skill_level }}</strong> level. Scoring <strong style="color: #10b981; font-weight: 700;">80% or higher</strong>
-                    automatically promotes your ranking!
-                </p>
-                <button type="button" onclick="startQuiz()" class="btn btn-primary btn-ai"
-                    style="width: 100%; padding: 0.9rem; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; box-shadow: var(--shadow-glow); z-index: 2; position: relative;">
-                    <i data-lucide="play-circle" style="width: 20px; height: 20px;"></i> Start Assessment Quiz
-                </button>
-            </div>
-
-            <!-- Taken Courses Card -->
+            
+            <!-- Saved & Completed Courses -->
             <div class="glass-panel"
                 style="padding: 2rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
                 <div
                     style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
-                    <i data-lucide="book-open" style="width: 24px; height: 24px; color: var(--accent-emerald);"></i>
-                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Completed
-                        Courses</h2>
+                    <i data-lucide="bookmark-check" style="width: 24px; height: 24px; color: var(--accent-emerald);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Saved & Completed Courses</h2>
                 </div>
 
                 {% if taken_courses|length == 0 %}
                 <div class="empty-state"
                     style="padding: 2rem; text-align: center; border: 1px dashed var(--border-glass); border-radius: 12px; background: rgba(255,255,255,0.01);">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You haven't marked any courses as taken
-                        yet.</p>
-                    <a href="{{ url_for('index') }}" class="btn btn-outline" style="border-radius: 8px;">Browse
-                        Courses</a>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You haven't saved or marked any courses as taken yet.</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline" style="border-radius: 8px;">Browse Courses</a>
                 </div>
                 {% else %}
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;">
                     {% for course in taken_courses %}
-                    <div class="course-list-item"
-                        style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border: 1px solid var(--border-glass); border-radius: 12px; background: rgba(255, 255, 255, 0.02); gap: 1rem;">
-                        <div style="flex: 1; min-width: 0;">
-                            <h4
-                                style="margin: 0 0 0.35rem 0; color: var(--text-main); font-size: 0.95rem; line-height: 1.4; font-weight: 600;">
-                                {{ course.title }}</h4>
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ course.provider }} <i
-                                    data-lucide="star"
-                                    style="width: 12px; height: 12px; fill: currentColor; display: inline-block; vertical-align: -1px; color: #FBBF24;"></i>
-                                {{ "%.1f"|format(course.stars) }}</span>
+                    <div class="course-list-item glass-panel"
+                        style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-radius: 16px; border: 1px solid var(--border-glass); background: rgba(255, 255, 255, 0.02); transition: all 0.2s ease; position: relative;">
+                        <!-- Provider badge & Remove check -->
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                            <span style="background: rgba(14, 165, 233, 0.12); color: var(--secondary); padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(14, 165, 233, 0.25);">
+                                {{ course.provider }}
+                            </span>
+                            <button onclick="toggleCourseTaken('{{ course.url }}', this)" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.25rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 28px; height: 28px; transition: background 0.2s;" title="Remove Course">
+                                <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                            </button>
                         </div>
-                        <div class="course-list-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
-                            <a href="/interview-prep?mode=flashcard&q={{ course.title | urlencode }}" class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap; border-radius: 8px; background: var(--secondary); border: none;">Test Knowledge</a>
-                            <a href="{{ course.url }}" target="_blank" class="btn btn-outline"
-                                style="padding: 0.4rem 0.85rem; font-size: 0.8rem; text-decoration: none; white-space: nowrap; border-radius: 8px;">View</a>
-                            <button onclick="toggleCourseTaken('{{ course.url }}', this)" class="btn btn-outline"
-                                style="padding: 0.4rem 0.85rem; font-size: 0.8rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.3); white-space: nowrap; border-radius: 8px;"
-                                onmouseenter="this.style.background='rgba(239, 68, 68, 0.05)'"
-                                onmouseleave="this.style.background='transparent'">Remove</button>
+                        
+                        <!-- Course Title -->
+                        <h4 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.05rem; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.8rem;">
+                            {{ course.title }}
+                        </h4>
+
+                        <!-- Rating & Reviews -->
+                        <div style="display: flex; align-items: center; gap: 0.35rem; margin-bottom: 1.25rem;">
+                            <div style="color: #FBBF24; display: flex; align-items: center;">
+                                <i data-lucide="star" style="width: 14px; height: 14px; fill: currentColor;"></i>
+                            </div>
+                            <span style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">{{ "%.1f"|format(course.stars) }}</span>
+                            {% if course.ratings_count %}
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">({{ "{:,}".format(course.ratings_count) }} reviews)</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Row -->
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: auto; width: 100%;">
+                            <a href="/interview-prep?mode=flashcard&q={{ course.title | urlencode }}" class="btn btn-primary" style="padding: 0.5rem; font-size: 0.8rem; text-decoration: none; border-radius: 8px; width: 100%; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);">
+                                <i data-lucide="brain" style="width: 14px; height: 14px;"></i> Test Knowledge
+                            </a>
+                            <a href="{{ course.url }}" target="_blank" class="btn btn-outline" style="padding: 0.5rem; font-size: 0.8rem; text-decoration: none; border-radius: 8px; width: 100%; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                                <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View Course
+                            </a>
                         </div>
                     </div>
                     {% endfor %}
@@ -238,15 +129,13 @@
                 <div
                     style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
                     <i data-lucide="compass" style="width: 24px; height: 24px; color: var(--primary);"></i>
-                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Saved Study
-                        Plans</h2>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Saved Study Plans</h2>
                 </div>
 
                 {% if not user.saved_paths or user.saved_paths|length == 0 %}
                 <div class="empty-state"
                     style="padding: 2rem; text-align: center; border: 1px dashed var(--border-glass); border-radius: 12px; background: rgba(255,255,255,0.01);">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You don't have any saved study plans yet.
-                    </p>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">You don't have any saved study plans yet.</p>
                     <a href="{{ url_for('index') }}#ai-path" class="btn btn-outline"
                         style="border-radius: 8px;">Generate Study Plan</a>
                 </div>
@@ -307,6 +196,111 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Settings, Quiz and Actions (Sidebar) -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <!-- Skill Testing Center -->
+            <div class="glass-panel"
+                style="padding: 2rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass); position: relative; overflow: hidden;">
+                <!-- Decorative glow behind button -->
+                <div
+                    style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); pointer-events: none; z-index: 1;">
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+                    <i data-lucide="brain" style="width: 24px; height: 24px; color: var(--secondary);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Skill Assessment Center</h2>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    Take an adaptive multiple-choice assessment generated specifically for your track (<strong style="color: var(--secondary); font-weight: 700;">{{ user.track or 'General CS' }}</strong>) at the <strong style="color: var(--primary); font-weight: 700;">{{ user.current_skill_level }}</strong> level. Scoring <strong style="color: #10b981; font-weight: 700;">80% or higher</strong>
+                    automatically promotes your ranking!
+                </p>
+                <button type="button" onclick="startQuiz()" class="btn btn-primary btn-ai"
+                    style="width: 100%; padding: 0.9rem; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; box-shadow: var(--shadow-glow); z-index: 2; position: relative;">
+                    <i data-lucide="play-circle" style="width: 20px; height: 20px;"></i> Start Assessment Quiz
+                </button>
+            </div>
+
+            <!-- Profile Settings Card -->
+            <div class="glass-panel"
+                style="padding: 2.5rem; background: var(--bg-card); border-radius: 24px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
+                <div
+                    style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1.25rem;">
+                    <i data-lucide="settings" style="width: 24px; height: 24px; color: var(--primary);"></i>
+                    <h2 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin: 0;">Account Information</h2>
+                </div>
+
+                <form action="{{ url_for('profile') }}" method="POST">
+                    <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem;">
+                        <div class="form-group" style="width: 100%;">
+                            <label for="name"
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Full Name</label>
+                            <input type="text" id="name" name="name" value="{{ user.name }}" class="search-input"
+                                style="width: 100%;">
+                        </div>
+                        <div class="form-group" style="width: 100%;">
+                            <label
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-muted);">Email Address (Immutable)</label>
+                            <input type="email" value="{{ user.email }}" class="search-input" style="width: 100%;"
+                                disabled>
+                        </div>
+                        <div class="form-group" style="width: 100%;">
+                            <label for="track"
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Preferred Track</label>
+                            <select id="track" name="track" class="search-input" style="width: 100%;">
+                                <option value="Artificial Intelligence" {% if user.track=='Artificial Intelligence' %}selected{% endif %}>Artificial Intelligence</option>
+                                <option value="Web Development" {% if user.track=='Web Development' %}selected{% endif %}>Web Development</option>
+                                <option value="Data Science" {% if user.track=='Data Science' %}selected{% endif %}>Data Science</option>
+                                <option value="Cybersecurity" {% if user.track=='Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
+                                <option value="Software Engineering" {% if user.track=='Software Engineering' %}selected{% endif %}>Software Engineering</option>
+                                <option value="General CS" {% if user.track=='General CS' %}selected{% endif %}>General Computer Science</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="width: 100%;">
+                            <label for="current_skill_level"
+                                style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Current Skill Level</label>
+                            <select id="current_skill_level" name="current_skill_level" class="search-input"
+                                style="width: 100%;">
+                                <option value="Beginner" {% if user.current_skill_level=='Beginner' %}selected{% endif %}>Beginner</option>
+                                <option value="Intermediate" {% if user.current_skill_level=='Intermediate' %}selected{% endif %}>Intermediate</option>
+                                <option value="Advanced" {% if user.current_skill_level=='Advanced' %}selected{% endif %}>Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem; width: 100%;">
+                        <label for="career_goals"
+                            style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block; color: var(--text-main);">Career Goals & Ambitions</label>
+                        <textarea id="career_goals" name="career_goals" class="search-input"
+                            style="min-height: 100px; resize: vertical; width: 100%;">{{ user.career_goals }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; padding: 1rem; font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px; transition: var(--transition-premium);">
+                        <i data-lucide="save" style="width: 18px; height: 18px;"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+
+            <!-- Danger Zone Card -->
+            <div class="glass-panel"
+                style="padding: 2rem; background: rgba(239, 68, 68, 0.03); border-radius: 24px; border: 1px solid rgba(239, 68, 68, 0.2); box-shadow: 0 8px 32px rgba(239, 68, 68, 0.05);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <i data-lucide="alert-triangle" style="color: #ef4444; width: 22px; height: 22px;"></i>
+                    <h3 style="color: #ef4444; font-weight: 800; font-size: 1.25rem; margin: 0;">Danger Zone</h3>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                    Deleting your profile is permanent. All your saved study plans, custom course metrics, progress configurations, and history records will be completely erased.
+                </p>
+                <button type="button" onclick="document.getElementById('delete-account-modal').style.display='flex'"
+                    class="btn btn-outline"
+                    style="width: 100%; color: #ef4444; border-color: rgba(239, 68, 68, 0.4); padding: 0.75rem; font-weight: 700; transition: var(--transition-premium);"
+                    onmouseenter="this.style.background='rgba(239, 68, 68, 0.08)'"
+                    onmouseleave="this.style.background='transparent'">Delete Account</button>
             </div>
         </div>
 
@@ -462,12 +456,24 @@
         // Initialize saved path checkboxes
         const savedPathContainers = document.querySelectorAll('.saved-path-html-content');
         savedPathContainers.forEach(container => {
+            // Replace legacy unicode emojis with premium Lucide icons dynamically
+            let html = container.innerHTML;
+            html = html.replace(/⭐/g, '<i data-lucide="star" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;fill:currentColor;color:#FBBF24;"></i>');
+            html = html.replace(/💡/g, '<i data-lucide="lightbulb" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>');
+            container.innerHTML = html;
+
             const pathId = container.getAttribute('data-path-id');
             const checkedItems = JSON.parse(container.getAttribute('data-checked-items') || '[]');
             const headers = container.querySelectorAll('h3');
             const totalItems = headers.length;
 
             headers.forEach((header, index) => {
+                // Remove any saved duplicate checkbox spans from raw HTML first
+                const existingCheckbox = header.querySelector('.path-checkbox');
+                if (existingCheckbox) {
+                    existingCheckbox.remove();
+                }
+
                 const itemText = header.textContent.trim();
                 const isChecked = checkedItems.includes(itemText);
 
@@ -550,13 +556,20 @@
     function togglePathDetails(pathId) {
         const details = document.getElementById(`syllabus-details-${pathId}`);
         const chevron = document.getElementById(`chevron-icon-${pathId}`);
+        if (!chevron) return;
+
+        const newChevron = document.createElement('i');
+        newChevron.id = `chevron-icon-${pathId}`;
+
         if (details.style.display === 'none') {
             details.style.display = 'block';
-            chevron.setAttribute('data-lucide', 'chevron-up');
+            newChevron.setAttribute('data-lucide', 'chevron-up');
         } else {
             details.style.display = 'none';
-            chevron.setAttribute('data-lucide', 'chevron-down');
+            newChevron.setAttribute('data-lucide', 'chevron-down');
         }
+
+        chevron.parentNode.replaceChild(newChevron, chevron);
         if (window.lucide) window.lucide.createIcons();
     }
 

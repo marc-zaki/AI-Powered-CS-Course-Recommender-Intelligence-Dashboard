@@ -203,6 +203,20 @@ def load_and_train_model():
             vectorizer = cache_data["vectorizer"]
             tfidf_matrix = cache_data["tfidf_matrix"]
             global_featured_courses = cache_data["global_featured_courses"]
+            
+            # Pre-compute difficulty column if not present in the cached model
+            if 'difficulty' not in df.columns:
+                def classify_difficulty(row):
+                    title = str(row.get('title', '')).lower()
+                    desc = str(row.get('content_text', '')).lower()
+                    full_text = f"{title} {desc}"
+                    if any(k in full_text for k in ["beginner", "introduction", "intro", "basic", "fundamental", "foundation", "101"]):
+                        return "Beginner"
+                    elif any(k in full_text for k in ["advanced", "expert", "deep dive", "senior", "mastery"]):
+                        return "Advanced"
+                    return "Intermediate"
+                df['difficulty'] = df.apply(classify_difficulty, axis=1)
+
             print(f"Successfully loaded {len(df)} courses from disk cache!")
             return
         except Exception as cache_err:
@@ -321,6 +335,18 @@ def load_and_train_model():
     
     # Calculate stars_int specifically for Jinja range loop rendering (1 to 5)
     df['stars_int'] = df['stars'].apply(lambda x: min(max(round(float(x)), 1), 5))
+
+    # Pre-compute difficulty level
+    def classify_difficulty(row):
+        title = str(row.get('title', '')).lower()
+        desc = str(row.get('content_text', '')).lower()
+        full_text = f"{title} {desc}"
+        if any(k in full_text for k in ["beginner", "introduction", "intro", "basic", "fundamental", "foundation", "101"]):
+            return "Beginner"
+        elif any(k in full_text for k in ["advanced", "expert", "deep dive", "senior", "mastery"]):
+            return "Advanced"
+        return "Intermediate"
+    df['difficulty'] = df.apply(classify_difficulty, axis=1)
 
     # Train TF-IDF
     def build_search_profile(row):
@@ -478,6 +504,10 @@ def search():
     if not query:
         return redirect(url_for('index'))
 
+    provider = request.args.get('provider', '').strip().lower()
+    difficulty = request.args.get('difficulty', '').strip().lower()
+    rating_val = request.args.get('rating', '').strip()
+
     import concurrent.futures
 
     def run_course_search(q):
@@ -486,6 +516,17 @@ def search():
             search_df = df.copy()
             search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
             
+            # Apply filters dynamically (pre-scored/matched df)
+            if provider:
+                search_df = search_df[search_df['provider'].str.lower().str.contains(provider, na=False)]
+            if difficulty:
+                search_df = search_df[search_df['difficulty'].str.lower() == difficulty]
+            if rating_val:
+                try:
+                    search_df = search_df[search_df['stars'] >= float(rating_val)]
+                except ValueError:
+                    pass
+
             # Try strict search (0.15) first
             recs = search_df[search_df['match_score'] > 0.15].sort_values(by=['stars', 'match_score'], ascending=[False, False])
             
@@ -1474,7 +1515,7 @@ def generate_local_fallback_path(user_goal, matched_courses):
         html.append(f'<div style="background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;">')
         html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;"><i data-lucide="tool" style="width: 14px; height: 14px; display: inline-block;"></i> Weekly Practical Exercise & Mock Interview:</strong>')
         html.append(f'<span style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block; margin-bottom: 0.5rem;">Design and construct a modular software module incorporating the core competencies introduced this week. Focus on writing clean object-oriented logic, defining API schemas, and implementing comprehensive unit tests to validate boundaries on <strong>"{c1.get("title")}"</strong>.</span>')
-        html.append(f'<span style="color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block;">💡 End-of-Week Interview Prep: "{interview_q}"</span>')
+        html.append(f'<span style="color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block; align-items: center; gap: 0.35rem;"><i data-lucide="lightbulb" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i> End-of-Week Interview Prep: "{interview_q}"</span>')
         html.append('</div>')
         
         html.append('</div>')
@@ -1546,9 +1587,9 @@ def generate_path():
         "Use <h3> for weekly headings, <p> for descriptions, <div class='path-step'> for wrappers, "
         "and <a class='path-link' target='_blank'> for course links.\n"
         "5. CRITICAL: For every course listed, you MUST write its exact star rating and review count right next to its name "
-        "in the bullet point list in parentheses. Example: 'Course Title (Udemy) - ⭐ 4.7 (15,230 ratings)'. "
+        "in the bullet point list in parentheses. Example: 'Course Title (Udemy) - <i data-lucide=\"star\" style=\"width:12px;height:12px;display:inline-block;vertical-align:-1px;fill:currentColor;color:#FBBF24;\"></i> 4.7 (15,230 ratings)'. "
         "Ensure you pull the exact 'stars' and 'ratings_count' values provided in the data.\n"
-        "6. CRITICAL (Feature 5): In the practical exercise section for each week, include exactly ONE mock interview question from the provided list of 'Relevant Mock Interview Questions'. You MUST wrap both the practical exercise and the mock interview question together in a visually distinct, beautifully styled HTML block like this: `<div style=\"background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;\"><strong style=\"color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;\"><i data-lucide=\"tool\" style=\"width: 14px; height: 14px; display: inline-block;\"></i> Weekly Practical Exercise & Mock Interview:</strong><span style=\"color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block; margin-bottom: 0.5rem;\">[Insert practical exercise here]</span><span style=\"color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block;\">💡 End-of-Week Interview Prep: \"[Insert Interview Question Here]\"</span></div>`\n"
+        "6. CRITICAL (Feature 5): In the practical exercise section for each week, include exactly ONE mock interview question from the provided list of 'Relevant Mock Interview Questions'. You MUST wrap both the practical exercise and the mock interview question together in a visually distinct, beautifully styled HTML block like this: `<div style=\"background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;\"><strong style=\"color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;\"><i data-lucide=\"tool\" style=\"width: 14px; height: 14px; display: inline-block;\"></i> Weekly Practical Exercise & Mock Interview:</strong><span style=\"color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block; margin-bottom: 0.5rem;\">[Insert practical exercise here]</span><span style=\"color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block;\"><i data-lucide=\"lightbulb\" style=\"width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;\"></i> End-of-Week Interview Prep: \"[Insert Interview Question Here]\"</span></div>`\n"
         "7. Start directly with the syllabus layout. Do not include introductory conversational fluff or markdown code blocks like ```html."
     )
 
@@ -1926,19 +1967,9 @@ def api_course_quick_search():
 
 
 @app.route('/api/course/analyze', methods=['POST'])
-def api_course_analyze():
-    """
-    'Is This Course Worth It?' Analyzer — catalog-based.
-    Receives a full course object from the catalog + optional user goals.
-    Sends real course data (title, description, stars, reviews, provider) to AI
-    for a grounded, data-driven evaluation.
-    """
-    data = request.get_json(force=True)
-    course = data.get('course', {})
-    user_goals = data.get('goals', '').strip()
-
+def perform_course_analysis(course, user_goals):
     if not course or not course.get('title'):
-        return jsonify({"error": "No course data provided"}), 400
+        return None
 
     title         = course.get('title', '')
     provider      = course.get('provider', '')
@@ -1950,13 +1981,11 @@ def api_course_analyze():
 
     # Load user profile info from database if logged in to align with the AI Recommender
     profile_goals = ""
-    taken_courses = []
     if 'user_id' in session:
         db = get_db()
         if db is not None:
             user = db.users.find_one({"_id": session['user_id']})
             if user:
-                taken_courses = user.get('taken_courses', [])
                 p_parts = []
                 if user.get('track'):
                     p_parts.append(user.get('track'))
@@ -2073,7 +2102,7 @@ def api_course_analyze():
                 print(f"Gemini course analyzer error: {e}")
 
         if not result:
-            return jsonify({"error": "AI model unavailable. Please try again in a moment."}), 503
+            return None
 
         # Defaults
         result.setdefault("verdict", "maybe")
@@ -2101,6 +2130,43 @@ def api_course_analyze():
                 print(f"Cache write error: {cache_write_err}")
     result.setdefault("summary", "")
     result.setdefault("topic_keywords", [])
+    return result
+
+
+@app.route('/api/course/analyze', methods=['POST'])
+def api_course_analyze():
+    data = request.get_json(force=True)
+    course = data.get('course', {})
+    user_goals = data.get('goals', '').strip()
+
+    if not course or not course.get('title'):
+        return jsonify({"error": "No course data provided"}), 400
+
+    result = perform_course_analysis(course, user_goals)
+    if not result:
+        return jsonify({"error": "AI model unavailable. Please try again in a moment."}), 503
+
+    title         = course.get('title', '')
+    taken_courses = []
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+            if user:
+                taken_courses = user.get('taken_courses', [])
+
+    # Load profile goals if none entered
+    if not user_goals and 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+            if user:
+                p_parts = []
+                if user.get('track'):
+                    p_parts.append(user.get('track'))
+                if user.get('career_goals'):
+                    p_parts.append(user.get('career_goals'))
+                user_goals = " ".join(p_parts).strip()
 
     # ── Similar/Goal-matching courses from catalog (excluding the analyzed course) ──────────
     alternatives = []
@@ -2160,6 +2226,28 @@ def api_course_analyze():
     result["alternatives"] = alternatives
     result["goal_based_recommendations"] = goal_based_recommendations
     return jsonify(result)
+
+
+@app.route('/api/course/compare', methods=['POST'])
+def api_course_compare():
+    data = request.get_json(force=True)
+    course_a = data.get('course_a', {})
+    course_b = data.get('course_b', {})
+    user_goals = data.get('goals', '').strip()
+
+    if not course_a or not course_a.get('title') or not course_b or not course_b.get('title'):
+        return jsonify({"error": "Two courses must be provided for comparison."}), 400
+
+    result_a = perform_course_analysis(course_a, user_goals)
+    result_b = perform_course_analysis(course_b, user_goals)
+
+    if not result_a or not result_b:
+        return jsonify({"error": "AI model unavailable for comparison. Please try again."}), 503
+
+    return jsonify({
+        "course_a": result_a,
+        "course_b": result_b
+    })
 
 
 

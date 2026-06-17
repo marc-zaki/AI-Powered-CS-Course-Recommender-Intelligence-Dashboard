@@ -11,11 +11,37 @@
     <!-- Tab 1: Course Catalog -->
     <div id="tab-pane-catalog" class="tab-pane active">
         <!-- Search Container inside Catalog Tab -->
-        <div class="search-container">
-            <form action="/search" method="GET" class="search-form">
-                <input type="text" name="q" class="search-input" placeholder="Search for subjects, skills, or tracks..."
-                    value="{{ query }}">
-                <button type="submit" class="btn btn-primary">Search</button>
+        <div class="search-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-glass);">
+            <form action="/search" method="GET" class="search-form" style="display: flex; flex-direction: column; gap: 0.75rem; width: 100%;">
+                <div style="display: flex; gap: 0.75rem; width: 100%;">
+                    <input type="text" name="q" class="search-input" placeholder="Search for subjects, skills, or tracks..."
+                        value="{{ query }}" style="flex: 1; height: auto; padding: 0.75rem 1.25rem;">
+                    <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">Search</button>
+                </div>
+                <div class="catalog-filters-row">
+                    <span class="catalog-filter-label"><i data-lucide="sliders-horizontal" style="width: 16px; height: 16px; color: var(--primary);"></i> Filters:</span>
+                    <select name="provider" class="search-input catalog-filter-select" onchange="this.form.submit()">
+                        <option value="">All Providers</option>
+                        <option value="coursera" {% if request.args.get('provider') == 'coursera' %}selected{% endif %}>Coursera</option>
+                        <option value="udemy" {% if request.args.get('provider') == 'udemy' %}selected{% endif %}>Udemy</option>
+                        <option value="edx" {% if request.args.get('provider') == 'edx' %}selected{% endif %}>edX</option>
+                        <option value="mit" {% if request.args.get('provider') == 'mit' %}selected{% endif %}>MIT</option>
+                        <option value="harvard" {% if request.args.get('provider') == 'harvard' %}selected{% endif %}>Harvard</option>
+                        <option value="google" {% if request.args.get('provider') == 'google' %}selected{% endif %}>Google</option>
+                        <option value="stanford" {% if request.args.get('provider') == 'stanford' %}selected{% endif %}>Stanford</option>
+                    </select>
+                    <select name="difficulty" class="search-input catalog-filter-select" onchange="this.form.submit()">
+                        <option value="">All Levels</option>
+                        <option value="beginner" {% if request.args.get('difficulty') == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if request.args.get('difficulty') == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if request.args.get('difficulty') == 'advanced' %}selected{% endif %}>Advanced</option>
+                    </select>
+                    <select name="rating" class="search-input catalog-filter-select" onchange="this.form.submit()">
+                        <option value="">All Ratings</option>
+                        <option value="4.0" {% if request.args.get('rating') == '4.0' %}selected{% endif %}>4.0+ Stars</option>
+                        <option value="4.5" {% if request.args.get('rating') == '4.5' %}selected{% endif %}>4.5+ Stars</option>
+                    </select>
+                </div>
             </form>
         </div>
 
@@ -595,6 +621,65 @@
     .course-card:hover .analyze-hint-badge {
         opacity: 1;
         transform: translateY(0);
+    }
+    
+    /* Catalog filter styles */
+    .catalog-filters-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        border-top: 1px solid var(--border-glass);
+        padding-top: 1.25rem;
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    .catalog-filter-label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .search-form select.catalog-filter-select {
+        padding: 0.6rem 2.25rem 0.6rem 2.25rem !important;
+        border-radius: 12px !important;
+        width: auto !important;
+        font-size: 0.875rem !important;
+        height: auto !important;
+        border: 1.5px solid var(--primary) !important;
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        color: var(--text-main) !important;
+        font-weight: 600 !important;
+        cursor: pointer;
+        text-align: center !important;
+        text-align-last: center !important;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+        appearance: none;
+        -webkit-appearance: none;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        background-size: 1rem !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+    [data-theme="light"] .search-form select.catalog-filter-select {
+        background-color: #ffffff !important;
+        border: 1.5px solid var(--primary) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    }
+    .search-form select.catalog-filter-select:hover {
+        border-color: var(--secondary) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px var(--primary-glow) !important;
+    }
+    .search-form select.catalog-filter-select:focus {
+        border-color: var(--border-glass-active) !important;
+        box-shadow: var(--shadow-glow) !important;
+        outline: none;
     }
 </style>
 <script src="https://d3js.org/d3.v7.min.js"></script>
