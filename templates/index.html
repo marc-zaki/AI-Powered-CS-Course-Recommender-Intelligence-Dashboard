@@ -87,7 +87,15 @@
             <div class="course-card" data-title="{{ course.title|escape }}" data-provider="{{ course.provider|escape }}"
                 data-stars="{{ course.stars }}" data-ratings-count="{{ course.ratings_count }}"
                 data-url="{{ course.url|escape }}"
-                data-desc="{{ course.content_text[:250]|replace('\n', ' ')|replace('\r', '')|escape }}">
+                data-desc="{{ course.content_text[:250]|replace('\n', ' ')|replace('\r', '')|escape }}"
+                data-content="{{ course.content_text[:800]|replace('\n', ' ')|replace('\r', '')|replace('"', '&quot;')|escape }}"
+                data-review-summary="{{ (course.review_summary or '')|replace('\n', ' ')|replace('"', '&quot;')|escape }}"
+                onclick="analyzeThisCourse(this)"
+                style="cursor: pointer; position: relative;">
+                <!-- Analyze hint badge -->
+                <div class="analyze-hint-badge">
+                    <i data-lucide="zap" style="width:11px;height:11px;display:inline-block;vertical-align:middle;"></i> Analyze
+                </div>
                 <div class="card-content">
                     <div class="card-category">{{ course.provider }}</div>
                     <div class="card-title">{{ course.title }}</div>
@@ -103,7 +111,7 @@
                     {% endif %}
 
                     <!-- Compare option -->
-                    <label class="compare-checkbox-container">
+                    <label class="compare-checkbox-container" onclick="event.stopPropagation()">
                         <input type="checkbox" class="compare-check" onchange="handleCompareChange(this)">
                         <span class="compare-checkbox-custom"></span>
                         <span>Compare Course</span>
@@ -124,11 +132,11 @@
                             {% endif %}
                         </div>
                         <div class="card-footer-actions">
-                            <a href="{{ course.url }}" target="_blank" class="btn btn-primary card-action-btn">
+                            <a href="{{ course.url }}" target="_blank" class="btn btn-primary card-action-btn" onclick="event.stopPropagation()">
                                 <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View Course
                             </a>
                             {% if current_user %}
-                            <button onclick="toggleTaken('{{ course.url|escape }}', this)" class="btn btn-outline card-action-btn card-taken-btn">
+                            <button onclick="event.stopPropagation(); toggleTaken('{{ course.url|escape }}', this)" class="btn btn-outline card-action-btn card-taken-btn">
                                 {% if current_user.taken_courses and course.url in current_user.taken_courses %}
                                 <i data-lucide="check" style="width: 14px; height: 14px;"></i> Taken
                                 {% else %}
@@ -555,6 +563,40 @@
 {% endblock %}
 
 {% block extra_head %}
+<style>
+    /* ── Clickable card to analyzer ───────────────────────── */
+    .course-card {
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease !important;
+    }
+    .course-card:hover {
+        border-color: var(--secondary) !important;
+        box-shadow: 0 8px 32px rgba(50,130,184,0.18) !important;
+    }
+    .analyze-hint-badge {
+        position: absolute;
+        top: 0.65rem;
+        right: 0.65rem;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #fff;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .course-card:hover .analyze-hint-badge {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -564,6 +606,24 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/main.js') }}?v=3"></script>
 <script>
+    function analyzeThisCourse(el) {
+        // el may be the card div itself OR a child element
+        const card = el.classList.contains('course-card') ? el : el.closest('.course-card');
+        if (!card) return;
+        const course = {
+            title:          card.dataset.title         || '',
+            provider:       card.dataset.provider      || '',
+            url:            card.dataset.url           || '#',
+            stars:          parseFloat(card.dataset.stars) || 0,
+            ratings_count:  parseInt(card.dataset.ratingsCount) || 0,
+            content_text:   card.dataset.content       || card.dataset.desc || '',
+            review_summary: card.dataset.reviewSummary || '',
+            raw_reviews:    [],
+        };
+        sessionStorage.setItem('masari_analyze_course', JSON.stringify(course));
+        window.location.href = '/course-analyzer';
+    }
+
     function toggleTaken(url, btn) {
         fetch('/api/toggle_taken', {
             method: 'POST',

@@ -1,0 +1,820 @@
+{% extends "base.html" %}
+
+{% block title %}MASARI | Is This Course Worth It?{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── Hero ────────────────────────────────────────────────── */
+    .analyzer-hero {
+        padding: 2.5rem 2rem 1.5rem;
+        text-align: center;
+    }
+    .analyzer-hero h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+    }
+    .analyzer-hero p {
+        font-size: 1rem;
+        color: var(--text-muted);
+        max-width: 540px;
+        margin: 0 auto;
+    }
+
+    /* ── Search Box ──────────────────────────────────────────── */
+    .search-wrap {
+        position: relative;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+    .search-wrap .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        pointer-events: none;
+        width: 20px; height: 20px;
+    }
+    #catalog-search {
+        width: 100%;
+        padding: 1rem 1.2rem 1rem 3rem;
+        border-radius: 14px;
+        border: 1.5px solid var(--border-glass);
+        background: var(--bg-card);
+        color: var(--text-main);
+        font-size: 1rem;
+        font-family: inherit;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #catalog-search:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    #catalog-search::placeholder { color: var(--text-muted); }
+
+    /* ── Dropdown ────────────────────────────────────────────── */
+    #search-dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0; right: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 14px;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+        z-index: 999;
+        overflow: hidden;
+        display: none;
+        max-height: 380px;
+        overflow-y: auto;
+    }
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1.1rem;
+        cursor: pointer;
+        transition: background 0.15s;
+        border-bottom: 1px solid var(--border-glass);
+    }
+    .dropdown-item:last-child { border-bottom: none; }
+    .dropdown-item:hover, .dropdown-item.focused { background: rgba(99,102,241,0.08); }
+    .dropdown-item-icon {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .dropdown-item-title { font-weight: 600; font-size: 0.9rem; line-height: 1.3; }
+    .dropdown-item-meta { font-size: 0.78rem; color: var(--text-muted); }
+    .dropdown-stars { color: #f59e0b; font-size: 0.78rem; }
+    .dropdown-empty {
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    .dropdown-searching {
+        padding: 1.2rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    /* ── Selected Course Card ────────────────────────────────── */
+    #selected-course-card {
+        display: none;
+        background: var(--bg-card);
+        border: 1.5px solid var(--primary);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        margin-top: 1rem;
+        max-width: 680px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        overflow: hidden;
+    }
+    #selected-course-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.04));
+        pointer-events: none;
+    }
+    .selected-header {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .selected-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .selected-meta { font-size: 0.85rem; color: var(--text-muted); }
+    .selected-stars { color: #f59e0b; }
+
+    /* ── Analyze Button ──────────────────────────────────────── */
+    .analyze-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        padding: 0.9rem 2.5rem;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        margin: 1.25rem auto 0;
+        max-width: 320px;
+        width: 100%;
+        transition: opacity 0.2s, transform 0.15s;
+    }
+    .analyze-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .analyze-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    /* ── Loader ──────────────────────────────────────────────── */
+    .loader-wrap {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        padding: 3rem 0;
+    }
+    .loader-spinner {
+        width: 52px; height: 52px;
+        border: 4px solid var(--border-glass);
+        border-top-color: var(--secondary);
+        border-radius: 50%;
+        animation: spin 0.85s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-step { font-size: 0.9rem; color: var(--text-muted); transition: color 0.3s; }
+    .loader-step.active { color: var(--secondary); font-weight: 600; }
+
+    /* ── Error ───────────────────────────────────────────────── */
+    .error-banner {
+        display: none;
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.3);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        color: #ef4444;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+
+    /* ── Results ─────────────────────────────────────────────── */
+    #results-section { display: none; margin-top: 2rem; }
+
+    /* Verdict */
+    .verdict-banner {
+        border-radius: 20px;
+        padding: 1.75rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        margin-bottom: 1.75rem;
+        border: 1px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+    .verdict-banner.yes  { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); }
+    .verdict-banner.maybe{ background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); }
+    .verdict-banner.no   { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.3);  }
+    .verdict-icon {
+        width: 58px; height: 58px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem; flex-shrink: 0;
+    }
+    .verdict-banner.yes  .verdict-icon { background: rgba(16,185,129,0.15); }
+    .verdict-banner.maybe .verdict-icon { background: rgba(245,158,11,0.15); }
+    .verdict-banner.no   .verdict-icon { background: rgba(239,68,68,0.15); }
+    .verdict-text h2 { font-size: 1.5rem; font-weight: 800; margin: 0 0 0.25rem; }
+    .verdict-banner.yes   .verdict-text h2 { color: #10b981; }
+    .verdict-banner.maybe .verdict-text h2 { color: #f59e0b; }
+    .verdict-banner.no    .verdict-text h2 { color: #ef4444; }
+    .verdict-text p { margin: 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+
+    /* Score rings */
+    .scores-grid {
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+    }
+    @media(max-width:768px){ .scores-grid { grid-template-columns: repeat(2,1fr); } }
+    .score-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 16px;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .score-card:hover { transform: translateY(-2px); }
+    .score-ring {
+        position: relative; width: 80px; height: 80px; margin: 0 auto 0.75rem;
+    }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .ring-bg  { fill:none; stroke:var(--border-glass); stroke-width:8; }
+    .score-ring .ring-fill{ fill:none; stroke-width:8; stroke-linecap:round; }
+    .score-ring-label {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem; font-weight: 800;
+    }
+    .score-card-title {
+        font-size: 0.76rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.04em;
+        color: var(--text-muted);
+    }
+
+    /* Pros/Cons */
+    .pros-cons-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.75rem;
+    }
+    @media(max-width:768px){ .pros-cons-grid { grid-template-columns: 1fr; } }
+    .pros-panel, .cons-panel {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+    }
+    .pros-panel { border-left: 3px solid #10b981; }
+    .cons-panel { border-left: 3px solid #ef4444; }
+    .panel-header {
+        display: flex; align-items: center; gap: 0.5rem;
+        margin-bottom: 0.75rem; font-weight: 700; font-size: 0.95rem;
+    }
+    .pros-panel .panel-header { color: #10b981; }
+    .cons-panel .panel-header { color: #ef4444; }
+    .fact-list { list-style:none; padding:0; margin:0; }
+    .fact-list li {
+        display: flex; align-items: flex-start; gap: 0.6rem;
+        padding: 0.4rem 0; font-size: 0.9rem; color: var(--text-main); line-height: 1.4;
+        border-bottom: 1px solid var(--border-glass);
+    }
+    .fact-list li:last-child { border-bottom: none; }
+    .fact-list .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .pros-panel .dot { background: #10b981; }
+    .cons-panel .dot { background: #ef4444; }
+
+    /* Summary */
+    .summary-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.75rem;
+    }
+    .summary-card h3 {
+        font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .summary-card p { color: var(--text-muted); line-height: 1.7; margin: 0; font-size: 0.92rem; }
+
+    /* Alternatives */
+    .alts-section { margin-bottom: 2rem; }
+    .alts-section h3 {
+        font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .alt-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 12px;
+        padding: 0.9rem 1.2rem;
+        display: flex; align-items: center; gap: 1rem;
+        margin-bottom: 0.65rem;
+        transition: border-color 0.2s, transform 0.15s;
+        text-decoration: none; color: var(--text-main);
+    }
+    .alt-card:hover { border-color: var(--primary); transform: translateX(3px); }
+    .alt-card-icon {
+        width: 36px; height: 36px; border-radius: 9px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .alt-title { font-weight: 600; font-size: 0.9rem; }
+    .alt-meta  { font-size: 0.76rem; color: var(--text-muted); }
+    .alt-stars { color: #f59e0b; }
+
+    /* Input card wrapper */
+    .input-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 780px;
+        margin: 0 auto 2rem;
+    }
+
+    /* Trending chips */
+    .trending-section { margin-top: 1rem; }
+    .trending-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; display: block; }
+    .trending-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+    .trending-chip {
+        padding: 0.3rem 0.8rem;
+        background: rgba(99,102,241,0.08);
+        border: 1px solid rgba(99,102,241,0.2);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        color: var(--primary);
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+    }
+    .trending-chip:hover { background: rgba(99,102,241,0.18); }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="analyzer-hero">
+    <div style="display:inline-flex;align-items:center;gap:0.75rem;margin-bottom:0.65rem;">
+        <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="search-check" style="width:24px;height:24px;color:white;"></i>
+        </div>
+        <h1>Is This Course Worth It?</h1>
+    </div>
+    <p>Search any course from our catalog — AI will score it on content depth, provider reputation, career value, and cost-effectiveness.</p>
+</section>
+
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 0 1.5rem 4rem;">
+
+    <!-- Input Card -->
+    <div class="input-card">
+        <!-- Search box -->
+        <div class="search-wrap">
+            <i data-lucide="search" class="search-icon"></i>
+            <input
+                type="text"
+                id="catalog-search"
+                placeholder="Search courses… e.g. Machine Learning, React, Python, Algorithms"
+                autocomplete="off"
+            >
+            <div id="search-dropdown"></div>
+        </div>
+
+        <!-- Selected course display -->
+        <div id="selected-course-card">
+            <div class="selected-header">
+                <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Selected Course
+            </div>
+            <div class="selected-title" id="sel-title"></div>
+            <div class="selected-meta">
+                <span id="sel-provider"></span>
+                &bull;
+                <span class="selected-stars" id="sel-stars"></span>
+                <span id="sel-count" style="margin-left:0.3rem;"></span>
+            </div>
+        </div>
+
+        <!-- Optional goals -->
+        <div style="margin-top: 1rem;">
+            <label style="font-size:0.82rem;color:var(--text-muted);display:block;margin-bottom:0.35rem;">
+                Your goals <em>(optional — personalizes the Career Value score)</em>
+            </label>
+            <textarea
+                id="user-goals"
+                style="width:100%;padding:0.75rem 1rem;border-radius:10px;border:1.5px solid var(--border-glass);background:var(--bg-main);color:var(--text-main);font-size:0.9rem;font-family:inherit;resize:vertical;min-height:70px;outline:none;box-sizing:border-box;transition:border-color 0.2s;"
+                placeholder="e.g. I'm aiming for an ML engineering internship at a top tech company…"
+                onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border-glass)'"
+            ></textarea>
+        </div>
+
+        <!-- Trending searches -->
+        <div class="trending-section">
+            <span class="trending-label" style="display:flex;align-items:center;gap:0.3rem;"><i data-lucide="flame" style="width:14px;height:14px;color:var(--text-muted);"></i> Popular searches:</span>
+            <div class="trending-chips">
+                <span class="trending-chip" onclick="quickSearch('Machine Learning')">Machine Learning</span>
+                <span class="trending-chip" onclick="quickSearch('Python')">Python</span>
+                <span class="trending-chip" onclick="quickSearch('React')">React</span>
+                <span class="trending-chip" onclick="quickSearch('Data Structures')">Data Structures</span>
+                <span class="trending-chip" onclick="quickSearch('Deep Learning')">Deep Learning</span>
+                <span class="trending-chip" onclick="quickSearch('Cybersecurity')">Cybersecurity</span>
+                <span class="trending-chip" onclick="quickSearch('System Design')">System Design</span>
+            </div>
+        </div>
+
+        <!-- Analyze button -->
+        <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis()" disabled>
+            <i data-lucide="zap" style="width:18px;height:18px;"></i>
+            Analyze This Course
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader-wrap" id="loader-wrap">
+        <div class="loader-spinner"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0.3rem;">
+            <p class="loader-step active" id="step-1"><i data-lucide="search" style="width:16px;height:16px;vertical-align:middle;margin-right:0.4rem;"></i> Reading course data…</p>
+            <p class="loader-step" id="step-2"><i data-lucide="cpu" style="width:16px;height:16px;vertical-align:middle;margin-right:0.4rem;"></i> Running AI evaluation…</p>
+            <p class="loader-step" id="step-3"><i data-lucide="bar-chart-3" style="width:16px;height:16px;vertical-align:middle;margin-right:0.4rem;"></i> Scoring 4 dimensions…</p>
+            <p class="loader-step" id="step-4"><i data-lucide="file-check-2" style="width:16px;height:16px;vertical-align:middle;margin-right:0.4rem;"></i> Building your report…</p>
+        </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- Results -->
+    <div id="results-section">
+        <div class="verdict-banner" id="verdict-banner">
+            <div class="verdict-icon" id="verdict-icon"></div>
+            <div class="verdict-text">
+                <h2 id="verdict-title"></h2>
+                <p id="verdict-reason"></p>
+            </div>
+        </div>
+
+        <div class="scores-grid" id="scores-grid"></div>
+
+        <div class="pros-cons-grid">
+            <div class="pros-panel">
+                <div class="panel-header">
+                    <i data-lucide="thumbs-up" style="width:17px;height:17px;"></i> Strengths
+                </div>
+                <ul class="fact-list" id="pros-list"></ul>
+            </div>
+            <div class="cons-panel">
+                <div class="panel-header">
+                    <i data-lucide="thumbs-down" style="width:17px;height:17px;"></i> Weaknesses
+                </div>
+                <ul class="fact-list" id="cons-list"></ul>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <h3>
+                <i data-lucide="sparkles" style="width:17px;height:17px;color:var(--secondary);"></i>
+                AI Verdict Summary
+            </h3>
+            <p id="ai-summary-text"></p>
+        </div>
+
+        <div class="alts-section" id="alts-section" style="display:none;">
+            <h3>
+                <i data-lucide="layers" style="width:17px;height:17px;color:var(--primary);"></i>
+                Similar Courses You Might Prefer
+            </h3>
+            <div id="alts-container"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let selectedCourse = null;
+    let searchTimeout = null;
+
+    // ── Quick chip search ───────────────────────────────────────
+    function quickSearch(term) {
+        const input = document.getElementById('catalog-search');
+        input.value = term;
+        input.dispatchEvent(new Event('input'));
+        input.focus();
+    }
+
+    // ── Live search ─────────────────────────────────────────────
+    const searchInput = document.getElementById('catalog-search');
+    const dropdown   = document.getElementById('search-dropdown');
+
+    searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim();
+        clearTimeout(searchTimeout);
+
+        if (q.length < 2) {
+            closeDropdown();
+            return;
+        }
+
+        dropdown.innerHTML = `<div class="dropdown-searching"><div class="loader-spinner" style="width:16px;height:16px;border-width:2px;"></div> Searching…</div>`;
+        dropdown.style.display = 'block';
+
+        searchTimeout = setTimeout(() => fetchCatalog(q), 280);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.dropdown-item');
+        const focused = dropdown.querySelector('.dropdown-item.focused');
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!focused) items[0]?.classList.add('focused');
+            else { focused.classList.remove('focused'); focused.nextElementSibling?.classList.add('focused'); }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (focused) { focused.classList.remove('focused'); focused.previousElementSibling?.classList.add('focused'); }
+        } else if (e.key === 'Enter') {
+            const f = dropdown.querySelector('.dropdown-item.focused');
+            if (f) f.click();
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!document.querySelector('.search-wrap').contains(e.target)) closeDropdown();
+    });
+
+    async function fetchCatalog(q) {
+        try {
+            const res = await fetch(`/api/course/quick_search?q=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            renderDropdown(data.courses || []);
+        } catch {
+            dropdown.innerHTML = `<div class="dropdown-empty">Search unavailable.</div>`;
+        }
+    }
+
+    function renderDropdown(courses) {
+        if (!courses.length) {
+            dropdown.innerHTML = `<div class="dropdown-empty">No courses found. Try a different keyword.</div>`;
+            return;
+        }
+        dropdown.innerHTML = '';
+        courses.forEach(c => {
+            const stars = '★'.repeat(Math.round(c.stars || 4)) + '☆'.repeat(5 - Math.round(c.stars || 4));
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.innerHTML = `
+                <div class="dropdown-item-icon">
+                    <i data-lucide="book-open" style="width:18px;height:18px;color:white;"></i>
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <div class="dropdown-item-title">${c.title}</div>
+                    <div class="dropdown-item-meta">
+                        ${c.provider}
+                        &nbsp;·&nbsp;
+                        <span class="dropdown-stars">${stars}</span>
+                        &nbsp;·&nbsp;
+                        ${c.ratings_count?.toLocaleString() || '—'} ratings
+                    </div>
+                </div>
+            `;
+            item.addEventListener('click', () => selectCourse(c));
+            dropdown.appendChild(item);
+        });
+        lucide.createIcons();
+    }
+
+    function selectCourse(c) {
+        selectedCourse = c;
+        closeDropdown();
+        searchInput.value = c.title;
+
+        // Show selected card
+        const card = document.getElementById('selected-course-card');
+        document.getElementById('sel-title').textContent = c.title;
+        document.getElementById('sel-provider').textContent = c.provider;
+        const stars = '★'.repeat(Math.round(c.stars || 4)) + '☆'.repeat(5 - Math.round(c.stars || 4));
+        document.getElementById('sel-stars').textContent = stars;
+        document.getElementById('sel-count').textContent = c.ratings_count ? `(${c.ratings_count.toLocaleString()} ratings)` : '';
+        card.style.display = 'block';
+
+        // Enable button
+        document.getElementById('analyze-btn').disabled = false;
+
+        // Hide old results
+        document.getElementById('results-section').style.display = 'none';
+        document.getElementById('error-banner').style.display = 'none';
+
+        lucide.createIcons();
+    }
+
+    function closeDropdown() {
+        dropdown.style.display = 'none';
+    }
+
+    // ── Loader animation ────────────────────────────────────────
+    function animateLoader() {
+        const steps = ['step-1','step-2','step-3','step-4'];
+        steps.forEach(id => document.getElementById(id).classList.remove('active'));
+        document.getElementById(steps[0]).classList.add('active');
+        let i = 0;
+        return setInterval(() => {
+            if (i < steps.length - 1) {
+                document.getElementById(steps[i]).classList.remove('active');
+                i++;
+                document.getElementById(steps[i]).classList.add('active');
+            }
+        }, 1800);
+    }
+
+    // ── Auto-load course from catalog "Analyze" button ───────────
+    document.addEventListener('DOMContentLoaded', () => {
+        const stored = sessionStorage.getItem('masari_analyze_course');
+        if (!stored) return;
+        try {
+            const course = JSON.parse(stored);
+            sessionStorage.removeItem('masari_analyze_course'); // consume it
+            if (course && course.title) {
+                // Pre-fill the search box
+                document.getElementById('catalog-search').value = course.title;
+                // Select the course immediately (no dropdown needed)
+                selectCourse(course);
+                // Smooth-scroll to the goals textarea so the user knows what to do next
+                setTimeout(() => {
+                    document.getElementById('user-goals').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Show a subtle pulse on the analyze button
+                    const btn = document.getElementById('analyze-btn');
+                    btn.style.animation = 'none';
+                    btn.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.35)';
+                    setTimeout(() => { btn.style.boxShadow = ''; }, 1800);
+                }, 300);
+            }
+        } catch(e) {
+            console.warn('Could not parse stored course:', e);
+        }
+    });
+
+    async function runAnalysis() {
+        if (!selectedCourse) return;
+
+        const btn = document.getElementById('analyze-btn');
+        const loader = document.getElementById('loader-wrap');
+        const errorBanner = document.getElementById('error-banner');
+        const resultsSection = document.getElementById('results-section');
+        const goals = document.getElementById('user-goals').value.trim();
+
+        btn.disabled = true;
+        errorBanner.style.display = 'none';
+        resultsSection.style.display = 'none';
+        loader.style.display = 'flex';
+
+        const loaderInterval = animateLoader();
+
+        try {
+            const res = await fetch('/api/course/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ course: selectedCourse, goals })
+            });
+            const data = await res.json();
+            if (!res.ok || data.error) throw new Error(data.error || 'Analysis failed.');
+            renderResults(data);
+        } catch(err) {
+            errorBanner.innerHTML = `<i data-lucide="alert-triangle" style="width:16px;height:16px;vertical-align:middle;margin-right:0.5rem;"></i> ${err.message}`;
+            errorBanner.style.display = 'block';
+            lucide.createIcons();
+        } finally {
+            clearInterval(loaderInterval);
+            loader.style.display = 'none';
+            btn.disabled = false;
+        }
+    }
+
+    // ── Render ──────────────────────────────────────────────────
+    function scoreColor(s) {
+        return s >= 75 ? '#10b981' : s >= 50 ? '#f59e0b' : '#ef4444';
+    }
+
+    function makeSVGRing(score, color) {
+        const r=32, cx=40, cy=40, circ=2*Math.PI*r;
+        const fill=(score/100)*circ;
+        return `<svg width="80" height="80" viewBox="0 0 80 80">
+            <circle class="ring-bg" cx="${cx}" cy="${cy}" r="${r}"/>
+            <circle class="ring-fill" cx="${cx}" cy="${cy}" r="${r}" stroke="${color}" stroke-dasharray="${fill} ${circ}"/>
+        </svg>`;
+    }
+
+    const SCORE_META = [
+        { key:'content_depth',       label:'Content Depth'  },
+        { key:'provider_reputation', label:'Provider Rep.'  },
+        { key:'career_relevance',    label:'Career Value'   },
+        { key:'value_for_money',     label:'Value / Money'  },
+    ];
+
+    function renderResults(data) {
+        // Verdict
+        const banner = document.getElementById('verdict-banner');
+        const icon   = document.getElementById('verdict-icon');
+        const title  = document.getElementById('verdict-title');
+        const reason = document.getElementById('verdict-reason');
+        banner.className = 'verdict-banner';
+        const v = (data.verdict || 'maybe').toLowerCase();
+        if (v === 'yes') {
+            banner.classList.add('yes');
+            icon.innerHTML = '<i data-lucide="check-circle" style="width:32px;height:32px;color:#10b981;"></i>';
+            title.textContent = 'Worth It!';
+        } else if (v === 'no') {
+            banner.classList.add('no');
+            icon.innerHTML = '<i data-lucide="x-circle" style="width:32px;height:32px;color:#ef4444;"></i>';
+            title.textContent = 'Skip This One';
+        } else {
+            banner.classList.add('maybe');
+            icon.innerHTML = '<i data-lucide="alert-triangle" style="width:32px;height:32px;color:#f59e0b;"></i>';
+            title.textContent = 'Maybe — Depends on Your Goals';
+        }
+        reason.textContent = data.verdict_reason || '';
+
+        // Score rings
+        const grid = document.getElementById('scores-grid');
+        grid.innerHTML = '';
+        SCORE_META.forEach(m => {
+            const score = Math.round(data.scores?.[m.key] ?? 50);
+            const color = scoreColor(score);
+            const card = document.createElement('div');
+            card.className = 'score-card';
+            card.innerHTML = `
+                <div class="score-ring">${makeSVGRing(score, color)}<div class="score-ring-label" style="color:${color}">${score}</div></div>
+                <div class="score-card-title">${m.label}</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // Pros
+        const prosList = document.getElementById('pros-list');
+        prosList.innerHTML = '';
+        (data.pros || []).forEach(p => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="dot"></span><span>${p}</span>`;
+            prosList.appendChild(li);
+        });
+
+        // Cons
+        const consList = document.getElementById('cons-list');
+        consList.innerHTML = '';
+        (data.cons || []).forEach(c => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="dot"></span><span>${c}</span>`;
+            consList.appendChild(li);
+        });
+
+        // Summary
+        document.getElementById('ai-summary-text').textContent = data.summary || '';
+
+        // Alternatives
+        const altsSection = document.getElementById('alts-section');
+        const altsContainer = document.getElementById('alts-container');
+        altsContainer.innerHTML = '';
+        if (data.alternatives && data.alternatives.length > 0) {
+            const h3 = altsSection.querySelector('h3');
+            if (data.goal_based_recommendations) {
+                h3.innerHTML = `<i data-lucide="sparkles" style="width:17px;height:17px;color:var(--secondary);"></i> Recommended Courses Matching Your Goals`;
+            } else {
+                h3.innerHTML = `<i data-lucide="layers" style="width:17px;height:17px;color:var(--primary);"></i> Similar Courses You Might Prefer`;
+            }
+            data.alternatives.forEach(alt => {
+                const stars = '★'.repeat(Math.round(alt.stars || 4)) + '☆'.repeat(5 - Math.round(alt.stars || 4));
+                const card = document.createElement('a');
+                card.className = 'alt-card';
+                card.href = alt.url || '#';
+                card.target = '_blank'; card.rel = 'noopener';
+                card.innerHTML = `
+                    <div class="alt-card-icon" style="${data.goal_based_recommendations ? 'background: linear-gradient(135deg, var(--secondary), var(--primary));' : ''}">
+                        <i data-lucide="${data.goal_based_recommendations ? 'award' : 'graduation-cap'}" style="width:18px;height:18px;color:white;"></i>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div class="alt-title">${alt.title}</div>
+                        <div class="alt-meta">${alt.provider} &bull; <span class="alt-stars">${stars}</span></div>
+                    </div>
+                    <i data-lucide="arrow-right" style="width:16px;height:16px;color:var(--text-muted);flex-shrink:0;"></i>
+                `;
+                altsContainer.appendChild(card);
+            });
+            altsSection.style.display = 'block';
+        } else {
+            altsSection.style.display = 'none';
+        }
+
+        document.getElementById('results-section').style.display = 'block';
+        lucide.createIcons();
+        document.getElementById('results-section').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+</script>
+{% endblock %}

@@ -1723,6 +1723,253 @@ def api_resume_analyze():
     return jsonify(result)
 
 
+@app.route('/course-analyzer')
+def course_analyzer():
+    user = None
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+    return render_template('course_analyzer.html', current_user=user)
+
+
+@app.route('/api/course/quick_search')
+def api_course_quick_search():
+    """Live catalog search for the Course Analyzer dropdown."""
+    if df is None:
+        return jsonify({"courses": []})
+    q = request.args.get('q', '').strip()
+    if not q or len(q) < 2:
+        return jsonify({"courses": []})
+    try:
+        query_vector = vectorizer.transform([q.lower()])
+        search_df = df.copy()
+        search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+        results = search_df[search_df['match_score'] > 0.01].sort_values(
+            by=['match_score', 'stars'], ascending=[False, False]
+        ).head(8)
+        courses = []
+        for _, row in results.iterrows():
+            courses.append({
+                "title": str(row.get("title", "")),
+                "provider": str(row.get("provider", "")),
+                "url": str(row.get("url", "#")),
+                "stars": float(row.get("stars", 4.0)),
+                "ratings_count": int(row.get("ratings_count", 0)),
+                "content_text": str(row.get("content_text", ""))[:800],
+                "review_summary": str(row.get("review_summary", "")),
+                "raw_reviews": row.get("raw_reviews", []) if isinstance(row.get("raw_reviews"), list) else [],
+            })
+        return jsonify({"courses": courses})
+    except Exception as e:
+        print(f"Quick search error: {e}")
+        return jsonify({"courses": []})
+
+
+@app.route('/api/course/analyze', methods=['POST'])
+def api_course_analyze():
+    """
+    'Is This Course Worth It?' Analyzer — catalog-based.
+    Receives a full course object from the catalog + optional user goals.
+    Sends real course data (title, description, stars, reviews, provider) to AI
+    for a grounded, data-driven evaluation.
+    """
+    data = request.get_json(force=True)
+    course = data.get('course', {})
+    user_goals = data.get('goals', '').strip()
+
+    if not course or not course.get('title'):
+        return jsonify({"error": "No course data provided"}), 400
+
+    title         = course.get('title', '')
+    provider      = course.get('provider', '')
+    stars         = course.get('stars', 0)
+    ratings_count = course.get('ratings_count', 0)
+    description   = course.get('content_text', '')[:1200]
+    review_summary= course.get('review_summary', '')
+    raw_reviews   = course.get('raw_reviews', [])[:5]  # max 5 reviews
+
+    # Load user profile info from database if logged in to align with the AI Recommender
+    profile_goals = ""
+    taken_courses = []
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+            if user:
+                taken_courses = user.get('taken_courses', [])
+                p_parts = []
+                if user.get('track'):
+                    p_parts.append(user.get('track'))
+                if user.get('career_goals'):
+                    p_parts.append(user.get('career_goals'))
+                profile_goals = " ".join(p_parts).strip()
+
+    # Fall back to user profile goals if none were explicitly entered for this run
+    if not user_goals and profile_goals:
+        user_goals = profile_goals
+
+    goals_context = f"\n\nLearner's goals: {user_goals}" if user_goals else ""
+
+    # Build a rich context for the AI from real catalog data
+    reviews_text = ""
+    if raw_reviews:
+        reviews_text = "\nSample student reviews:\n" + "\n".join(f"- {r}" for r in raw_reviews[:5] if r)
+
+    system_prompt = (
+        "You are an expert CS education analyst. You have been given REAL data about an online course "
+        "from a curated catalog. Analyze it critically and honestly. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"verdict\": \"yes\" | \"maybe\" | \"no\",\n"
+        "  \"verdict_reason\": \"<one clear sentence summarizing your verdict>\",\n"
+        "  \"scores\": {\n"
+        "    \"content_depth\": <integer 0-100>,\n"
+        "    \"provider_reputation\": <integer 0-100>,\n"
+        "    \"career_relevance\": <integer 0-100>,\n"
+        "    \"value_for_money\": <integer 0-100>\n"
+        "  },\n"
+        "  \"pros\": [\"<strength 1>\", \"<strength 2>\", \"<strength 3>\"],\n"
+        "  \"cons\": [\"<weakness 1>\", \"<weakness 2>\", \"<weakness 3>\"],\n"
+        "  \"summary\": \"<2-3 sentence balanced analysis of this specific course's value>\",\n"
+        "  \"topic_keywords\": [\"<keyword1>\", \"<keyword2>\", \"<keyword3>\"]\n"
+        "}\n"
+        "Base scores on:\n"
+        "- content_depth: how comprehensive the syllabus/description sounds\n"
+        "- provider_reputation: credibility of the provider (MIT/Stanford/Google = high, unknown = low)\n"
+        "- career_relevance: how useful this topic is for CS careers right now\n"
+        "- value_for_money: factoring in the platform, star rating, and number of reviews\n"
+        "Be honest — not every course deserves a 'yes'."
+    )
+
+    user_prompt = (
+        f"Course Title: {title}\n"
+        f"Provider / Platform: {provider}\n"
+        f"Star Rating: {stars} / 5.0\n"
+        f"Number of Ratings: {ratings_count:,}\n"
+        f"Description: {description}\n"
+        f"Review Summary: {review_summary}"
+        f"{reviews_text}"
+        f"{goals_context}\n\n"
+        "Evaluate this course and return the JSON analysis."
+    )
+
+    result = None
+
+    # Tier 1: OpenRouter
+    if OPENROUTER_API_KEY:
+        try:
+            openrouter_url = "https://openrouter.ai/api/v1/chat/completions"
+            headers = {
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "HTTP-Referer": "https://cs-recommender.com",
+                "X-Title": "MASARI",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": "meta-llama/llama-4-scout",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.25,
+                "max_tokens": 900,
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=25.0)
+            if res.status_code == 200:
+                result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+        except Exception as e:
+            print(f"OpenRouter course analyzer error: {e}")
+
+    # Tier 2: Gemini
+    if not result and GEMINI_API_KEY:
+        try:
+            model = genai.GenerativeModel(
+                model_name='gemini-1.5-flash',
+                system_instruction=system_prompt
+            )
+            response = model.generate_content(user_prompt)
+            result = extract_json_from_llm(response.text)
+        except Exception as e:
+            print(f"Gemini course analyzer error: {e}")
+
+    if not result:
+        return jsonify({"error": "AI model unavailable. Please try again in a moment."}), 503
+
+    # Defaults
+    result.setdefault("verdict", "maybe")
+    result.setdefault("verdict_reason", "")
+    result.setdefault("scores", {"content_depth": 50, "provider_reputation": 50, "career_relevance": 50, "value_for_money": 50})
+    result.setdefault("pros", [])
+    result.setdefault("cons", [])
+    result.setdefault("summary", "")
+    result.setdefault("topic_keywords", [])
+
+    # ── Similar/Goal-matching courses from catalog (excluding the analyzed course) ──────────
+    alternatives = []
+    goal_based_recommendations = False
+
+    # Check if there's a mismatch (verdict is not 'yes') and the user provided goals (either entered or from profile)
+    if (result.get("verdict") in ["no", "maybe"]) and user_goals and df is not None and vectorizer is not None:
+        try:
+            goal_vector = vectorizer.transform([user_goals.lower()])
+            search_df = df.copy()
+            search_df['match_score'] = cosine_similarity(goal_vector, tfidf_matrix).flatten()
+            # Exclude the selected course itself
+            search_df = search_df[search_df['title'] != title]
+            # Exclude courses the user has already taken (aligned with AI Recommender)
+            if taken_courses:
+                search_df = search_df[~search_df['url'].isin(taken_courses)]
+            top_goal_matches = search_df[search_df['match_score'] > 0.05].sort_values(
+                by=['match_score', 'stars'], ascending=[False, False]
+            ).head(4)
+            for _, row in top_goal_matches.iterrows():
+                alternatives.append({
+                    "title": row.get("title", ""),
+                    "provider": row.get("provider", ""),
+                    "url": row.get("url", "#"),
+                    "stars": float(row.get("stars", 4.0))
+                })
+            if alternatives:
+                goal_based_recommendations = True
+        except Exception as e:
+            print(f"Goal recommendations search error: {e}")
+
+    # Fallback to similar courses if not goal-based or if no goal matches found
+    if not alternatives and df is not None and vectorizer is not None and result.get("topic_keywords"):
+        try:
+            keyword_query = " ".join(result["topic_keywords"])
+            query_vector = vectorizer.transform([keyword_query.lower()])
+            search_df = df.copy()
+            search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+            # Exclude the selected course itself
+            search_df = search_df[search_df['title'] != title]
+            # Exclude courses the user has already taken (aligned with AI Recommender)
+            if taken_courses:
+                search_df = search_df[~search_df['url'].isin(taken_courses)]
+            top_alts = search_df[search_df['match_score'] > 0.05].sort_values(
+                by=['stars', 'match_score'], ascending=[False, False]
+            ).head(4)
+            for _, row in top_alts.iterrows():
+                alternatives.append({
+                    "title": row.get("title", ""),
+                    "provider": row.get("provider", ""),
+                    "url": row.get("url", "#"),
+                    "stars": float(row.get("stars", 4.0))
+                })
+        except Exception as e:
+            print(f"Alternatives search error: {e}")
+
+    result["alternatives"] = alternatives
+    result["goal_based_recommendations"] = goal_based_recommendations
+    return jsonify(result)
+
+
+
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
