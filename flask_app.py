@@ -128,6 +128,7 @@ vectorizer = None
 tfidf_matrix = None
 mongo_client = None
 mongo_db = None
+global_featured_courses = None
 
 # Global scraper state (shared across threads)
 scraper_state = {
