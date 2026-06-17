@@ -339,6 +339,33 @@ def clean_user_query(query):
     cleaned_query = [word for word in tokens if word not in stop_words]
     return " ".join(cleaned_query)
 
+@app.route('/privacy')
+def privacy():
+    user = None
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+    return render_template('privacy.html', current_user=user)
+
+@app.route('/terms')
+def terms():
+    user = None
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+    return render_template('terms.html', current_user=user)
+
+@app.route('/pricing')
+def pricing():
+    user = None
+    if 'user_id' in session:
+        db = get_db()
+        if db is not None:
+            user = db.users.find_one({"_id": session['user_id']})
+    return render_template('pricing.html', current_user=user)
+
 @app.route('/')
 def index():
     if df is None:
