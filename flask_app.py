@@ -558,7 +558,7 @@ def api_interview_search():
                 "max_tokens": 1500,
                 "response_format": {"type": "json_object"}
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
             if res.status_code == 200:
                 data = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
                 results = data.get("results", [])
@@ -567,7 +567,8 @@ def api_interview_search():
 
     if not results and GEMINI_API_KEY:
         try:
-            model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+            # Fallback to 1.5-flash because 2.5-flash is not natively supported in genai 0.3.1
+            model = genai.GenerativeModel(model_name='gemini-1.5-flash')
             response = model.generate_content(system_prompt)
             data = extract_json_from_llm(response.text)
             results = data.get("results", [])
@@ -639,7 +640,7 @@ def api_interview_explain():
                 "temperature": 0.3,
                 "max_tokens": 500
             }
-            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=5.0)
+            res = requests.post(openrouter_url, json=payload, headers=headers, timeout=30.0)
             if res.status_code == 200:
                 explanation = res.json()["choices"][0]["message"]["content"].strip()
         except Exception:
@@ -649,7 +650,7 @@ def api_interview_explain():
     if not explanation and GEMINI_API_KEY:
         try:
             model = genai.GenerativeModel(
-                model_name='gemini-2.5-flash',
+                model_name='gemini-1.5-flash',
                 system_instruction=system_prompt
             )
             response = model.generate_content(user_prompt)
@@ -715,7 +716,7 @@ def api_interview_followup():
                 "max_tokens": 400,
                 "response_format": {"type": "json_object"}
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
             if res.status_code == 200:
                 result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception as e:
@@ -725,7 +726,7 @@ def api_interview_followup():
     if not result and GEMINI_API_KEY:
         try:
             model = genai.GenerativeModel(
-                model_name='gemini-2.5-flash',
+                model_name='gemini-1.5-flash',
                 system_instruction=system_prompt
             )
             response = model.generate_content(
@@ -801,7 +802,7 @@ def api_interview_generate_technical():
                 "max_tokens": 800,
                 "response_format": {"type": "json_object"}
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=10.0)
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
             if res.status_code == 200:
                 result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception:
@@ -809,7 +810,7 @@ def api_interview_generate_technical():
 
     if not result and GEMINI_API_KEY:
         try:
-            model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+            model = genai.GenerativeModel(model_name='gemini-1.5-flash')
             response = model.generate_content(system_prompt)
             result = extract_json_from_llm(response.text)
         except Exception:
@@ -910,7 +911,7 @@ def api_interview_behavioral():
                 "max_tokens": 1200,
                 "response_format": {"type": "json_object"}
             }
-            res = requests.post(groq_url, json=payload, headers=headers, timeout=15.0)
+            res = requests.post(groq_url, json=payload, headers=headers, timeout=30.0)
             if res.status_code == 200:
                 result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception as e:
@@ -918,7 +919,7 @@ def api_interview_behavioral():
 
     if not result and GEMINI_API_KEY:
         try:
-            model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+            model = genai.GenerativeModel(model_name='gemini-1.5-flash')
             response = model.generate_content(system_prompt)
             result = extract_json_from_llm(response.text)
         except Exception as e:

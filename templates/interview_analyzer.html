@@ -441,9 +441,14 @@
                 let idx = 0;
                 textEl.textContent = texts[0];
                 loaderInterval = setInterval(() => {
-                    idx = (idx + 1) % texts.length;
-                    textEl.textContent = texts[idx];
-                }, 2500);
+                    idx++;
+                    if (idx < texts.length) {
+                        textEl.textContent = texts[idx];
+                    } else {
+                        textEl.textContent = 'Finalizing response (almost done)...';
+                        clearInterval(loaderInterval); // Stop looping!
+                    }
+                }, 3000);
             } else {
                 textEl.textContent = texts;
             }
