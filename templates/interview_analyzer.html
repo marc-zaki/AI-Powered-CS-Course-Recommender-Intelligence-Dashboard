@@ -429,7 +429,7 @@
     function escapeHtml(unsafe) { return (unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
     // ── Utility Functions ─────────────────────────────────────────────
     let loaderInterval = null;
-    function setLoader(visible, texts = ['Connecting to Gemini 2.5 Flash...', 'Generating detailed questions...', 'Parsing AI response...']) {
+    function setLoader(visible, texts = ['Connecting to Qwen3 Coder...', 'Generating detailed questions...', 'Parsing AI response...']) {
         const loaderEl = document.getElementById('interview-loader');
         const textEl = document.getElementById('loader-text');
         
@@ -822,7 +822,7 @@
         const query = document.getElementById('interview-query').value.trim();
         const difficulty = document.getElementById('interview-difficulty').value;
         const btn = document.getElementById('interview-search-btn');
-        btn.disabled = true; setLoader(true, ['Connecting to Gemini 2.5 Flash...', 'Generating FAANG-level questions...', 'Analyzing difficulty...', 'Formatting response...']); hideError();
+        btn.disabled = true; setLoader(true, ['Connecting to Qwen3 Coder...', 'Generating FAANG-level questions...', 'Analyzing difficulty...', 'Formatting response...']); hideError();
         document.getElementById('interview-results-container').style.display = 'none';
         try {
             const res = await fetch(`/api/interview/search?q=${encodeURIComponent(query)}&difficulty=${encodeURIComponent(difficulty)}`);
