@@ -20,3 +20,4 @@ Thumbs.db
 
 # Model / Data Cache
 datasets/tfidf_cache.pkl
+server.log
