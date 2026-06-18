@@ -129,10 +129,9 @@
                 <!-- Job Description Zone -->
                 <div style="display: flex; flex-direction: column;">
                     <label for="job-description"
-                        style="margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">2. Target Job
-                        Description</label>
-                    <textarea id="job-description" class="search-input" required
-                        placeholder="Paste the job requirements and responsibilities here..."
+                        style="margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">2. Target Job Description (Optional)</label>
+                    <textarea id="job-description" class="search-input"
+                        placeholder="Paste the job requirements and responsibilities here to check compatibility, or leave blank to scan CV directly..."
                         style="flex: 1; min-height: 200px; resize: vertical; width: 100%; border-radius: 12px; padding: 1rem;"></textarea>
                 </div>
             </div>
@@ -180,8 +179,12 @@
                     </div>
                 </div>
                 <p id="score-message"
-                    style="margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 1.1rem; color: var(--text-main);">
+                    style="margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 1.1rem; color: var(--text-main); margin-bottom: 1.5rem;">
                 </p>
+                <div style="border-top: 1px solid var(--border-glass); width: 100%; padding-top: 1.25rem; text-align: center;">
+                    <h4 style="margin: 0; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Perfect Job Match</h4>
+                    <div id="recommended-role-title" style="font-weight: 800; font-size: 1.25rem; color: var(--secondary); margin-top: 0.35rem; line-height: 1.3;">-</div>
+                </div>
             </div>
 
             <!-- Missing Keywords & Upskilling -->
@@ -373,6 +376,7 @@
         const deg = (data.ats_score / 100) * 360;
         scoreCard.style.setProperty('--score-deg', `${deg}deg`);
         document.getElementById('score-text').textContent = data.ats_score;
+        document.getElementById('recommended-role-title').textContent = data.perfect_job_title || 'Software Engineer';
 
         const scoreMsg = document.getElementById('score-message');
         if (data.ats_score >= 80) {

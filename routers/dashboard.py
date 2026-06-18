@@ -124,6 +124,12 @@ async def api_random_course(request: Request):
 async def graph_data(request: Request):
     if ai_core.df is None or len(ai_core.df) == 0:
         return JSONResponse({"nodes": [], "links": []})
+        
+    from routers.auth import get_current_user
+    user = await get_current_user(request)
+    user_level = user.get('current_skill_level', 'Beginner') if user else 'Beginner'
+    taken_courses = user.get('taken_courses', []) if user else []
+
     # Select the top 25 courses for each unique provider to ensure fair representation in the network
     sample_df = ai_core.df.copy()
     provider_samples = []
@@ -145,10 +151,21 @@ async def graph_data(request: Request):
         
     combined_sample = combined_sample.reset_index(drop=True)
     
+    # Classification helper
+    def get_difficulty(row):
+        title = str(row.get('title', '')).lower()
+        desc = str(row.get('content_text', '')).lower()
+        full_text = f"{title} {desc}"
+        if any(k in full_text for k in ["beginner", "introduction", "intro", "basic", "fundamental", "foundation", "101"]):
+            return "Beginner"
+        elif any(k in full_text for k in ["advanced", "expert", "deep dive", "senior", "mastery"]):
+            return "Advanced"
+        return "Intermediate"
+
     # Construct nodes
     nodes = []
     for idx, row in combined_sample.iterrows():
-        # Assign category group based on keywords (prioritize Web/Security/Software first to prevent character overlaps like 'html' matching 'ml')
+        # Assign category group based on keywords
         title = row['title'].lower()
         group = "General CS"
         if any(w in title for w in ['web', 'html', 'css', 'react', 'js', 'javascript', 'node', 'django', 'flask', 'angular', 'vue']):
@@ -160,13 +177,30 @@ async def graph_data(request: Request):
         elif any(w in title for w in ['python', 'machine learning', 'deep learning', 'intelligence', 'ai', 'data science', 'neural', 'nlp', 'pytorch', 'tensorflow']) or re.search(r'\bml\b', title):
             group = "AI & Data Science"
             
+        diff = get_difficulty(row)
+        completed = row['url'] in taken_courses
+        
+        # Unlock logic: Beginner friendly is always unlocked. Intermediate requires Intermediate user level. Advanced requires Advanced user level.
+        unlocked = True
+        if diff == "Intermediate" and user_level == "Beginner":
+            unlocked = False
+        elif diff == "Advanced" and user_level in ["Beginner", "Intermediate"]:
+            unlocked = False
+            
+        # If they took it, it's always unlocked
+        if completed:
+            unlocked = True
+            
         nodes.append({
             "id": int(idx),
             "title": row['title'],
             "provider": row['provider'],
             "stars": float(row['stars']),
             "url": row['url'],
-            "group": group
+            "group": group,
+            "difficulty": diff,
+            "completed": completed,
+            "unlocked": unlocked
         })
         
     # Construct links based on similarity threshold

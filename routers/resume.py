@@ -61,8 +61,6 @@ async def api_resume_analyze(request: Request, job_description: str = Form(""), 
         return JSONResponse({"error": "No resume file uploaded"}, status_code=400)
         
     job_description = job_description.strip()
-    if not job_description:
-        return JSONResponse({"error": "No job description provided"}, status_code=400)
 
     if not resume.filename.lower().endswith('.pdf'):
         return JSONResponse({"error": "Resume must be a PDF file"}, status_code=400)
@@ -88,15 +86,18 @@ async def api_resume_analyze(request: Request, job_description: str = Form(""), 
 
     system_prompt = (
         "You are an expert technical recruiter and Applicant Tracking System (ATS). "
-        "Analyze the candidate's resume against the target Job Description. "
+        "Analyze the candidate's resume. Recommend the single best-fitting professional job title for them. "
+        "If a target Job Description is provided, evaluate the match score and missing keywords against it. "
+        "If no Job Description is provided, evaluate the candidate's overall profile strength (ats_score from 0-100) and identify missing high-demand industry skills for their recommended role as missing_keywords.\n"
         "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
         "{\n"
         "  \"ats_score\": <integer 0-100>,\n"
+        "  \"perfect_job_title\": \"<the single best-fitting professional job title recommended for this candidate based on their CV and experience>\",\n"
         "  \"missing_keywords\": [\"<keyword1>\", \"<keyword2>\"],\n"
         "  \"bullet_rewrites\": [\n"
         "    {\n"
         "      \"original\": \"<weak bullet point from resume>\",\n"
-        "      \"improved\": \"<rewritten bullet using STAR method tailored to the JD>\",\n"
+        "      \"improved\": \"<rewritten bullet using STAR method tailored to their skills and recommended role>\",\n"
         "      \"reasoning\": \"<why this is better>\"\n"
         "    }\n"
         "  ],\n"
@@ -105,7 +106,7 @@ async def api_resume_analyze(request: Request, job_description: str = Form(""), 
         "Provide exactly 3 bullet_rewrites for the weakest bullet points in the resume."
     )
 
-    user_prompt = f"### TARGET JOB DESCRIPTION ###\n{job_description}\n\n### CANDIDATE RESUME ###\n{resume_text}"
+    user_prompt = f"### TARGET JOB DESCRIPTION (IF PROVIDED) ###\n{job_description or 'No job description provided'}\n\n### CANDIDATE RESUME ###\n{resume_text}"
     result = None
 
     if OPENROUTER_API_KEY:
@@ -143,6 +144,7 @@ async def api_resume_analyze(request: Request, job_description: str = Form(""), 
         return JSONResponse({"error": "AI model unavailable or failed to generate analysis. Please try again."}, status_code=503)
 
     result.setdefault("ats_score", 0)
+    result.setdefault("perfect_job_title", "Software Engineer")
     result.setdefault("missing_keywords", [])
     result.setdefault("bullet_rewrites", [])
     result.setdefault("recommended_upskilling", [])

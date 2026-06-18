@@ -263,12 +263,26 @@
             style="padding: 2.5rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;">
             <h2
                 style="margin-bottom: 0.75rem; color: var(--primary); font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;">
-                Interactive CS Skill Relationship Map</h2>
-            <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 800px; font-size: 1.05rem;">
-                Explore how computer science courses and fields are clustered in our database based on their structural
-                NLP similarities. Hover over nodes to see ratings, drag to reorganize, and click nodes to highlight
-                immediate recommendations!
+                Gamified RPG CS Skill Tree</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; max-width: 800px; font-size: 1.05rem;">
+                Explore and level up your Computer Science journey. Unlock new domains by completing courses and passing assessments! Locked advanced nodes will automatically unlock as your profile skill level rises.
             </p>
+            
+            <!-- Skill Tree Legend -->
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; font-size: 0.9rem; font-weight: 600; padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 12px; width: fit-content;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; display: inline-block;"></span>
+                    <span style="color: var(--text-main);">Completed Course</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--secondary); display: inline-block;"></span>
+                    <span style="color: var(--text-main);">Unlocked Domain</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #4b5563; border: 1.5px dashed rgba(255,255,255,0.4); display: inline-block;"></span>
+                    <span style="color: var(--text-muted); display: flex; align-items: center; gap: 4px;"><i data-lucide="lock" style="width: 12px; height: 12px;"></i> Locked Node</span>
+                </div>
+            </div>
             <div class="map-container">
                 <div class="map-sidebar">
                     <h3>Select a Course Node</h3>

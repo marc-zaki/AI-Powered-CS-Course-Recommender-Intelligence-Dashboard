@@ -358,7 +358,15 @@ function initSkillMapGraph() {
                 .data(data.links)
                 .join("line")
                 .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.06)" : "rgba(15,76,117,0.1)")
-                .attr("stroke-width", d => Math.max(d.value * 3.5, 1.2));
+                .attr("stroke-width", d => Math.max(d.value * 3.5, 1.2))
+                .attr("stroke-dasharray", d => {
+                    const srcNode = data.nodes.find(n => n.id === d.source || n.id === d.source.id);
+                    const tgtNode = data.nodes.find(n => n.id === d.target || n.id === d.target.id);
+                    if ((srcNode && !srcNode.unlocked) || (tgtNode && !tgtNode.unlocked)) {
+                        return "3,3";
+                    }
+                    return "none";
+                });
                 
             // Draw nodes
             const node = g.append("g")
@@ -374,9 +382,33 @@ function initSkillMapGraph() {
                 
             node.append("circle")
                 .attr("r", 10)
-                .attr("fill", d => colorScale(d.group))
-                .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)")
-                .attr("stroke-width", 1.5);
+                .attr("fill", d => d.completed ? "#10b981" : (d.unlocked ? colorScale(d.group) : "#374151"))
+                .attr("stroke", d => d.completed ? "#047857" : (d.unlocked ? (currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)") : "#4b5563"))
+                .attr("stroke-width", d => d.completed ? 2.5 : 1.5)
+                .style("filter", d => d.completed ? "drop-shadow(0 0 8px #10b981)" : "none")
+                .style("opacity", d => d.unlocked ? 1.0 : 0.45);
+                
+            // Add vector lock path for locked nodes
+            node.filter(d => !d.unlocked)
+                .append("path")
+                .attr("d", "M -2 -1.5 V -3.5 A 2 2 0 0 1 2 -3.5 V -1.5 M -3 -1.5 H 3 V 3.5 A 1 1 0 0 1 2 4.5 H -2 A 1 1 0 0 1 -3 3.5 Z")
+                .attr("fill", "none")
+                .attr("stroke", "#ffffff")
+                .attr("stroke-width", 1.2)
+                .attr("stroke-linecap", "round")
+                .attr("stroke-linejoin", "round")
+                .style("pointer-events", "none");
+
+            // Add vector checkmark path for completed nodes
+            node.filter(d => d.completed)
+                .append("path")
+                .attr("d", "M -3.2 0.2 L -0.8 2.6 L 3.2 -2")
+                .attr("fill", "none")
+                .attr("stroke", "#ffffff")
+                .attr("stroke-width", 2.0)
+                .attr("stroke-linecap", "round")
+                .attr("stroke-linejoin", "round")
+                .style("pointer-events", "none");
                 
             node.append("text")
                 .text(d => d.title.length > 20 ? d.title.substring(0, 20) + "..." : d.title)
@@ -386,7 +418,8 @@ function initSkillMapGraph() {
                 .style("font-weight", "600")
                 .style("fill", currentTheme === 'dark' ? "rgba(255,255,255,0.9)" : "rgba(15,23,42,0.9)")
                 .style("pointer-events", "none")
-                .style("text-shadow", currentTheme === 'dark' ? "0px 1px 3px rgba(0,0,0,0.8)" : "0px 1px 3px rgba(255,255,255,0.8)");
+                .style("text-shadow", currentTheme === 'dark' ? "0px 1px 3px rgba(0,0,0,0.8)" : "0px 1px 3px rgba(255,255,255,0.8)")
+                .style("opacity", d => d.unlocked ? 1.0 : 0.6);
                 
             // Node Interactions
             node.on("mouseover", (event, d) => {
@@ -394,16 +427,25 @@ function initSkillMapGraph() {
                 current.select("circle")
                     .transition().duration(200)
                     .attr("r", 14)
-                    .attr("stroke", currentTheme === 'dark' ? "#FFF" : "var(--primary)");
+                    .attr("stroke", d => d.completed ? "#10b981" : (currentTheme === 'dark' ? "#FFF" : "var(--primary)"));
                     
                 current.select("text")
                     .transition().duration(200)
                     .style("font-size", "12px");
                     
                 tooltip.transition().duration(200).style("opacity", 0.95);
+                
+                const statusStr = d.completed 
+                    ? `<span style="color:#10b981; font-weight:700;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:3px; margin-bottom:2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>Completed</span>`
+                    : (d.unlocked 
+                        ? `<span style="color:var(--secondary); font-weight:700;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:3px; margin-bottom:2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>Unlocked</span>`
+                        : `<span style="color:#ef4444; font-weight:700;"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:3px; margin-bottom:2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Locked (Requires higher level)</span>`);
+                        
                 tooltip.html(`
                     <strong style="color:var(--secondary); font-size:0.9rem;">${d.title}</strong><br/>
                     <span style="font-size:0.8rem; color:var(--text-muted);">Group: ${d.group}</span><br/>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">Difficulty: ${d.difficulty}</span><br/>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">Status: ${statusStr}</span><br/>
                     <span style="font-size:0.8rem; color:#FBBF24;"><i data-lucide="star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;"></i> ${d.stars.toFixed(1)} AI Score</span>
                 `)
                 .style("left", (event.pageX + 15) + "px")
@@ -414,11 +456,11 @@ function initSkillMapGraph() {
                 current.select("circle")
                     .transition().duration(200)
                     .attr("r", 10)
-                    .attr("stroke", currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)");
+                    .attr("stroke", d => d.completed ? "#047857" : (currentTheme === 'dark' ? "rgba(255,255,255,0.2)" : "rgba(15,76,117,0.15)"));
                     
-                current.select("text")
+                current.selectAll("text")
                     .transition().duration(200)
-                    .style("font-size", "10px");
+                    .style("font-size", (n, idx) => idx === 0 ? "8px" : "10px");
                     
                 tooltip.transition().duration(200).style("opacity", 0);
             })
