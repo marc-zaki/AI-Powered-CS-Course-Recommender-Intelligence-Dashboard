@@ -125,7 +125,7 @@ async def api_interview_search(request: Request, q: str = "", difficulty: str = 
         query_vector = ai_core.vectorizer.transform([query.lower()])
         search_df = ai_core.df.copy()
         search_df['match_score'] = cosine_similarity(query_vector, ai_core.tfidf_matrix).flatten()
-        recs = search_df[search_df['match_score'] > 0.05].sort_values(by=['stars', 'match_score'], ascending=[False, False])
+        recs = search_df[search_df['match_score'] > 0.05].sort_values(by=['match_score', 'stars'], ascending=[False, False])
         
         for c in recs.head(3).to_dict('records'):
             related_courses.append({
@@ -435,6 +435,38 @@ async def api_interview_behavioral(request: Request):
 
     if not topic:
         return JSONResponse({"error": "Missing topic"}, status_code=400)
+
+    # --- DEMO MODE INTERCEPTION ---
+    if topic.lower() == "demo":
+        return JSONResponse({
+            "questions": [
+                {
+                    "question": "Describe a time you had to optimize a slow-performing system or piece of code.",
+                    "star_tips": "Situation: What was the system? Task: What was the performance goal? Action: What profiling and optimization did you do? Result: What was the latency/throughput improvement?"
+                },
+                {
+                    "question": "Tell me about a time you had to make a difficult technical decision with limited information.",
+                    "star_tips": "Situation: What was the context? Task: What was the decision? Action: How did you evaluate the trade-offs? Result: What was the outcome?"
+                },
+                {
+                    "question": "Describe a situation where you disagreed with a senior engineer or manager.",
+                    "star_tips": "Situation: What was the disagreement? Task: What was your goal? Action: How did you communicate and find a compromise? Result: What was the final resolution?"
+                },
+                {
+                    "question": "Tell me about a time you had to mentor or assist a junior team member.",
+                    "star_tips": "Situation: Who needed help? Task: What was their struggle? Action: How did you guide them without doing the work for them? Result: How did they improve?"
+                },
+                {
+                    "question": "Describe a time you failed to meet a deadline.",
+                    "star_tips": "Situation: What was the project? Task: Why did you fall behind? Action: How did you communicate the delay and recover? Result: What did you learn?"
+                },
+                {
+                    "question": "Tell me about a time you took initiative to improve a process without being asked.",
+                    "star_tips": "Situation: What was inefficient? Task: What did you decide to do? Action: How did you implement the improvement? Result: What was the impact on the team?"
+                }
+            ]
+        })
+    # ------------------------------
 
     system_prompt = (
         "You are an expert technical recruiter. Generate exactly 6 behavioral interview questions "

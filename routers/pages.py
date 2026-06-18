@@ -73,7 +73,22 @@ async def index(request: Request):
             query = " ".join([t for t in query_terms if t]).strip()
             
             if len(query) > 5:
-                query_vector = ai_core.vectorizer.transform([query.lower()])
+                enhanced_query = query
+                try:
+                    import nltk
+                    words = nltk.word_tokenize(query)
+                    tags = nltk.pos_tag(words)
+                    boosted_terms = []
+                    for word, tag in tags:
+                        if tag == 'NNP':
+                            boosted_terms.extend([word] * 10)
+                        elif tag in ['NN', 'NNS', 'JJ']:
+                            boosted_terms.extend([word] * 3)
+                    enhanced_query = query + " " + " ".join(boosted_terms)
+                except Exception:
+                    pass
+
+                query_vector = ai_core.vectorizer.transform([enhanced_query.lower()])
                 search_df = ai_core.df.copy()
                 search_df['match_score'] = cosine_similarity(query_vector, ai_core.tfidf_matrix).flatten()
                 search_df = search_df[~search_df['url'].isin(taken_courses)]
@@ -130,7 +145,22 @@ async def search(
 
     def run_course_search(q_str):
         try:
-            query_vector = ai_core.vectorizer.transform([q_str.lower()])
+            enhanced_q = q_str
+            try:
+                import nltk
+                words = nltk.word_tokenize(q_str)
+                tags = nltk.pos_tag(words)
+                boosted_terms = []
+                for word, tag in tags:
+                    if tag == 'NNP':
+                        boosted_terms.extend([word] * 10)
+                    elif tag in ['NN', 'NNS', 'JJ']:
+                        boosted_terms.extend([word] * 3)
+                enhanced_q = q_str + " " + " ".join(boosted_terms)
+            except Exception:
+                pass
+
+            query_vector = ai_core.vectorizer.transform([enhanced_q.lower()])
             search_df = ai_core.df.copy()
             search_df['match_score'] = cosine_similarity(query_vector, ai_core.tfidf_matrix).flatten()
             
@@ -144,10 +174,10 @@ async def search(
                 except ValueError:
                     pass
 
-            recs = search_df[search_df['match_score'] > 0.15].sort_values(by=['stars', 'match_score'], ascending=[False, False])
+            recs = search_df[search_df['match_score'] > 0.15].sort_values(by=['match_score', 'stars'], ascending=[False, False])
             
             if recs.empty:
-                recs = search_df[search_df['match_score'] > 0.02].sort_values(by=['stars', 'match_score'], ascending=[False, False])
+                recs = search_df[search_df['match_score'] > 0.02].sort_values(by=['match_score', 'stars'], ascending=[False, False])
                 
             return format_courses(recs.to_dict('records'))
         except Exception as e:
