@@ -19,6 +19,7 @@
             <button class="btn btn-outline" id="tab-flashcard" onclick="switchInterviewTab('flashcard')" style="padding: 0.5rem 1rem;"><i data-lucide="credit-card" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>Flashcard Mode</button>
             <button class="btn btn-outline" id="tab-behavioral" onclick="switchInterviewTab('behavioral')" style="padding: 0.5rem 1rem;"><i data-lucide="brain" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>Behavioral Mode</button>
             <button class="btn btn-outline" id="tab-progress" onclick="switchInterviewTab('progress')" style="padding: 0.5rem 1rem;"><i data-lucide="bar-chart-2" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>My Progress</button>
+            <button class="btn btn-outline" id="tab-cheatsheet" onclick="switchInterviewTab('cheatsheet')" style="padding: 0.5rem 1rem;"><i data-lucide="file-text" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i>FAANG Cheat Sheets</button>
         </div>
         
         <!-- Search Mode Form -->
@@ -78,6 +79,17 @@
             </button>
         </form>
 
+        <!-- FAANG Cheat Sheet Form -->
+        <form id="interview-cheatsheet-form" onsubmit="return false;" style="display: none; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+            <div style="flex: 1; min-width: 250px;">
+                <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">Study Topic</label>
+                <input type="text" id="cheatsheet-topic" class="search-input" placeholder="Topic (e.g. 'Dynamic Programming', 'System Design for TinyURL', 'Graphs')" required style="width: 100%;">
+            </div>
+            <button type="button" onclick="generateCheatSheet()" class="btn btn-primary" id="cheatsheet-generate-btn" style="padding: 0.75rem 1.5rem; font-weight: 700; color: white !important;">
+                <i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate Cheat Sheet
+            </button>
+        </form>
+
     </div>
 
     <!-- Loader -->
@@ -98,6 +110,57 @@
         <h2 style="margin-bottom: 2rem; color: var(--text-main);">Your Interview Proficiency</h2>
         <div style="width: 100%; max-width: 600px; background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
             <canvas id="radarChart"></canvas>
+        </div>
+    </div>
+
+    <!-- FAANG Prep Cheat Sheet UI -->
+    <div id="cheatsheet-container" style="display: none; width: 100%; margin: 2rem 0; flex-direction: column; gap: 1.5rem;">
+        <div class="glass-panel" style="padding: 2.5rem; border-radius: 16px; border: 1px solid var(--border-glass); background: var(--bg-card); box-shadow: var(--shadow-glass);">
+            <h2 id="cheatsheet-title" style="color: var(--primary); font-size: 1.8rem; margin-top: 0; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.03em;">Topic Title</h2>
+            
+            <!-- Concepts -->
+            <div style="margin-bottom: 1.5rem;">
+                <h4 style="color: var(--secondary); margin-bottom: 0.5rem; font-weight: 700;"><i data-lucide="info" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Core Concepts</h4>
+                <p id="cheatsheet-concepts" style="line-height: 1.6; color: var(--text-main); font-size: 0.95rem; margin: 0;"></p>
+            </div>
+
+            <!-- Complexity and Pitfalls (Grid) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                <!-- Complexity -->
+                <div>
+                    <h4 style="color: var(--secondary); margin-bottom: 0.5rem; font-weight: 700;"><i data-lucide="clock" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Complexity Reference</h4>
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-glass);">
+                                <th style="padding: 0.5rem; color: var(--text-muted); font-weight: 600;">Operation</th>
+                                <th style="padding: 0.5rem; color: var(--text-muted); font-weight: 600;">Time (Avg)</th>
+                                <th style="padding: 0.5rem; color: var(--text-muted); font-weight: 600;">Time (Worst)</th>
+                                <th style="padding: 0.5rem; color: var(--text-muted); font-weight: 600;">Space</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cheatsheet-complexity-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pitfalls -->
+                <div>
+                    <h4 style="color: var(--secondary); margin-bottom: 0.5rem; font-weight: 700;"><i data-lucide="alert-triangle" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Common Pitfalls & Gotchas</h4>
+                    <ul id="cheatsheet-pitfalls-list" style="margin: 0; padding-left: 1.25rem; line-height: 1.5; color: var(--text-main); font-size: 0.9rem; list-style-type: disc;">
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Code Template -->
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <h4 style="color: var(--secondary); margin: 0; font-weight: 700;"><i data-lucide="code" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Reference Code Template</h4>
+                    <button onclick="copyCheatSheetCode()" class="btn btn-outline" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
+                        <i data-lucide="copy" style="width: 12px; height: 12px;"></i> Copy Code
+                    </button>
+                </div>
+                <div id="cheatsheet-code-editor" style="height: 250px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-glass); font-family: monospace;"></div>
+            </div>
         </div>
     </div>
 
@@ -203,8 +266,48 @@
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">/ 10</div>
                 </div>
             </div>
-            <div style="padding: 0 1.5rem 1rem; border-top: 1px solid var(--border-glass);">
-                <p id="feedback-text" style="margin: 1rem 0 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></p>
+            
+            <div style="padding: 1.5rem; border-top: 1px solid var(--border-glass); display: flex; flex-direction: column; gap: 1.5rem;">
+                <p id="feedback-text" style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-main); display: none;"></p>
+                
+                <!-- Panelist Grid -->
+                <div id="technical-panel-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                    <!-- Tech Lead Card -->
+                    <div class="glass-panel" style="padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-glass); background: rgba(59, 130, 246, 0.03);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.8rem;">TL</div>
+                                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">Tech Lead</span>
+                            </div>
+                            <span id="tech-lead-score-badge" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 0.15rem 0.45rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">-</span>
+                        </div>
+                        <p id="tech-lead-feedback-text" style="margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-muted);"></p>
+                    </div>
+
+                    <!-- Systems Architect Card -->
+                    <div class="glass-panel" style="padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-glass); background: rgba(139, 92, 246, 0.03);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: #8b5cf6; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.8rem;">SA</div>
+                                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">Systems Architect</span>
+                            </div>
+                            <span id="systems_architect_score-badge" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 0.15rem 0.45rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">-</span>
+                        </div>
+                        <p id="systems-architect-feedback-text" style="margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-muted);"></p>
+                    </div>
+
+                    <!-- HR Director Card -->
+                    <div class="glass-panel" style="padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-glass); background: rgba(244, 114, 182, 0.03);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: #f472b6; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.8rem;">HR</div>
+                                <span style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);">HR Director</span>
+                            </div>
+                            <span id="hr-score-badge" style="background: rgba(244, 114, 182, 0.15); color: #f472b6; padding: 0.15rem 0.45rem; border-radius: 20px; font-weight: 700; font-size: 0.8rem;">-</span>
+                        </div>
+                        <p id="hr-feedback-text" style="margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-muted);"></p>
+                    </div>
+                </div>
             </div>
             <!-- Follow-up Question -->
             <div id="followup-section" style="display: none; padding: 1rem 1.5rem; background: rgba(139, 92, 246, 0.08); border-top: 1px solid rgba(139, 92, 246, 0.2);">
@@ -275,6 +378,19 @@
                 <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">STAR Scorecard</h3>
             </div>
             <div style="padding: 1.25rem 1.5rem;">
+                <!-- Pacing Analyzer Banner -->
+                <div id="pacing-banner" style="display: none; margin-bottom: 1.25rem; padding: 1rem; border-radius: 10px; border-left: 4px solid var(--secondary); background: rgba(139, 92, 246, 0.05); align-items: flex-start; gap: 0.75rem;">
+                    <i data-lucide="clock" style="width: 20px; height: 20px; color: var(--secondary); flex-shrink: 0; margin-top: 2px;"></i>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">Speech Pacing Analyzer</div>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.35rem; font-size: 0.8rem; color: var(--text-muted);">
+                            <span>WPM: <strong id="pacing-wpm" style="color: var(--secondary);">-</strong></span>
+                            <span>Filler Words: <strong id="pacing-filler-count" style="color: var(--secondary);">-</strong></span>
+                        </div>
+                        <p id="pacing-warning" style="margin: 0.4rem 0 0; font-size: 0.8rem; line-height: 1.4; color: var(--text-main); font-style: italic;"></p>
+                    </div>
+                </div>
+
                 <div class="star-row" data-key="situation" data-label="S — Situation" data-color="#6366f1"></div>
                 <div class="star-row" data-key="task" data-label="T — Task" data-color="#8b5cf6"></div>
                 <div class="star-row" data-key="action" data-label="A — Action" data-color="#06b6d4"></div>
@@ -284,6 +400,38 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;"><i data-lucide="sparkles" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Overall Feedback</div>
                     <p id="star-overall-text" style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></p>
                 </div>
+
+                <!-- Panelist Grid -->
+                <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-glass); padding-top: 1.25rem;">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.75rem;"><i data-lucide="users" style="width: 14px; height: 14px; display: inline-block; vertical-align: text-bottom; margin-right: 4px;"></i> Panel Reviews</div>
+                    <div id="behavioral-panel-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem;">
+                        <!-- Tech Lead -->
+                        <div class="glass-panel" style="padding: 1rem; border-radius: 10px; border: 1px solid var(--border-glass); background: rgba(59, 130, 246, 0.02);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">TL — Tech Lead</span>
+                                <span id="star-tech-lead-score" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; padding: 0.1rem 0.35rem; border-radius: 12px; font-weight: 700; font-size: 0.75rem;">-</span>
+                            </div>
+                            <p id="star-tech-lead-feedback" style="margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--text-muted);"></p>
+                        </div>
+                        <!-- Systems Architect -->
+                        <div class="glass-panel" style="padding: 1rem; border-radius: 10px; border: 1px solid var(--border-glass); background: rgba(139, 92, 246, 0.02);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">SA — Architect</span>
+                                <span id="star-systems-architect-score" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 0.1rem 0.35rem; border-radius: 12px; font-weight: 700; font-size: 0.75rem;">-</span>
+                            </div>
+                            <p id="star-systems-architect-feedback" style="margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--text-muted);"></p>
+                        </div>
+                        <!-- HR Director -->
+                        <div class="glass-panel" style="padding: 1rem; border-radius: 10px; border: 1px solid var(--border-glass); background: rgba(244, 114, 182, 0.02);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">HR — Director</span>
+                                <span id="star-hr-score" style="background: rgba(244, 114, 182, 0.15); color: #f472b6; padding: 0.1rem 0.35rem; border-radius: 12px; font-weight: 700; font-size: 0.75rem;">-</span>
+                            </div>
+                            <p id="star-hr-feedback" style="margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--text-muted);"></p>
+                        </div>
+                    </div>
+                </div>
+
                 <button onclick="nextBehavioralCard()" class="btn btn-primary" style="width: 100%; margin-top: 1.25rem; font-weight: 700;">Next Question →</button>
             </div>
         </div>
@@ -323,6 +471,8 @@
     let audioChunks = [];
     let activeMicTarget = null;
     let activeMicBtnId = null;
+    let recordingStartTime = 0;
+    let totalRecordingDuration = 0;
 
     // ── Init ─────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
@@ -367,6 +517,8 @@
         if (mediaRecorder && mediaRecorder.state === "recording") {
             // Stop recording
             mediaRecorder.stop();
+            const duration = (Date.now() - recordingStartTime) / 1000;
+            totalRecordingDuration += duration;
             btn.classList.remove('recording-pulse');
             textSpan.textContent = "Transcribing...";
             return;
@@ -409,6 +561,7 @@
             };
 
             mediaRecorder.start(250);
+            recordingStartTime = Date.now();
             btn.classList.add('recording-pulse');
             textSpan.textContent = "Stop";
 
@@ -471,7 +624,7 @@
 
     // ── Tab Switching ─────────────────────────────────────────────────
     function switchInterviewTab(tab) {
-        ['search', 'flashcard', 'behavioral', 'progress'].forEach(t => {
+        ['search', 'flashcard', 'behavioral', 'progress', 'cheatsheet'].forEach(t => {
             const btn = document.getElementById(`tab-${t}`);
             if (btn) btn.className = t === tab ? 'btn btn-primary' : 'btn btn-outline';
             const form = document.getElementById(`interview-${t}-form`);
@@ -481,6 +634,7 @@
         document.getElementById('behavioral-container').style.display = 'none';
         document.getElementById('interview-results-container').style.display = 'none';
         document.getElementById('progress-container').style.display = 'none';
+        document.getElementById('cheatsheet-container').style.display = 'none';
         hideError();
 
         if (tab === 'progress') {
@@ -642,7 +796,16 @@
             document.getElementById('feedback-verdict-label').textContent = isComplete ? 'Answer Complete!' : 'Good start — try the follow-up';
             document.getElementById('feedback-score').textContent = score;
             document.getElementById('feedback-score').style.color = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
-            document.getElementById('feedback-text').innerHTML = data.feedback.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Render panelist feedback cards
+            document.getElementById('tech-lead-score-badge').textContent = `${data.tech_lead_score || '-'}/10`;
+            document.getElementById('tech-lead-feedback-text').innerHTML = formatMarkdown(data.tech_lead_feedback || '');
+            
+            document.getElementById('systems_architect_score-badge').textContent = `${data.systems_architect_score || '-'}/10`;
+            document.getElementById('systems-architect-feedback-text').innerHTML = formatMarkdown(data.systems_architect_feedback || '');
+            
+            document.getElementById('hr-score-badge').textContent = `${data.hr_score || '-'}/10`;
+            document.getElementById('hr-feedback-text').innerHTML = formatMarkdown(data.hr_feedback || '');
 
             conversationHistory.push({ role: 'user', content: userAnswer });
             conversationHistory.push({ role: 'assistant', content: JSON.stringify(data) });
@@ -681,7 +844,16 @@
             document.getElementById('feedback-verdict-label').textContent = isComplete ? 'Answer Complete!' : 'Keep going...';
             document.getElementById('feedback-score').textContent = score;
             document.getElementById('feedback-score').style.color = score >= 8 ? '#10b981' : score >= 5 ? '#f59e0b' : '#ef4444';
-            document.getElementById('feedback-text').innerHTML = data.feedback.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Render panelist feedback cards
+            document.getElementById('tech-lead-score-badge').textContent = `${data.tech_lead_score || '-'}/10`;
+            document.getElementById('tech-lead-feedback-text').innerHTML = formatMarkdown(data.tech_lead_feedback || '');
+            
+            document.getElementById('systems_architect_score-badge').textContent = `${data.systems_architect_score || '-'}/10`;
+            document.getElementById('systems-architect-feedback-text').innerHTML = formatMarkdown(data.systems_architect_feedback || '');
+            
+            document.getElementById('hr-score-badge').textContent = `${data.hr_score || '-'}/10`;
+            document.getElementById('hr-feedback-text').innerHTML = formatMarkdown(data.hr_feedback || '');
 
             conversationHistory.push({ role: 'user', content: userAnswer });
             conversationHistory.push({ role: 'assistant', content: JSON.stringify(data) });
@@ -765,6 +937,8 @@
         document.getElementById('behavioral-star-tips').textContent = q.star_tips || '';
         document.getElementById('behavioral-answer-input').value = '';
         document.getElementById('star-scorecard').style.display = 'none';
+        document.getElementById('pacing-banner').style.display = 'none';
+        totalRecordingDuration = 0;
         document.getElementById('star-submit-btn').disabled = false;
         document.getElementById('star-submit-btn').innerHTML = '<i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Evaluate My STAR Answer';
         
@@ -782,7 +956,7 @@
             const res = await fetch('/api/interview/star_analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question, user_answer: userAnswer })
+                body: JSON.stringify({ question, user_answer: userAnswer, duration_seconds: totalRecordingDuration })
             });
             const data = await res.json();
             if (data.error) throw new Error(data.error);
@@ -795,6 +969,34 @@
                 document.getElementById(`star-comment-${key}`).textContent = comp.comment || '';
             });
             document.getElementById('star-overall-text').textContent = data.overall || '';
+            
+            // Display pacing metrics if available
+            const pacing = data.pacing;
+            const pacingBanner = document.getElementById('pacing-banner');
+            if (pacing && pacing.wpm > 0) {
+                document.getElementById('pacing-wpm').textContent = `${pacing.wpm} WPM`;
+                let fillerText = `${pacing.total_fillers}`;
+                if (pacing.total_fillers > 0) {
+                    const breakdown = Object.entries(pacing.filler_counts).map(([word, count]) => `"${word}": ${count}`).join(', ');
+                    fillerText += ` (${breakdown})`;
+                }
+                document.getElementById('pacing-filler-count').textContent = fillerText;
+                document.getElementById('pacing-warning').textContent = pacing.warning || 'Pacing and speech clarity are within normal parameters.';
+                pacingBanner.style.display = 'flex';
+            } else {
+                pacingBanner.style.display = 'none';
+            }
+
+            // Render panel reviews
+            document.getElementById('star-tech-lead-score').textContent = `${data.tech_lead_score || '-'}/10`;
+            document.getElementById('star-tech-lead-feedback').innerHTML = formatMarkdown(data.tech_lead_feedback || '');
+
+            document.getElementById('star-systems-architect-score').textContent = `${data.systems_architect_score || '-'}/10`;
+            document.getElementById('star-systems-architect-feedback').innerHTML = formatMarkdown(data.systems_architect_feedback || '');
+
+            document.getElementById('star-hr-score').textContent = `${data.hr_score || '-'}/10`;
+            document.getElementById('star-hr-feedback').innerHTML = formatMarkdown(data.hr_feedback || '');
+
             document.getElementById('star-scorecard').style.display = 'block';
             document.getElementById('star-scorecard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             
@@ -805,6 +1007,99 @@
             btn.innerHTML = '<i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Evaluate My STAR Answer';
             if (window.lucide) lucide.createIcons();
         }
+    }
+
+    let cheatsheetEditor = null;
+
+    async function generateCheatSheet() {
+        const topic = document.getElementById('cheatsheet-topic').value.trim();
+        if (!topic) { alert("Please enter a study topic."); return; }
+        const btn = document.getElementById('cheatsheet-generate-btn');
+        btn.disabled = true; btn.textContent = 'Generating...';
+        setLoader(true, ['Researching topic details...', 'Synthesizing complexity guidelines...', 'Generating code template...']);
+        hideError();
+
+        try {
+            const res = await fetch('/api/cheatsheet/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topic })
+            });
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            // Populate text
+            document.getElementById('cheatsheet-title').textContent = data.topic;
+            document.getElementById('cheatsheet-concepts').textContent = data.concepts;
+
+            // Complexity Table
+            const body = document.getElementById('cheatsheet-complexity-body');
+            body.innerHTML = '';
+            if (data.complexity_table && data.complexity_table.length > 0) {
+                data.complexity_table.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid var(--border-glass)';
+                    tr.innerHTML = `
+                        <td style="padding: 0.5rem; color: var(--text-main); font-weight: 600;">${escapeHtml(row.operation)}</td>
+                        <td style="padding: 0.5rem; color: var(--secondary); font-family: monospace;">${escapeHtml(row.time_avg)}</td>
+                        <td style="padding: 0.5rem; color: var(--primary); font-family: monospace;">${escapeHtml(row.time_worst)}</td>
+                        <td style="padding: 0.5rem; color: var(--text-muted); font-family: monospace;">${escapeHtml(row.space)}</td>
+                    `;
+                    body.appendChild(tr);
+                });
+            } else {
+                body.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No complexity reference data available.</td></tr>';
+            }
+
+            // Pitfalls
+            const list = document.getElementById('cheatsheet-pitfalls-list');
+            list.innerHTML = '';
+            if (data.pitfalls && data.pitfalls.length > 0) {
+                data.pitfalls.forEach(p => {
+                    const li = document.createElement('li');
+                    li.style.marginBottom = '0.5rem';
+                    li.innerHTML = escapeHtml(p);
+                    list.appendChild(li);
+                });
+            } else {
+                list.innerHTML = '<li>No pitfalls recorded.</li>';
+            }
+
+            // Reference Code Editor
+            if (!cheatsheetEditor) {
+                cheatsheetEditor = ace.edit("cheatsheet-code-editor");
+                cheatsheetEditor.setTheme("ace/theme/tomorrow_night_eighties");
+                cheatsheetEditor.session.setMode("ace/mode/python");
+                cheatsheetEditor.setReadOnly(true);
+                cheatsheetEditor.setOptions({
+                    fontSize: "13px",
+                    showPrintMargin: false,
+                    wrap: true
+                });
+            }
+            cheatsheetEditor.setValue(data.code_snippet || '# No code reference provided.');
+            cheatsheetEditor.clearSelection();
+
+            document.getElementById('cheatsheet-container').style.display = 'flex';
+            if (window.lucide) lucide.createIcons();
+        } catch (err) {
+            showError('Cheat sheet generation failed: ' + err.message);
+        } finally {
+            setLoader(false);
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="zap" style="width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>Generate Cheat Sheet';
+            if (window.lucide) lucide.createIcons();
+        }
+    }
+
+    window.copyCheatSheetCode = function() {
+        if (!cheatsheetEditor) return;
+        const code = cheatsheetEditor.getValue();
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Code template copied to clipboard!');
+        }).catch(err => {
+            alert('Failed to copy code: ' + err);
+        });
     }
 
     function nextBehavioralCard() { currentBehavioralIndex++; window.speechSynthesis.cancel(); showCurrentBehavioralCard(); }

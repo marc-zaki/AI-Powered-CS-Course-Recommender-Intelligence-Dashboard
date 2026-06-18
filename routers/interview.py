@@ -3,6 +3,7 @@ import json
 import hashlib
 import time
 import re
+import asyncio
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Request, Form, UploadFile, File
@@ -206,14 +207,25 @@ async def api_interview_followup(request: Request):
         return JSONResponse({"error": "Missing question or user_answer"}, status_code=400)
 
     system_prompt = (
-        "You are a rigorous technical interviewer. Evaluate the candidate's answer (which may be text or code) to a technical question. "
-        "If the candidate provides code, you MUST evaluate its Time Complexity (Big-O), Space Complexity, and identify any missed edge cases. "
+        "You are a rigorous technical interview panel consisting of three members:\n"
+        "1. Tech Lead: Focuses on code quality, readability, modularity, and testing/edge cases.\n"
+        "2. Systems Architect: Focuses strictly on time complexity (Big-O), space complexity, scalability, and design trade-offs.\n"
+        "3. HR Director: Evaluates communication clarity, professional tone, and soft skills/problem-solving attitude.\n"
+        "\n"
+        "Evaluate the candidate's answer (which may be text or code) to a technical question. "
+        "If code is provided, the Systems Architect MUST evaluate its Big-O time and space complexity.\n"
+        "\n"
         "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
         "{\n"
         "  \"verdict\": \"complete\" | \"incomplete\",\n"
-        "  \"feedback\": \"<specific feedback about what is correct or missing. Include Big-O if code is provided.>\",\n"
-        "  \"followup\": \"<a single probing follow-up question, or null if verdict is complete>\",\n"
-        "  \"score\": <integer 1-10>\n"
+        "  \"tech_lead_score\": <integer 1-10>,\n"
+        "  \"tech_lead_feedback\": \"<feedback from Tech Lead. Highlight edge cases or code hygiene.>\",\n"
+        "  \"systems_architect_score\": <integer 1-10>,\n"
+        "  \"systems_architect_feedback\": \"<feedback from Systems Architect. Include Big-O complexity analysis.>\",\n"
+        "  \"hr_score\": <integer 1-10>,\n"
+        "  \"hr_feedback\": \"<feedback from HR Director on communication and structure.>\",\n"
+        "  \"score\": <integer 1-10, representing overall average or panel alignment>,\n"
+        "  \"followup\": \"<a single probing follow-up question asked by one of the panelists (specify who, e.g., 'Architect: ...'), or null if verdict is complete>\"\n"
         "}\n"
     )
 
@@ -235,7 +247,7 @@ async def api_interview_followup(request: Request):
                 "model": "meta-llama/llama-4-scout",
                 "messages": messages,
                 "temperature": 0.3,
-                "max_tokens": 400,
+                "max_tokens": 800,
                 "response_format": {"type": "json_object"}
             }
             async with httpx.AsyncClient() as client:
@@ -257,9 +269,18 @@ async def api_interview_followup(request: Request):
         return JSONResponse({"error": "AI model unavailable. Please try again."}, status_code=503)
 
     result.setdefault("verdict", "incomplete")
-    result.setdefault("feedback", "")
-    result.setdefault("followup", None)
+    result.setdefault("tech_lead_score", 5)
+    result.setdefault("tech_lead_feedback", "Not evaluated.")
+    result.setdefault("systems_architect_score", 5)
+    result.setdefault("systems_architect_feedback", "Not evaluated.")
+    result.setdefault("hr_score", 5)
+    result.setdefault("hr_feedback", "Not evaluated.")
     result.setdefault("score", 5)
+    result.setdefault("followup", None)
+
+    # Backward compatibility with old schema
+    if "feedback" in result and (not result.get("tech_lead_feedback") or result.get("tech_lead_feedback") == "Not evaluated."):
+        result["tech_lead_feedback"] = result["feedback"]
 
     if result.get("verdict") == "complete":
         user_id = request.session.get('user_id')
@@ -472,19 +493,71 @@ async def api_interview_star_analyze(request: Request):
         
     question = data.get('question', '').strip()
     user_answer = data.get('user_answer', '').strip()
+    duration_seconds = float(data.get('duration_seconds', 0))
 
     if not question or not user_answer:
         return JSONResponse({"error": "Missing question or user_answer"}, status_code=400)
 
+    # Count filler words
+    filler_words = ["um", "like", "uh", "so", "basically", "actually"]
+    filler_counts = {}
+    total_fillers = 0
+    words = re.findall(r'\b[a-zA-Z]+\b', user_answer.lower())
+    for f in filler_words:
+        pattern = r'\b' + re.escape(f) + r'\b'
+        matches = re.findall(pattern, user_answer.lower())
+        count = len(matches)
+        if count > 0:
+            filler_counts[f] = count
+            total_fillers += count
+
+    wpm = 0
+    warning = ""
+    if duration_seconds > 0 and len(words) > 0:
+        wpm = round(len(words) / (duration_seconds / 60))
+        # Pacing warning rules
+        if wpm > 160:
+            warning = f"Your pacing is quite fast ({wpm} WPM). Try to slow down slightly to ensure clarity."
+        elif wpm < 90:
+            warning = f"Your pacing is a bit slow ({wpm} WPM). Try to speak a bit more dynamically and fluidly."
+        
+        filler_density = total_fillers / len(words)
+        if filler_density > 0.05:
+            if warning:
+                warning += " Additionally, "
+            else:
+                warning = ""
+            warning += f"High filler word usage detected ({total_fillers} filler words, {filler_density:.1%} of your speech). Try to pause silently rather than using filler words like 'um' or 'like'."
+    else:
+        warning = "No speech duration recorded. Use voice recorder to analyze pacing."
+
+    pacing_data = {
+        "wpm": wpm,
+        "filler_counts": filler_counts,
+        "total_fillers": total_fillers,
+        "warning": warning
+    }
+
     system_prompt = (
-        "You are an expert behavioral interview coach who strictly evaluates answers using the STAR method. "
+        "You are an expert behavioral interview coach who strictly evaluates answers using the STAR method, and you represent an interview panel with three members:\n"
+        "1. Tech Lead: Evaluates the technical depth, execution details, and engineering actions described.\n"
+        "2. Systems Architect: Evaluates the system-level scope, complexity, and structural resolution of the problem.\n"
+        "3. HR Director: Evaluates soft skills, teamwork, handling conflict, communication clarity, and cultural alignment.\n"
+        "\n"
+        "Evaluate the candidate's behavioral answer to the question. "
         "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
         "{\n"
-        "  \"situation\": {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
-        "  \"task\":      {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
-        "  \"action\":    {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
-        "  \"result\":    {\"score\": <1-10>, \"comment\": \"<feedback>\"},\n"
-        "  \"overall\":   \"<2-3 sentence holistic summary with the most important improvement tip>\"\n"
+        "  \"situation\": {\"score\": <1-10>, \"comment\": \"<feedback on Situation>\"},\n"
+        "  \"task\":      {\"score\": <1-10>, \"comment\": \"<feedback on Task>\"},\n"
+        "  \"action\":    {\"score\": <1-10>, \"comment\": \"<feedback on Action>\"},\n"
+        "  \"result\":    {\"score\": <1-10>, \"comment\": \"<feedback on Result>\"},\n"
+        "  \"overall\":   \"<2-3 sentence holistic summary with the most important improvement tip>\",\n"
+        "  \"tech_lead_score\": <integer 1-10>,\n"
+        "  \"tech_lead_feedback\": \"<feedback from Tech Lead on technical actions and execution>\",\n"
+        "  \"systems_architect_score\": <integer 1-10>,\n"
+        "  \"systems_architect_feedback\": \"<feedback from Systems Architect on systemic scope and complexity>\",\n"
+        "  \"hr_score\": <integer 1-10>,\n"
+        "  \"hr_feedback\": \"<feedback from HR Director on soft skills, communication, and culture fit>\"\n"
         "}\n"
     )
 
@@ -502,11 +575,11 @@ async def api_interview_star_analyze(request: Request):
                     {"role": "user", "content": user_prompt}
                 ],
                 "temperature": 0.2,
-                "max_tokens": 600,
+                "max_tokens": 1000,
                 "response_format": {"type": "json_object"}
             }
             async with httpx.AsyncClient() as client:
-                res = await client.post(groq_url, json=payload, headers=headers, timeout=15.0)
+                res = await client.post(groq_url, json=payload, headers=headers, timeout=30.0)
             if res.status_code == 200:
                 result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
         except Exception:
@@ -526,6 +599,14 @@ async def api_interview_star_analyze(request: Request):
     for component in ["situation", "task", "action", "result"]:
         result.setdefault(component, {"score": 5, "comment": "No data"})
     result.setdefault("overall", "")
+    result.setdefault("tech_lead_score", 5)
+    result.setdefault("tech_lead_feedback", "Not evaluated.")
+    result.setdefault("systems_architect_score", 5)
+    result.setdefault("systems_architect_feedback", "Not evaluated.")
+    result.setdefault("hr_score", 5)
+    result.setdefault("hr_feedback", "Not evaluated.")
+
+    result["pacing"] = pacing_data
 
     try:
         avg_score = sum([result[c].get("score", 5) for c in ["situation", "task", "action", "result"]]) / 4.0
@@ -775,3 +856,101 @@ async def submit_quiz(request: Request):
         "promoted": promoted,
         "new_level": new_level
     })
+
+@router.post("/api/cheatsheet/generate")
+async def api_cheatsheet_generate(request: Request):
+    try:
+        data = await request.json()
+    except:
+        data = {}
+        
+    topic = data.get('topic', '').strip()
+    if not topic:
+        return JSONResponse({"error": "Missing topic"}, status_code=400)
+
+    system_prompt = (
+        "You are an elite software engineering instructor preparing candidates for FAANG interviews. "
+        "Synthesize a highly dense, expert-level study cheatsheet for the requested topic. "
+        "Respond ONLY with a valid JSON object — no markdown, no code fences. Use this exact schema:\n"
+        "{\n"
+        "  \"topic\": \"<the topic requested>\",\n"
+        "  \"concepts\": \"<high-level summary of core concepts, 3-4 sentences>\",\n"
+        "  \"complexity_table\": [\n"
+        "    {\n"
+        "      \"operation\": \"<e.g. Access, Search, Insertion, Deletion, or typical operations>\",\n"
+        "      \"time_avg\": \"<e.g. O(1), O(log N), O(N)>\",\n"
+        "      \"time_worst\": \"<e.g. O(1), O(log N), O(N)>\",\n"
+        "      \"space\": \"<e.g. O(1), O(N)>\"\n"
+        "    }\n"
+        "  ],\n"
+        "  \"pitfalls\": [\n"
+        "    \"<pitfall or common interviewer trap 1>\",\n"
+        "    \"<pitfall or common interviewer trap 2>\",\n"
+        "    \"<pitfall or common interviewer trap 3>\"\n"
+        "  ],\n"
+        "  \"code_snippet\": \"<a complete, high-quality reference implementation or code template in Python showing standard usage or a core algorithm (e.g. BFS template, Heap operation)>\"\n"
+        "}"
+    )
+
+    cache_key = f"cheatsheet_{hashlib.md5(topic.lower().encode('utf-8')).hexdigest()}"
+    db = request.app.state.mongo_db
+    cached_result = None
+    
+    if db is not None:
+        try:
+            cached_doc = await db.interview_prep_cache.find_one({"key": cache_key})
+            if cached_doc:
+                created_at = cached_doc.get("created_at")
+                if created_at and (datetime.utcnow() - created_at < timedelta(days=14)):
+                    cached_result = cached_doc.get("results")
+        except Exception:
+            pass
+
+    if cached_result:
+        result = cached_result
+    else:
+        result = None
+        if OPENROUTER_API_KEY:
+            try:
+                groq_url = "https://openrouter.ai/api/v1/chat/completions"
+                headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "HTTP-Referer": "https://cs-recommender.com", "X-Title": "MASARI", "Content-Type": "application/json"}
+                payload = {
+                    "model": "meta-llama/llama-4-scout",
+                    "messages": [{"role": "user", "content": f"Topic: {topic}\n\n{system_prompt}"}],
+                    "temperature": 0.4,
+                    "max_tokens": 1200,
+                    "response_format": {"type": "json_object"}
+                }
+                async with httpx.AsyncClient() as client:
+                    res = await client.post(groq_url, json=payload, headers=headers, timeout=30.0)
+                if res.status_code == 200:
+                    result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
+            except Exception:
+                pass
+
+        if not result and GEMINI_API_KEY:
+            try:
+                model = genai.GenerativeModel(model_name='gemini-2.5-flash')
+                response = await model.generate_content_async(f"Topic: {topic}\n\n{system_prompt}")
+                result = extract_json_from_llm(response.text)
+            except Exception:
+                pass
+
+        if not result or "concepts" not in result:
+            return JSONResponse({"error": "Could not generate cheat sheet. Please try again."}, status_code=503)
+
+        if db is not None:
+            try:
+                await db.interview_prep_cache.update_one(
+                    {"key": cache_key},
+                    {"$set": {
+                        "key": cache_key,
+                        "results": result,
+                        "created_at": datetime.utcnow()
+                    }},
+                    upsert=True
+                )
+            except Exception:
+                pass
+
+    return JSONResponse(result)
