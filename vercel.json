@@ -10,5 +10,10 @@
       "src": "/(.*)",
       "dest": "flask_app.py"
     }
-  ]
+  ],
+  "functions": {
+    "flask_app.py": {
+      "maxDuration": 60
+    }
+  }
 }

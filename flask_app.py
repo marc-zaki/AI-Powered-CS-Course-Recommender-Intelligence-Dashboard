@@ -2083,7 +2083,7 @@ def perform_course_analysis(course, user_goals):
                     "max_tokens": 900,
                     "response_format": {"type": "json_object"}
                 }
-                res = requests.post(openrouter_url, json=payload, headers=headers, timeout=25.0)
+                res = requests.post(openrouter_url, json=payload, headers=headers, timeout=8.0)
                 if res.status_code == 200:
                     result = extract_json_from_llm(res.json()["choices"][0]["message"]["content"])
             except Exception as e:
@@ -2101,8 +2101,11 @@ def perform_course_analysis(course, user_goals):
             except Exception as e:
                 print(f"Gemini course analyzer error: {e}")
 
-        if not result:
-            return None
+        if not result or not isinstance(result, dict):
+            if isinstance(result, list) and len(result) > 0 and isinstance(result[0], dict):
+                result = result[0]
+            else:
+                return None
 
         # Defaults
         result.setdefault("verdict", "maybe")
