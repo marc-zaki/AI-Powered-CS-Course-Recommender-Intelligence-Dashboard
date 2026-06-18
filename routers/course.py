@@ -326,20 +326,7 @@ async def api_course_compare(request: Request):
         "course_b": result_b
     })
 
-@router.get("/api/random_course")
-async def api_random_course():
-    import ai_core
-    if ai_core.df is not None and not ai_core.df.empty:
-        random_row = ai_core.df.sample(n=1).iloc[0]
-        return JSONResponse({
-            "title": str(random_row.get("title", "")),
-            "provider": str(random_row.get("provider", "")),
-            "url": str(random_row.get("url", "#")),
-            "stars": float(random_row.get("stars", 4.5)),
-            "difficulty": str(random_row.get("difficulty", "Intermediate")),
-            "description": str(random_row.get("content_text", ""))[:300] + "..."
-        })
-    return JSONResponse({"error": "No courses found"}, status_code=404)
+
 
 @router.post("/api/toggle_taken")
 async def toggle_taken(request: Request):
