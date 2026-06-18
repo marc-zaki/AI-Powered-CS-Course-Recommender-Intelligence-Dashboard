@@ -236,7 +236,7 @@ async def generate_path(request: Request):
     db = request.app.state.mongo_db
     if db is not None:
         try:
-            cached_plan = db.study_plans_cache.find_one({"key": cache_key})
+            cached_plan = await db.study_plans_cache.find_one({"key": cache_key})
             if cached_plan:
                 created_at = cached_plan.get("created_at")
                 if created_at and (datetime.utcnow() - created_at < timedelta(days=30)):
@@ -381,7 +381,7 @@ async def generate_path(request: Request):
     # Write to cache
     if db is not None and path_html:
         try:
-            db.study_plans_cache.update_one(
+            await db.study_plans_cache.update_one(
                 {"key": cache_key},
                 {"$set": {
                     "key": cache_key,

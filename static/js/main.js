@@ -934,3 +934,83 @@ function saveStudyPlan() {
         }
     });
 }
+
+// AI Study Path Generator
+function generateAIPath() {
+    const input = document.getElementById('ai-goal-input');
+    const btn = document.getElementById('ai-generate-btn');
+    const loader = document.getElementById('ai-loader');
+    const outputContainer = document.getElementById('ai-path-output');
+    const pathContent = document.getElementById('ai-path-content');
+
+    const goal = input ? input.value.trim() : "";
+    if (!goal) {
+        showToast("Please enter a learning goal or career target (e.g., 'Learn Python' or 'Become a Data Scientist').", "warning");
+        return;
+    }
+
+    if (btn) btn.disabled = true;
+    if (btn) btn.textContent = "Designing...";
+    if (loader) loader.style.display = "flex";
+    if (outputContainer) outputContainer.style.display = "none";
+
+    fetch('/generate_path', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ goal: goal })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (btn) btn.disabled = false;
+        if (btn) btn.textContent = "Generate Plan";
+        if (loader) loader.style.display = "none";
+
+        if (data.success) {
+            let pathHtml = data.path_html || "";
+            pathHtml = pathHtml.replace(/⭐/g, '<i data-lucide="star" style="width:12px;height:12px;display:inline-block;vertical-align:-1px;fill:currentColor;color:#FBBF24;"></i>');
+            pathHtml = pathHtml.replace(/💡/g, '<i data-lucide="lightbulb" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>');
+            
+            if (pathContent) pathContent.innerHTML = pathHtml;
+            if (outputContainer) outputContainer.style.display = "block";
+
+            // Make custom curriculum checks interactive
+            const headers = pathContent.querySelectorAll('h3');
+            headers.forEach((header) => {
+                header.style.display = 'flex';
+                header.style.alignItems = 'center';
+                header.style.gap = '0.75rem';
+                header.style.cursor = 'pointer';
+                
+                const checkbox = document.createElement('span');
+                checkbox.className = 'path-checkbox';
+                checkbox.innerHTML = '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+                checkbox.style.transition = 'all 0.2s';
+                header.prepend(checkbox);
+
+                header.addEventListener('click', () => {
+                    if (checkbox.innerHTML === '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>') {
+                        checkbox.innerHTML = '<i data-lucide="check-circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+                        header.style.textDecoration = 'line-through';
+                        header.style.opacity = '0.5';
+                    } else {
+                        checkbox.innerHTML = '<i data-lucide="circle" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i>';
+                        header.style.textDecoration = 'none';
+                        header.style.opacity = '1';
+                    }
+                });
+            });
+            if (window.lucide) window.lucide.createIcons();
+            if (outputContainer) outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            showToast(data.error || "An error occurred while generating your learning path.", "error");
+        }
+    })
+    .catch(err => {
+        if (btn) btn.disabled = false;
+        if (btn) btn.textContent = "Generate Plan";
+        if (loader) loader.style.display = "none";
+        showToast("Failed to reach server or make API call. Make sure you set your GEMINI_API_KEY in the .env file.", "error");
+    });
+}
