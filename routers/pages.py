@@ -28,7 +28,7 @@ async def get_db_async(request: Request):
 async def get_current_user(request: Request):
     user_id = request.session.get('user_id')
     if user_id:
-        db = request.app.state.mongo_db
+        db = await get_db_async(request)
         if db is not None:
             # Note: in real implementation, you might need to use bson.ObjectId if _id is an ObjectId
             return await db.users.find_one({"_id": user_id})

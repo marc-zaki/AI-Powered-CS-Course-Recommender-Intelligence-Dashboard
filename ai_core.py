@@ -26,7 +26,7 @@ def load_and_train_model(db=None):
     global df, vectorizer, tfidf_matrix, global_featured_courses
     
     # Path to cache file
-    cache_dir = "datasets"
+    cache_dir = os.path.join(os.path.dirname(__file__), "datasets")
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
     cache_file = os.path.join(cache_dir, "tfidf_cache.pkl")
@@ -50,7 +50,7 @@ def load_and_train_model(db=None):
     # For FastAPI migration, we just rely on local JSON dataset initially if db isn't passed synchronously.
     # If the user wants to pull from MongoDB, they should do it asynchronously in lifespan.
     # To keep it simple, we load from CS_Dataset_Phase2.json
-    db_file = "datasets/CS_Dataset_Phase2.json" if os.path.exists("datasets/CS_Dataset_Phase2.json") else "CS_Dataset_Phase2.json"
+    db_file = os.path.join(os.path.dirname(__file__), "datasets", "CS_Dataset_Phase2.json")
     try:
         df = pd.read_json(db_file)
         print(f"Successfully loaded {len(df)} records from local JSON.")
