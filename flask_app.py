@@ -1966,7 +1966,6 @@ def api_course_quick_search():
         return jsonify({"courses": []})
 
 
-@app.route('/api/course/analyze', methods=['POST'])
 def perform_course_analysis(course, user_goals):
     if not course or not course.get('title'):
         return None
