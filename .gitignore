@@ -19,6 +19,5 @@ Thumbs.db
 .idea/
 
 # Model / Data Cache
-datasets/tfidf_cache.pkl
 server.log
 .vercel
