@@ -1,4 +1,6 @@
+import os
 import requests
+import urllib.parse
 import hashlib
 from datetime import timedelta
 import random
@@ -101,7 +103,7 @@ async def api_random_course(request: Request):
                     print(f"Dynamically loaded database from {db_file}")
                     break
         
-        if df is not None and not ai_core.df.empty:
+        if ai_core.df is not None and not ai_core.df.empty:
             random_row = ai_core.df.sample(n=1).iloc[0]
             
             stars = float(random_row.get("stars", 4.5))
@@ -119,6 +121,104 @@ async def api_random_course(request: Request):
         return JSONResponse({"success": False, "error": "Database not initialized"})
     except Exception as e:
         return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+def generate_local_fallback_path(user_goal, matched_courses):
+    """
+    Generates a beautifully structured, highly customized, and comprehensive 6-week
+    academic syllabus from the matched courses when Gemini API rate limits/quotas are exceeded.
+    """
+    html = []
+    
+    # 1. Graceful API notice banner
+    html.append(
+        '<div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); '
+        'border-radius: 10px; padding: 1.15rem; margin-bottom: 2rem; display: flex; align-items: center; '
+        'gap: 0.85rem; color: #F59E0B; font-size: 0.925rem; font-weight: 600; line-height: 1.55;">'
+        '<span style="font-size: 1.25rem;"><i data-lucide="alert-triangle" style="width: 20px; height: 20px; display: inline-block;"></i></span>'
+        '<span><strong>Gemini Free-Tier Rate Limit Exceeded:</strong> Your intelligence dashboard has automatically '
+        'rerouted to your local high-fidelity VSM Academic Planner to preserve system operational integrity and deliver '
+        'your study plan immediately without errors.</span>'
+        '</div>'
+    )
+    
+    html.append(f'<h2 style="font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--text-main) 30%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em;">6-Week Academic Curriculum</h2>')
+    html.append(f'<p style="color: var(--text-muted); line-height: 1.65; margin-bottom: 2rem; font-size: 0.95rem;">This tailored syllabus has been synthesized using vector space TF-IDF cosine-similarity rankings matching your career target: <strong style="color: var(--text-main);">"{user_goal}"</strong>. It arranges your target courses in logical developmental order from fundamental theory to final advanced mastery.</p>')
+    
+    weeks_info = [
+        {"title": "Week 1: Foundational Core & Groundwork", "focus": "Establishing essential concepts, introductory structures, and theoretical principles."},
+        {"title": "Week 2: Intermediate Implementation & Systems", "focus": "Stepping into core programming structures, systems development, and data pipelines."},
+        {"title": "Week 3: Advanced Architectures & Methodology", "focus": "Deepening methodology, scaling applications, and studying critical algorithms."},
+        {"title": "Week 4: Practical Deployments & Integration", "focus": "Bringing concepts together through practical tooling, APIs, and real-world system interfaces."},
+        {"title": "Week 5: Enterprise Scaling & Deep Specialization", "focus": "Covering expert topics, performance optimizations, and domain-level complexities."},
+        {"title": "Week 6: Capstone Optimization & Full Mastery", "focus": "Synthesizing your skills into an advanced final portfolio project to demonstrate professional competence."}
+    ]
+    
+    for i, week in enumerate(weeks_info):
+        c1_idx = i * 2
+        c2_idx = i * 2 + 1
+        
+        if c1_idx >= len(matched_courses):
+            break
+            
+        c1 = matched_courses[c1_idx]
+        c2 = matched_courses[c2_idx] if c2_idx < len(matched_courses) else None
+        
+        html.append(f'<div class="path-step" style="background: var(--card-bg); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.75rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-glass);">')
+        html.append(f'<h3 style="color: var(--secondary); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.35rem;">{week["title"]}</h3>')
+        html.append(f'<p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem; font-style: italic;">Focus Area: {week["focus"]}</p>')
+        
+        html.append('<ul style="padding-left: 1.2rem; margin-bottom: 1.25rem; list-style-type: square; color: var(--text-muted);">')
+        
+        # Course 1
+        c1_stars = float(c1.get('stars', 4.5))
+        c1_reviews = int(c1.get('ratings_count', 1500))
+        c1_url = c1.get('url', '#')
+        c1_redirect = f"/verify_link?url={urllib.parse.quote(c1_url)}&title={urllib.parse.quote(c1.get('title'))}&provider={urllib.parse.quote(c1.get('provider'))}" if c1_url != '#' else '#'
+        
+        html.append(f'<li style="margin-bottom: 0.75rem; line-height: 1.6;">')
+        html.append(f'<strong style="color: var(--text-main); font-weight: 700;">{c1.get("title")}</strong> ')
+        html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c1.get("provider")}) — <i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; fill: currentColor;"></i> {c1_stars:.1f} ({c1_reviews:,} ratings)</span>')
+        html.append(f'<br><span style="color: var(--text-muted); font-size: 0.9rem; display:block; margin: 0.35rem 0; line-height: 1.5;">{c1.get("content_text")[:200]}...</span>')
+        if c1_url != '#':
+            html.append(f'<a class="path-link" href="{c1_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;"><i data-lucide="book-open" style="width: 14px; height: 14px; display: inline-block;"></i> View Syllabus & Lectures →</a>')
+        html.append('</li>')
+        
+        # Course 2 (if present)
+        if c2:
+            c2_stars = float(c2.get('stars', 4.5))
+            c2_reviews = int(c2.get('ratings_count', 1500))
+            c2_url = c2.get('url', '#')
+            c2_redirect = f"/verify_link?url={urllib.parse.quote(c2_url)}&title={urllib.parse.quote(c2.get('title'))}&provider={urllib.parse.quote(c2.get('provider'))}" if c2_url != '#' else '#'
+            
+            html.append(f'<li style="margin-bottom: 0.75rem; margin-top: 1rem; line-height: 1.6;">')
+            html.append(f'<strong style="color: var(--text-main); font-weight: 700;">{c2.get("title")}</strong> ')
+            html.append(f'<span style="color: var(--text-muted); font-size: 0.85rem;">({c2.get("provider")}) — <i data-lucide="star" style="width: 14px; height: 14px; display: inline-block; fill: currentColor;"></i> {c2_stars:.1f} ({c2_reviews:,} ratings)</span>')
+            html.append(f'<br><span style="color: var(--text-muted); font-size: 0.9rem; display:block; margin: 0.35rem 0; line-height: 1.5;">{c2.get("content_text")[:200]}...</span>')
+            if c2_url != '#':
+                html.append(f'<a class="path-link" href="{c2_redirect}" target="_blank" style="font-size: 0.875rem; color: var(--secondary); text-decoration: none; border-bottom: 1px dashed rgba(187, 225, 250, 0.4); font-weight: 600;"><i data-lucide="book-open" style="width: 14px; height: 14px; display: inline-block;"></i> View Syllabus & Lectures →</a>')
+            html.append('</li>')
+            
+        html.append('</ul>')
+        
+        # Feature 5: Bespoke Recommended Practical Exercise with Interview Question!
+        interview_q = "Explain the core technical principles you learned this week."
+        if ai_core.interview_ir_engine is not None:
+            try:
+                ir_res = ai_core.interview_ir_engine.search(c1.get("title", ""), top_k=1, method='hybrid')
+                if ir_res:
+                    interview_q = ir_res[0]['question']
+            except Exception:
+                pass
+
+        html.append(f'<div style="background: rgba(50, 130, 184, 0.08); border-left: 3px solid var(--secondary); padding: 0.95rem 1.25rem; border-radius: 0 8px 8px 0; margin-top: 1.25rem;">')
+        html.append(f'<strong style="color: var(--text-main); font-size: 0.9rem; display: block; margin-bottom: 0.35rem;"><i data-lucide="tool" style="width: 14px; height: 14px; display: inline-block;"></i> Weekly Practical Exercise & Mock Interview:</strong>')
+        html.append(f'<span style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.55; display: block; margin-bottom: 0.5rem;">Design and construct a modular software module incorporating the core competencies introduced this week. Focus on writing clean object-oriented logic, defining API schemas, and implementing comprehensive unit tests to validate boundaries on <strong>"{c1.get("title")}"</strong>.</span>')
+        html.append(f'<span style="color: var(--secondary); font-size: 0.85rem; font-weight: 600; display: block; align-items: center; gap: 0.35rem;"><i data-lucide="lightbulb" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i> End-of-Week Interview Prep: "{interview_q}"</span>')
+        html.append('</div>')
+        
+        html.append('</div>')
+        
+    return "".join(html)
 
 @router.post('/generate_path')
 async def generate_path(request: Request):
@@ -302,31 +402,7 @@ async def generate_path(request: Request):
         "fallback": fallback
     })
 
-# --- User Authentication and Profile Management ---
-from functools import wraps
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash("Please log in to access this page.", "warning")
-            return redirect(url_for('login', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
-
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            flash("Please log in to access this page.", "warning")
-            return redirect(url_for('login', next=request.url))
-        db = request.app.state.mongo_db
-        user = db.users.find_one({"_id": session['user_id']})
-        if not user or (user.get('role') != 'admin' and not check_is_super_admin(user)):
-            flash("Admin access required.", "danger")
-            return redirect(url_for('index'))
-        return f(*args, **kwargs)
-    return decorated_function
 
 
 import uuid
