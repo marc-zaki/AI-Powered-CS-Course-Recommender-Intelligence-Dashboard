@@ -150,3 +150,4 @@ async def api_resume_analyze(request: Request, job_description: str = Form(""), 
     result.setdefault("recommended_upskilling", [])
 
     return JSONResponse(result)
+

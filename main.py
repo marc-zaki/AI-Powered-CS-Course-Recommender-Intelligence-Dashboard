@@ -11,12 +11,20 @@ from starlette.middleware.sessions import SessionMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import nltk
 from dotenv import load_dotenv
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+try:
+    from sklearn.exceptions import InconsistentVersionWarning
+    warnings.filterwarnings("ignore", category=InconsistentVersionWarning)
+except ImportError:
+    pass
+
 import google.generativeai as genai
 
 # Load custom flash messages helper
 from flash import get_flashed_messages
 
-load_dotenv()
+load_dotenv(override=True)
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
 SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(24).hex())
@@ -97,11 +105,12 @@ app = FastAPI(lifespan=lifespan)
 # Vercel's Python runtime skips FastAPI lifespan events.
 # We explicitly set the state here so it's guaranteed to be available.
 try:
-    if mongo_client is None:
-        mongo_client = AsyncIOMotorClient(MONGO_URI, serverSelectionTimeoutMS=2000)
-        mongo_db = mongo_client["cs_recommender"]
-        app.state.mongo_client = mongo_client
-        app.state.mongo_db = mongo_db
+    if os.environ.get("VERCEL") == "1":
+        if mongo_client is None:
+            mongo_client = AsyncIOMotorClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+            mongo_db = mongo_client["cs_recommender"]
+            app.state.mongo_client = mongo_client
+            app.state.mongo_db = mongo_db
         
     from ai_core import load_and_train_model, load_interview_system
     load_and_train_model()
