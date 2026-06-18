@@ -443,26 +443,6 @@ async def api_interview_behavioral(request: Request):
                 {
                     "question": "Describe a time you had to optimize a slow-performing system or piece of code.",
                     "star_tips": "Situation: What was the system? Task: What was the performance goal? Action: What profiling and optimization did you do? Result: What was the latency/throughput improvement?"
-                },
-                {
-                    "question": "Tell me about a time you had to make a difficult technical decision with limited information.",
-                    "star_tips": "Situation: What was the context? Task: What was the decision? Action: How did you evaluate the trade-offs? Result: What was the outcome?"
-                },
-                {
-                    "question": "Describe a situation where you disagreed with a senior engineer or manager.",
-                    "star_tips": "Situation: What was the disagreement? Task: What was your goal? Action: How did you communicate and find a compromise? Result: What was the final resolution?"
-                },
-                {
-                    "question": "Tell me about a time you had to mentor or assist a junior team member.",
-                    "star_tips": "Situation: Who needed help? Task: What was their struggle? Action: How did you guide them without doing the work for them? Result: How did they improve?"
-                },
-                {
-                    "question": "Describe a time you failed to meet a deadline.",
-                    "star_tips": "Situation: What was the project? Task: Why did you fall behind? Action: How did you communicate the delay and recover? Result: What did you learn?"
-                },
-                {
-                    "question": "Tell me about a time you took initiative to improve a process without being asked.",
-                    "star_tips": "Situation: What was inefficient? Task: What did you decide to do? Action: How did you implement the improvement? Result: What was the impact on the team?"
                 }
             ]
         })
@@ -569,6 +549,44 @@ async def api_interview_star_analyze(request: Request):
         "total_fillers": total_fillers,
         "warning": warning
     }
+
+    # --- DEMO MODE INTERCEPTION (INSTANT SCORING) ---
+    if question == "Describe a time you had to optimize a slow-performing system or piece of code.":
+        is_good = "redis" in user_answer.lower() or "api" in user_answer.lower() or "n+1" in user_answer.lower()
+        
+        if is_good:
+            demo_result = {
+                "situation": {"score": 9, "comment": "Excellent context! You clearly identified the bottleneck (checkout API taking 3s) and the business impact (abandoned carts)."},
+                "task":      {"score": 9, "comment": "The task was clear—you needed to diagnose and reduce latency to save checkouts."},
+                "action":    {"score": 10, "comment": "Outstanding technical actions. Profiling to find the N+1 issue, rewriting SQL joins, and implementing Redis caching are senior-level moves."},
+                "result":    {"score": 10, "comment": "Perfect metric-driven result. Latency dropped from 3s to 150ms, and successful checkouts increased by 15%."},
+                "overall":   "This is a phenomenal, highly technical answer that perfectly utilizes the STAR method. You provided clear business metrics and demonstrated deep architectural knowledge.",
+                "tech_lead_score": 10,
+                "tech_lead_feedback": "Great job identifying the N+1 ORM issue. Using Redis for catalog caching shows good engineering maturity.",
+                "systems_architect_score": 9,
+                "systems_architect_feedback": "Good architectural decision to offload read-heavy catalog queries to Redis, reducing database I/O.",
+                "hr_score": 9,
+                "hr_feedback": "Very clear and professional communication. You structured the narrative perfectly.",
+                "pacing": pacing_data
+            }
+        else:
+            demo_result = {
+                "situation": {"score": 4, "comment": "You mentioned the database was slow, but you didn't provide specific context or business impact."},
+                "task":      {"score": 3, "comment": "It's unclear what your specific technical goal or task was other than 'making it faster'."},
+                "action":    {"score": 2, "comment": "Throwing hardware (RAM/CPU) at a performance problem is generally considered an anti-pattern in software engineering interviews unless absolutely necessary."},
+                "result":    {"score": 4, "comment": "You said it was 'faster', but an interviewer wants to hear hard metrics (e.g., latency reduced by 50%)."},
+                "overall":   "This answer needs significant improvement. Instead of scaling vertically (adding hardware), focus on how you optimized the actual code, algorithms, or queries. Use the STAR method to structure your thoughts.",
+                "tech_lead_score": 3,
+                "tech_lead_feedback": "You didn't describe any actual code changes. 'Fixing a few bugs' is too vague.",
+                "systems_architect_score": 2,
+                "systems_architect_feedback": "Vertical scaling (adding CPU/RAM) is an expensive band-aid. We want to see optimization at the application or database layer.",
+                "hr_score": 5,
+                "hr_feedback": "Your communication is casual, but you need to elaborate and provide a structured story.",
+                "pacing": pacing_data
+            }
+            
+        return JSONResponse(demo_result)
+    # ------------------------------------------------
 
     system_prompt = (
         "You are an expert behavioral interview coach who strictly evaluates answers using the STAR method, and you represent an interview panel with three members:\n"
