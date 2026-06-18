@@ -25,6 +25,14 @@ router = APIRouter()
 async def get_db_async(request: Request):
     return request.app.state.mongo_db if hasattr(request.app.state, 'mongo_db') else None
 
+def format_courses(courses):
+    for c in courses:
+        try:
+            c['stars_int'] = int(float(c.get('stars', 0) or 0))
+        except (ValueError, TypeError):
+            c['stars_int'] = 0
+    return courses
+
 async def get_current_user(request: Request):
     user_id = request.session.get('user_id')
     if user_id:
@@ -76,7 +84,7 @@ async def index(request: Request):
         else:
             featured = ai_core.global_featured_courses
 
-        courses = featured.to_dict('records')
+        courses = format_courses(featured.to_dict('records'))
         return templates.TemplateResponse(request=request, name='index.html', context= {"request": request, "courses": courses, "query": "", "is_search": False, "show_all": False, "total_courses": len(ai_core.df), "page": 1, "total_pages": 1, "is_personalized": is_personalized, "current_user": user})
     except Exception as e:
         import traceback
@@ -95,7 +103,7 @@ async def all_courses(request: Request, page: int = Query(1)):
     sorted_df = ai_core.df.sort_values(by='stars', ascending=False)
     start = (page - 1) * per_page
     end = start + per_page
-    courses = sorted_df.iloc[start:end].to_dict('records')
+    courses = format_courses(sorted_df.iloc[start:end].to_dict('records'))
     
     user = await get_current_user(request)
     return templates.TemplateResponse(request=request, name='index.html', context= {"request": request, "courses": courses, "query": "", "is_search": False, "show_all": True, "total_courses": len(ai_core.df), "page": page, "total_pages": total_pages, "current_user": user})
@@ -141,7 +149,7 @@ async def search(
             if recs.empty:
                 recs = search_df[search_df['match_score'] > 0.02].sort_values(by=['stars', 'match_score'], ascending=[False, False])
                 
-            return recs.to_dict('records')
+            return format_courses(recs.to_dict('records'))
         except Exception as e:
             print(f"Error in parallel course search: {e}")
             return []

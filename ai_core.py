@@ -71,6 +71,7 @@ def load_and_train_model(db=None):
     tfidf_matrix = vectorizer.fit_transform(df['search_profile'])
     
     df['has_review'] = df['review_summary'].apply(lambda x: 1 if x and str(x).strip() else 0)
+    df['stars_int'] = df['stars'].apply(lambda x: int(float(x)) if pd.notnull(x) else 0)
     global_featured_courses = df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
     
     try:
