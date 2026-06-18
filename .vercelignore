@@ -1,0 +1,22 @@
+# Exclude raw data datasets (we only need json and pkl at runtime)
+datasets/*.csv
+datasets/*.xlsx
+datasets/udemy_tech.csv
+datasets/EdX.csv
+datasets/courses_en.csv
+datasets/Online_Courses.csv
+
+# Exclude docs and large PDFs
+README.pdf
+cs_recommender_readme.pdf
+
+# Exclude local scraping and dev scripts
+scraper.py
+import_external_data.py
+
+# Standard python excludes
+__pycache__/
+*.pyc
+.venv/
+venv/
+.git/
