@@ -1,7 +1,9 @@
 from fastapi.templating import Jinja2Templates
 from flash import get_flashed_messages
 
-templates = Jinja2Templates(directory="templates")
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 def check_is_super_admin(user):
     return user and user.get("email", "") in ["mzaki2222@gmail.com", "yossif7zaki@gmail.com"]

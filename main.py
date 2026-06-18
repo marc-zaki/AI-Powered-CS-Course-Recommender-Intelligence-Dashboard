@@ -92,9 +92,27 @@ async def lifespan(app: FastAPI):
         mongo_client.close()
 
 app = FastAPI(lifespan=lifespan)
+
+# --- VERCEL SERVERLESS COMPATIBILITY ---
+# Vercel's Python runtime skips FastAPI lifespan events.
+# We explicitly set the state here so it's guaranteed to be available.
+try:
+    if mongo_client is None:
+        mongo_client = AsyncIOMotorClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+        mongo_db = mongo_client["cs_recommender"]
+        app.state.mongo_client = mongo_client
+        app.state.mongo_db = mongo_db
+        
+    from ai_core import load_and_train_model, load_interview_system
+    load_and_train_model()
+    load_interview_system()
+except Exception as e:
+    print(f"Vercel Global Init Error: {e}")
+# ---------------------------------------
+
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, max_age=86400 * 30)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")), name="static")
 
 # Inject get_flashed_messages into all templates
 
