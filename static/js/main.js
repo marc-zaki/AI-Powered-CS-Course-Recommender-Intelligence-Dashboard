@@ -599,7 +599,7 @@ function generateAIPath() {
                         header.style.opacity = '1';
                     }
             });
-
+            });
             if (window.lucide) window.lucide.createIcons();
             if (outputContainer) outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {

@@ -22,24 +22,24 @@
                     <span class="catalog-filter-label"><i data-lucide="sliders-horizontal" style="width: 16px; height: 16px; color: var(--primary);"></i> Filters:</span>
                     <select name="provider" class="search-input catalog-filter-select" onchange="this.form.submit()">
                         <option value="">All Providers</option>
-                        <option value="coursera" {% if request.args.get('provider') == 'coursera' %}selected{% endif %}>Coursera</option>
-                        <option value="udemy" {% if request.args.get('provider') == 'udemy' %}selected{% endif %}>Udemy</option>
-                        <option value="edx" {% if request.args.get('provider') == 'edx' %}selected{% endif %}>edX</option>
-                        <option value="mit" {% if request.args.get('provider') == 'mit' %}selected{% endif %}>MIT</option>
-                        <option value="harvard" {% if request.args.get('provider') == 'harvard' %}selected{% endif %}>Harvard</option>
-                        <option value="google" {% if request.args.get('provider') == 'google' %}selected{% endif %}>Google</option>
-                        <option value="stanford" {% if request.args.get('provider') == 'stanford' %}selected{% endif %}>Stanford</option>
+                        <option value="coursera" {% if request.query_params.get('provider') == 'coursera' %}selected{% endif %}>Coursera</option>
+                        <option value="udemy" {% if request.query_params.get('provider') == 'udemy' %}selected{% endif %}>Udemy</option>
+                        <option value="edx" {% if request.query_params.get('provider') == 'edx' %}selected{% endif %}>edX</option>
+                        <option value="mit" {% if request.query_params.get('provider') == 'mit' %}selected{% endif %}>MIT</option>
+                        <option value="harvard" {% if request.query_params.get('provider') == 'harvard' %}selected{% endif %}>Harvard</option>
+                        <option value="google" {% if request.query_params.get('provider') == 'google' %}selected{% endif %}>Google</option>
+                        <option value="stanford" {% if request.query_params.get('provider') == 'stanford' %}selected{% endif %}>Stanford</option>
                     </select>
                     <select name="difficulty" class="search-input catalog-filter-select" onchange="this.form.submit()">
                         <option value="">All Levels</option>
-                        <option value="beginner" {% if request.args.get('difficulty') == 'beginner' %}selected{% endif %}>Beginner</option>
-                        <option value="intermediate" {% if request.args.get('difficulty') == 'intermediate' %}selected{% endif %}>Intermediate</option>
-                        <option value="advanced" {% if request.args.get('difficulty') == 'advanced' %}selected{% endif %}>Advanced</option>
+                        <option value="beginner" {% if request.query_params.get('difficulty') == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if request.query_params.get('difficulty') == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if request.query_params.get('difficulty') == 'advanced' %}selected{% endif %}>Advanced</option>
                     </select>
                     <select name="rating" class="search-input catalog-filter-select" onchange="this.form.submit()">
                         <option value="">All Ratings</option>
-                        <option value="4.0" {% if request.args.get('rating') == '4.0' %}selected{% endif %}>4.0+ Stars</option>
-                        <option value="4.5" {% if request.args.get('rating') == '4.5' %}selected{% endif %}>4.5+ Stars</option>
+                        <option value="4.0" {% if request.query_params.get('rating') == '4.0' %}selected{% endif %}>4.0+ Stars</option>
+                        <option value="4.5" {% if request.query_params.get('rating') == '4.5' %}selected{% endif %}>4.5+ Stars</option>
                     </select>
                 </div>
             </form>
@@ -689,7 +689,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/main.js') }}?v=3"></script>
+<script src="{{ url_for('static', path='js/main.js') }}?v=3"></script>
 <script>
     function analyzeThisCourse(el) {
         // el may be the card div itself OR a child element

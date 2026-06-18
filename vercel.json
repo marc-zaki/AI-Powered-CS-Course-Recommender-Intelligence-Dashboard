@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "flask_app.py",
+      "src": "main.py",
       "use": "@vercel/python",
       "config": {
         "maxDuration": 60
@@ -11,7 +11,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "flask_app.py"
+      "dest": "main.py"
     }
   ]
 }

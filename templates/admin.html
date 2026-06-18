@@ -219,10 +219,10 @@
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
                         {% if page > 1 %}
-                        <a href="{{ url_for('admin_dashboard', page=page-1) }}" class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Previous</a>
+                        <a href="{{ url_for('admin_dashboard') }}?page={{ page-1 }}" class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Previous</a>
                         {% endif %}
                         {% if page < total_pages %}
-                        <a href="{{ url_for('admin_dashboard', page=page+1) }}" class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Next</a>
+                        <a href="{{ url_for('admin_dashboard') }}?page={{ page+1 }}" class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Next</a>
                         {% endif %}
                     </div>
                 </div>

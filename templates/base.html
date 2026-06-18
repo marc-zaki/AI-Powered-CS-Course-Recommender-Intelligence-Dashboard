@@ -1,3 +1,7 @@
+{% set is_premium_user = is_premium(current_user) %}
+{% set is_super_admin = check_is_super_admin(current_user) %}
+
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 
@@ -6,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MASARI | AI Powered Learning Dashboard{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', path='favicon.png') }}">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -20,7 +24,7 @@
         <aside class="app-sidebar" id="app-sidebar">
             <div class="app-sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
+                    <img src="{{ url_for('static', path='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
                 </a>
                 <button class="mobile-close-btn" onclick="toggleSidebar(event)">
                     <i data-lucide="x" style="width: 20px; height: 20px;"></i>
@@ -29,7 +33,7 @@
             
             <nav class="app-sidebar-nav">
                 <!-- If on index page, these trigger tabs via JS. If on other pages, they go to index with a hash. -->
-                <a href="/" id="side-link-catalog" class="app-sidebar-link {% if request.path in ['/', '/search', '/all'] %}active{% endif %}" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('catalog'); event.preventDefault(); }">
+                <a href="/" id="side-link-catalog" class="app-sidebar-link {% if request.url.path in ['/', '/search', '/all'] %}active{% endif %}" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('catalog'); event.preventDefault(); }">
                     <i data-lucide="book"></i> Course Catalog
                 </a>
                 <a href="/#ai-path" id="side-link-ai-path" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('ai-path'); window.history.pushState(null, '', '/#ai-path'); event.preventDefault(); }">
@@ -38,10 +42,10 @@
                 <a href="/#skill-map" id="side-link-skill-map" class="app-sidebar-link" onclick="if(window.location.pathname === '/' || window.location.pathname === '/search' || window.location.pathname === '/all') { switchTab('skill-map'); window.history.pushState(null, '', '/#skill-map'); event.preventDefault(); }">
                     <i data-lucide="bar-chart-2"></i> Skill Map
                 </a>
-                <a href="/interview-prep" id="side-link-interview" class="app-sidebar-link {% if request.path == '/interview-prep' %}active{% endif %}">
+                <a href="/interview-prep" id="side-link-interview" class="app-sidebar-link {% if request.url.path == '/interview-prep' %}active{% endif %}">
                     <i data-lucide="message-circle"></i> Interview Analyzer
                 </a>
-                <a href="/resume-optimizer" id="side-link-resume" class="app-sidebar-link {% if request.path == '/resume-optimizer' %}active{% endif %}" style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="/resume-optimizer" id="side-link-resume" class="app-sidebar-link {% if request.url.path == '/resume-optimizer' %}active{% endif %}" style="display: flex; justify-content: space-between; align-items: center;">
                     <span><i data-lucide="file-text"></i> Resume ATS Optimizer</span>
                     <span style="background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase;">PRO</span>
                 </a>
@@ -66,7 +70,7 @@
                         <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
                     </button>
                     <a href="/" class="logo header-logo">
-                        <img src="{{ url_for('static', filename='logo.png') }}" alt="MASARI" style="height: 18px; width: auto; max-width: 150px; object-fit: contain;">
+                        <img src="{{ url_for('static', path='logo.png') }}" alt="MASARI" style="height: 18px; width: auto; max-width: 150px; object-fit: contain;">
                     </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -162,7 +166,7 @@
                     {% endif %}
                 {% endwith %}
 
-                {% block content %}
+{% block content %}
                 {% endblock %}
                 
                 <!-- Compliance Footer -->
@@ -183,7 +187,7 @@
     <script>
       lucide.createIcons();
     </script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='js/main.js') }}"></script>
     <script>
         // Update sidebar links actively
         document.addEventListener('DOMContentLoaded', () => {
