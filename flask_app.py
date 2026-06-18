@@ -228,7 +228,7 @@ def load_and_train_model():
     collection_name = "courses"
     loaded_from_mongo = False
     
-    print(f"Connecting to MongoDB at {MONGO_URI}...")
+    print("Connecting to MongoDB...")
     try:
         if os.environ.get("VERCEL") == "1":
             raise Exception("Vercel deployment detected, bypassing MongoDB load for AI model to prevent Serverless timeout.")
