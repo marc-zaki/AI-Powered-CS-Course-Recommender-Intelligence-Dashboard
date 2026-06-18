@@ -257,62 +257,6 @@
             </div>
         </div>
     </div>
-    <!-- Tab 3: Interactive Skill Map -->
-    <div id="tab-pane-skill-map" class="tab-pane">
-        <div class="glass-panel"
-            style="padding: 2.5rem; margin-bottom: 2rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px;">
-            <h2
-                style="margin-bottom: 0.75rem; color: var(--primary); font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;">
-                Gamified RPG CS Skill Tree</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem; max-width: 800px; font-size: 1.05rem;">
-                Explore and level up your Computer Science journey. Unlock new domains by completing courses and passing assessments! Locked advanced nodes will automatically unlock as your profile skill level rises.
-            </p>
-            
-            <!-- Skill Tree Legend -->
-            <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; font-size: 0.9rem; font-weight: 600; padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 12px; width: fit-content;">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; display: inline-block;"></span>
-                    <span style="color: var(--text-main);">Completed Course</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--secondary); display: inline-block;"></span>
-                    <span style="color: var(--text-main);">Unlocked Domain</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="width: 12px; height: 12px; border-radius: 50%; background: #4b5563; border: 1.5px dashed rgba(255,255,255,0.4); display: inline-block;"></span>
-                    <span style="color: var(--text-muted); display: flex; align-items: center; gap: 4px;"><i data-lucide="lock" style="width: 12px; height: 12px;"></i> Locked Node</span>
-                </div>
-            </div>
-            <div class="map-container">
-                <div class="map-sidebar">
-                    <h3>Select a Course Node</h3>
-                    <div style="margin: 1rem 0;">
-                        <input type="text" id="skill-map-search-input" placeholder="Search for courses..."
-                            class="search-input"
-                            style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--border-glass); background: var(--bg-main); color: var(--text-main); font-size: 0.9rem;">
-                    </div>
-                    <p id="sidebar-instruction" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-muted);">
-                        Click on any course node in the network to inspect its full recommendation profiles and get
-                        instant links!</p>
-                    <div id="sidebar-details" style="display: none;">
-                        <h4 id="sidebar-title"
-                            style="font-weight: 800; color: var(--text-main); margin-bottom: 0.85rem; font-size: 1.15rem; line-height: 1.4; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
-                        </h4>
-                        <p style="margin-bottom: 0.65rem; font-size: 0.95rem;"><strong
-                                style="color: var(--secondary);">Provider:</strong> <span id="sidebar-provider"></span>
-                        </p>
-                        <p style="margin-bottom: 1.25rem; font-size: 0.95rem;"><strong style="color: #FBBF24;">AI
-                                Rating:</strong> <span id="sidebar-rating"></span></p>
-                        <a id="sidebar-link" href="#" target="_blank" class="btn btn-primary"
-                            style="width: 100%; text-align: center; text-decoration: none; padding: 0.75rem; font-size: 0.9rem;">View
-                            Course <i data-lucide="arrow-up-right" style="width: 14px; height: 14px; display: inline-block;"></i></a>
-                    </div>
-                </div>
-                <svg id="map-svg"></svg>
-            </div>
-        </div>
-    </div>
-
     <!-- Tab 4: Intelligence Dashboard & EDA -->
     {% if current_user and current_user.role == 'admin' %}
     <div id="tab-pane-dashboard" class="tab-pane">
@@ -449,8 +393,8 @@
                         <span style="background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); padding: 0.4rem; border-radius: 8px;"><i data-lucide="network" style="width: 20px; height: 20px;"></i></span>
                         <h3 style="color: var(--text-main); font-size: 1.25rem; font-weight: 700; margin: 0;">3. Neural Embeddings Graph</h3>
                     </div>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
-                        Course relationships are modeled using pairwise similarity vectors. Nodes exceeding a <code>0.13</code> threshold are clustered in a D3.js force-directed graph. This maps out organic learning ecosystems (e.g., how Python transitions into Machine Learning).
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                        Course relationships are modeled using pairwise similarity vectors. This maps out organic learning ecosystems (e.g., how Python transitions into Machine Learning).
                     </p>
                 </div>
 
@@ -696,7 +640,6 @@
         outline: none;
     }
 </style>
-<script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
