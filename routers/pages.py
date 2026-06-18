@@ -51,32 +51,36 @@ async def pricing(request: Request):
 
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    import ai_core
-    if ai_core.df is None:
-        return HTMLResponse("Error: Dataset not loaded. Please ensure datasets/CS_Dataset_Phase2.json exists.", status_code=500)
+    try:
+        import ai_core
+        if ai_core.df is None:
+            return HTMLResponse("Error: Dataset not loaded. Please ensure datasets/CS_Dataset_Phase2.json exists.", status_code=500)
 
-    user = await get_current_user(request)
-    is_personalized = False
-    
-    if user:
-        taken_courses = user.get('taken_courses', [])
-        query_terms = [user.get('track', ''), user.get('career_goals', '')]
-        query = " ".join([t for t in query_terms if t]).strip()
+        user = await get_current_user(request)
+        is_personalized = False
         
-        if len(query) > 5:
-            query_vector = ai_core.vectorizer.transform([query.lower()])
-            search_df = ai_core.df.copy()
-            search_df['match_score'] = cosine_similarity(query_vector, ai_core.tfidf_matrix).flatten()
-            search_df = search_df[~search_df['url'].isin(taken_courses)]
-            featured = search_df.sort_values(by=['match_score', 'stars'], ascending=[False, False]).head(12)
-            is_personalized = True
+        if user:
+            taken_courses = user.get('taken_courses', [])
+            query_terms = [user.get('track', ''), user.get('career_goals', '')]
+            query = " ".join([t for t in query_terms if t]).strip()
+            
+            if len(query) > 5:
+                query_vector = ai_core.vectorizer.transform([query.lower()])
+                search_df = ai_core.df.copy()
+                search_df['match_score'] = cosine_similarity(query_vector, ai_core.tfidf_matrix).flatten()
+                search_df = search_df[~search_df['url'].isin(taken_courses)]
+                featured = search_df.sort_values(by=['match_score', 'stars'], ascending=[False, False]).head(12)
+                is_personalized = True
+            else:
+                featured = ai_core.global_featured_courses[~ai_core.global_featured_courses['url'].isin(taken_courses)].head(12)
         else:
-            featured = ai_core.global_featured_courses[~ai_core.global_featured_courses['url'].isin(taken_courses)].head(12)
-    else:
-        featured = ai_core.global_featured_courses
+            featured = ai_core.global_featured_courses
 
-    courses = featured.to_dict('records')
-    return templates.TemplateResponse(request=request, name='index.html', context= {"request": request, "courses": courses, "query": "", "is_search": False, "show_all": False, "total_courses": len(ai_core.df), "page": 1, "total_pages": 1, "is_personalized": is_personalized, "current_user": user})
+        courses = featured.to_dict('records')
+        return templates.TemplateResponse(request=request, name='index.html', context= {"request": request, "courses": courses, "query": "", "is_search": False, "show_all": False, "total_courses": len(ai_core.df), "page": 1, "total_pages": 1, "is_personalized": is_personalized, "current_user": user})
+    except Exception as e:
+        import traceback
+        return HTMLResponse(f"<pre>{traceback.format_exc()}</pre>", status_code=500)
 
 @router.get("/all", response_class=HTMLResponse)
 async def all_courses(request: Request, page: int = Query(1)):
