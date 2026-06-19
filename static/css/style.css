@@ -2150,5 +2150,127 @@ footer {
     }
 }
 
+/* Bot message markdown components */
+.bot-message h1, .bot-message h2, .bot-message h3, .bot-message h4 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.bot-message h1 { font-size: 1.2rem; }
+.bot-message h2 { font-size: 1.1rem; }
+.bot-message h3 { font-size: 1.0rem; }
+.bot-message h4 { font-size: 0.95rem; }
+
+.bot-message p {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+.bot-message p:last-child {
+    margin-bottom: 0;
+}
+
+.bot-message ul, .bot-message ol {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.25rem;
+}
+
+.bot-message ul {
+    list-style-type: disc;
+}
+
+.bot-message ol {
+    list-style-type: decimal;
+}
+
+.bot-message li {
+    margin-bottom: 0.25rem;
+}
+
+/* Code block container */
+.bot-message pre {
+    background: #1e1e1e !important; /* dark code theme */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 0.5rem 1.75rem 0.5rem 0.5rem;
+    margin: 0.5rem 0;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.bot-message pre[class*="language-"],
+.bot-message code[class*="language-"],
+.bot-message pre,
+.bot-message code {
+    font-size: 0.76rem !important;
+    line-height: 1.35 !important;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+}
+
+/* Code block scrolling */
+.bot-message pre::-webkit-scrollbar {
+    height: 4px;
+}
+.bot-message pre::-webkit-scrollbar-track {
+    background: transparent;
+}
+.bot-message pre::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+/* Inline code styling */
+.bot-message :not(pre) > code {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e5c07b; /* soft amber */
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace !important;
+    font-size: 0.8em !important;
+}
+
+/* Code copy button */
+.code-copy-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.code-copy-btn svg {
+    width: 11px !important;
+    height: 11px !important;
+}
+
+.code-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.bot-message a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.bot-message a:hover {
+    color: var(--secondary);
+}
+
+
 
 

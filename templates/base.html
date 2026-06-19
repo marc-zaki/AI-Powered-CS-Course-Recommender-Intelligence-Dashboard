@@ -11,6 +11,7 @@
     <title>{% block title %}MASARI | AI Powered Learning Dashboard{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', path='favicon.png') }}">
     {% block extra_head %}{% endblock %}
 </head>
@@ -185,6 +186,9 @@
       lucide.createIcons();
     </script>
     <script src="{{ url_for('static', path='js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script>
         // Update sidebar links actively
         document.addEventListener('DOMContentLoaded', () => {
@@ -286,6 +290,60 @@
             }
         });
 
+        function formatBotMessage(container, text) {
+            if (typeof marked !== 'undefined') {
+                container.innerHTML = marked.parse(text);
+            } else {
+                let formatted = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
+                container.innerHTML = formatted;
+            }
+            
+            // Syntax highlight code blocks
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(container);
+            }
+            
+            // Add copy to clipboard buttons for code blocks
+            container.querySelectorAll('pre').forEach(pre => {
+                if (pre.querySelector('.code-copy-btn')) return;
+                pre.style.position = 'relative';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'code-copy-btn';
+                copyBtn.innerHTML = '<i data-lucide="copy"></i>';
+                copyBtn.title = 'Copy code';
+                
+                copyBtn.addEventListener('click', () => {
+                    const codeText = pre.querySelector('code')?.textContent || '';
+                    navigator.clipboard.writeText(codeText).then(() => {
+                        copyBtn.innerHTML = '<i data-lucide="check" style="color: #10b981;"></i>';
+                        if (window.lucide) window.lucide.createIcons();
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<i data-lucide="copy"></i>';
+                            if (window.lucide) window.lucide.createIcons();
+                        }, 2000);
+                    });
+                });
+                
+                pre.appendChild(copyBtn);
+            });
+            
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+
+        // Initialize marked options if marked is loaded
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+        }
+
         function sendChatMessage() {
             const input = document.getElementById('chat-input');
             const messageText = input ? input.value.trim() : "";
@@ -343,11 +401,7 @@
                                     fullText += chunkText;
                                     
                                     // Update the bot message UI with parsed markdown
-                                    let formatted = fullText
-                                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                        .replace(/`(.*?)`/g, '<code>$1</code>')
-                                        .replace(/\n/g, '<br>');
-                                    botMsgDiv.innerHTML = formatted;
+                                    formatBotMessage(botMsgDiv, fullText);
                                     
                                     // Auto-scroll chat window
                                     const messagesContainer = document.getElementById('chat-messages');
@@ -379,12 +433,7 @@
             msgDiv.className = `chat-message ${sender}-message`;
             
             if (sender.includes('bot') && !sender.includes('typing')) {
-                // Simple markdown parsing helper
-                let formatted = text
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/`(.*?)`/g, '<code>$1</code>')
-                    .replace(/\n/g, '<br>');
-                msgDiv.innerHTML = formatted;
+                formatBotMessage(msgDiv, text);
             } else {
                 msgDiv.textContent = text;
             }

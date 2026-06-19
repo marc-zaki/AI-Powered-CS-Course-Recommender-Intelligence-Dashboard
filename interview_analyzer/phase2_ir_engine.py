@@ -119,7 +119,11 @@ class IREngine:
         query_processed = self.preprocess_text(query)
         
         # Vectorize query
-        query_vector = self.tfidf_vectorizer.transform([query_processed])
+        try:
+            query_vector = self.tfidf_vectorizer.transform([query_processed])
+        except Exception:
+            self.build_tfidf_index()
+            query_vector = self.tfidf_vectorizer.transform([query_processed])
         
         # Calculate similarity
         similarities = cosine_similarity(query_vector, self.tfidf_matrix)[0]

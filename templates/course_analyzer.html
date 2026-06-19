@@ -556,6 +556,14 @@
             <p id="ai-summary-text"></p>
         </div>
 
+        <div class="interview-questions-section" id="course-interview-section" style="display:none; margin-bottom: 2rem;">
+            <h3>
+                <i data-lucide="help-circle" style="width:17px;height:17px;color:var(--secondary);"></i>
+                Relevant Practice Interview Questions
+            </h3>
+            <div id="course-interview-container" style="display: grid; gap: 1rem; margin-top: 1rem;"></div>
+        </div>
+
         <div class="alts-section" id="alts-section" style="display:none;">
             <h3>
                 <i data-lucide="layers" style="width:17px;height:17px;color:var(--primary);"></i>
@@ -1106,6 +1114,37 @@
             altsSection.style.display = 'block';
         } else {
             altsSection.style.display = 'none';
+        }
+
+        // Render Interview Questions
+        const interviewSection = document.getElementById('course-interview-section');
+        const interviewContainer = document.getElementById('course-interview-container');
+        interviewContainer.innerHTML = '';
+        if (data.interview_questions && data.interview_questions.length > 0) {
+            data.interview_questions.forEach(q => {
+                const qCard = document.createElement('div');
+                qCard.style.padding = '1rem';
+                qCard.style.background = 'rgba(255,255,255,0.02)';
+                qCard.style.border = '1px solid var(--border-glass)';
+                qCard.style.borderRadius = '8px';
+                
+                let answerHtml = '';
+                if (q.answer) {
+                    answerHtml = `<p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">${q.answer.substring(0, 150)}...</p>`;
+                }
+                
+                qCard.innerHTML = `
+                    <strong style="font-size: 1.05rem; color: var(--text-main);">${q.question}</strong>
+                    ${answerHtml}
+                    <div style="margin-top: 0.75rem;">
+                        <a href="/interview-prep?q=${encodeURIComponent(q.question)}" class="btn btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.8rem; border-radius: 6px;">Analyze & Answer &rarr;</a>
+                    </div>
+                `;
+                interviewContainer.appendChild(qCard);
+            });
+            interviewSection.style.display = 'block';
+        } else {
+            interviewSection.style.display = 'none';
         }
 
         document.getElementById('results-section').style.display = 'block';

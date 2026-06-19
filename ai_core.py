@@ -1,12 +1,6 @@
 import os
 import sys
 import json
-import numpy
-try:
-    import numpy.core
-    sys.modules['numpy._core'] = numpy.core
-except ImportError:
-    pass
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -51,8 +45,14 @@ def load_and_train_model(db=None):
         try:
             print("Loading TF-IDF vectorizer and model from disk cache...")
             import pickle
+            class CompatibilityUnpickler(pickle.Unpickler):
+                def find_class(self, module, name):
+                    if module == "numpy._core" or module.startswith("numpy._core."):
+                        module = module.replace("numpy._core", "numpy.core")
+                    return super().find_class(module, name)
+
             with open(cache_file, "rb") as f:
-                cache_data = pickle.load(f)
+                cache_data = CompatibilityUnpickler(f).load()
             vectorizer = cache_data["vectorizer"]
             tfidf_matrix = cache_data["tfidf_matrix"]
             global_featured_courses = cache_data["global_featured_courses"]
@@ -91,6 +91,20 @@ def load_and_train_model(db=None):
 def load_interview_system():
     global interview_ir_engine, interview_ai_models, interview_rec_engine, interview_eda, interview_questions
     print("Loading Interview Analyzer system...")
+    
+    # Post-import shims for numpy pickle compatibility
+    try:
+        import sys
+        import numpy
+        import numpy.core as numpy_core
+        sys.modules['numpy._core'] = numpy_core
+        import numpy.core.multiarray as np_multiarray
+        sys.modules['numpy._core.multiarray'] = np_multiarray
+        import numpy.core.numeric as np_numeric
+        sys.modules['numpy._core.numeric'] = np_numeric
+    except Exception as shim_err:
+        print(f"Shim initialization warning: {shim_err}")
+
     try:
         dataset_path = os.path.join(os.path.dirname(__file__), 'interview_analyzer', 'storage', 'dataset_2.json')
         with open(dataset_path, 'r', encoding='utf-8') as f:

@@ -296,6 +296,22 @@ async def api_course_analyze(request: Request):
 
     result["alternatives"] = alternatives
     result["goal_based_recommendations"] = goal_based
+
+    # Fetch relevant interview questions for the analyzed course topic
+    interview_questions = []
+    if ai_core.interview_ir_engine:
+        search_query = " ".join(result.get("topic_keywords", [])) or title
+        try:
+            questions = ai_core.interview_ir_engine.search(search_query, top_k=3, method='hybrid')
+            for q in questions:
+                interview_questions.append({
+                    "question": q.get("question", ""),
+                    "answer": q.get("answer", "")
+                })
+        except Exception as e:
+            print(f"Error fetching course interview questions: {e}")
+    result["interview_questions"] = interview_questions
+
     return JSONResponse(result)
 
 
