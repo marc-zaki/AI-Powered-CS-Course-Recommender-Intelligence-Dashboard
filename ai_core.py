@@ -1,5 +1,12 @@
 import os
+import sys
 import json
+import numpy
+try:
+    import numpy.core
+    sys.modules['numpy._core'] = numpy.core
+except ImportError:
+    pass
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity

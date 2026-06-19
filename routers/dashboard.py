@@ -63,7 +63,7 @@ async def api_stats(request: Request):
         keyword_frequencies = {}
         for kw in keywords:
             desc_col = 'content_text' if 'content_text' in filtered_df.columns else 'description'
-            keyword_frequencies[kw] = int(filtered_df[desc_col].str.contains(kw, case=False, na=False).sum())
+            keyword_frequencies[kw] = int(filtered_df[desc_col].str.contains(kw, case=False, na=False, regex=False).sum())
             
         top_topic = max(keyword_frequencies, key=keyword_frequencies.get).title() if keyword_frequencies else "Software"
             
