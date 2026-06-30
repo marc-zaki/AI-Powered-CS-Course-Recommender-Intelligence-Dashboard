@@ -219,3 +219,8 @@ async def resume_optimizer(request: Request):
 async def course_analyzer(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse(request=request, name='course_analyzer.html', context= {"request": request, "current_user": user})
+
+@router.get("/presentation", response_class=HTMLResponse)
+async def presentation(request: Request):
+    user = await get_current_user(request)
+    return templates.TemplateResponse(request=request, name='presentation.html', context= {"request": request, "current_user": user})
