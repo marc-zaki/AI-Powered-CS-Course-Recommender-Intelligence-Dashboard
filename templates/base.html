@@ -447,12 +447,12 @@
     {% endif %}
     
     <!-- Cookie Consent Banner -->
-    <div id="cookie-consent-banner" class="cookie-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.5rem; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; width: 500px; text-align: center;">
-        <h4 style="margin-top: 0; color: var(--text-main); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem;"><i data-lucide="cookie" style="width: 20px; height: 20px;"></i> Cookie Policy</h4>
+    <div id="cookie-consent-banner" class="cookie-banner" style="display: none; position: fixed; bottom: 30px; left: 30px; background: var(--bg-main); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.5rem; z-index: 10000; box-shadow: var(--shadow-glass-hover); max-width: 90%; width: 400px; text-align: left;">
+        <h4 style="margin-top: 0; color: var(--text-main); font-weight: 700; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="cookie" style="width: 20px; height: 20px;"></i> Cookie Policy</h4>
         <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">We use cookies to improve your experience, personalize content, and analyze our traffic. By clicking "Accept", you consent to our use of cookies as described in our <a href="{{ url_for('privacy') }}" style="color: var(--primary); text-decoration: underline;">Privacy Policy</a>.</p>
-        <div style="display: flex; gap: 1rem; justify-content: center;">
-            <button onclick="acceptCookies()" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-weight: 600;">Accept</button>
-            <button onclick="document.getElementById('cookie-consent-banner').style.display='none'" class="btn btn-outline" style="padding: 0.5rem 1.5rem; font-weight: 600;">Close</button>
+        <div style="display: flex; gap: 0.75rem;">
+            <button onclick="acceptCookies()" class="btn btn-primary" style="padding: 0.5rem 1.5rem; font-weight: 600; flex: 1;">Accept</button>
+            <button onclick="document.getElementById('cookie-consent-banner').style.display='none'" class="btn btn-outline" style="padding: 0.5rem 1.5rem; font-weight: 600; flex: 1;">Close</button>
         </div>
     </div>
 
