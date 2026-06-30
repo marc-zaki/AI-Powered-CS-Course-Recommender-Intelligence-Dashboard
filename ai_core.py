@@ -122,3 +122,39 @@ def load_interview_system():
         print("Interview Analyzer models loaded successfully!")
     except Exception as e:
         print(f"Error loading Interview Analyzer system: {e}")
+
+def get_similar_courses(query: str, limit: int = 4, exclude_title: str = None, exclude_urls: list = None, min_score: float = 0.05):
+    global df, vectorizer, tfidf_matrix
+    if df is None or vectorizer is None or tfidf_matrix is None:
+        return []
+    
+    try:
+        query_vector = vectorizer.transform([query.lower()])
+        search_df = df.copy()
+        search_df['match_score'] = cosine_similarity(query_vector, tfidf_matrix).flatten()
+        
+        if exclude_title:
+            search_df = search_df[search_df['title'] != exclude_title]
+        if exclude_urls:
+            search_df = search_df[~search_df['url'].isin(exclude_urls)]
+            
+        top_matches = search_df[search_df['match_score'] > min_score].sort_values(
+            by=['match_score', 'stars'], ascending=[False, False]
+        ).head(limit)
+        
+        results = []
+        for _, row in top_matches.iterrows():
+            results.append({
+                "title": str(row.get("title", "")),
+                "provider": str(row.get("provider", "")),
+                "url": str(row.get("url", "#")),
+                "stars": float(row.get("stars", 4.0)),
+                "ratings_count": int(row.get("ratings_count", 0)),
+                "content_text": str(row.get("content_text", ""))[:800],
+                "review_summary": str(row.get("review_summary", "")),
+                "raw_reviews": row.get("raw_reviews", []) if isinstance(row.get("raw_reviews"), list) else [],
+            })
+        return results
+    except Exception as e:
+        print(f"Similarity search error: {e}")
+        return []

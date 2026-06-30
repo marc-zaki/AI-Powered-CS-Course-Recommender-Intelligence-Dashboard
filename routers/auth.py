@@ -21,23 +21,7 @@ router = APIRouter()
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
 
-async def get_db_async(request: Request):
-    return request.app.state.mongo_db if hasattr(request.app.state, 'mongo_db') else None
-
-async def get_current_user(request: Request):
-    user_id = request.session.get('user_id')
-    if user_id:
-        db = request.app.state.mongo_db
-        if db is not None:
-            return await db.users.find_one({"_id": user_id})
-    return None
-
-def login_required(func):
-    """
-    In FastAPI, it's better to use dependencies, but since we are migrating,
-    we will handle this manually in the routes for now.
-    """
-    pass
+from dependencies import get_db, get_current_user
 
 @router.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request):
@@ -51,9 +35,9 @@ async def register(
     password: str = Form(""),
     track: str = Form(""),
     career_goals: str = Form(""),
-    skill_level: str = Form("Beginner")
+    skill_level: str = Form("Beginner"),
+    db=Depends(get_db)
 ):
-    db = request.app.state.mongo_db
     if db is None:
         flash(request, "Database connection error.", "danger")
         return RedirectResponse(url="/register", status_code=303)
@@ -104,9 +88,9 @@ async def login_page(request: Request):
 async def login(
     request: Request,
     email: str = Form(""),
-    password: str = Form("")
+    password: str = Form(""),
+    db=Depends(get_db)
 ):
-    db = request.app.state.mongo_db
     if db is None:
         flash(request, "Database connection error.", "danger")
         return RedirectResponse(url="/login", status_code=303)
@@ -156,8 +140,7 @@ async def google_login(request: Request):
     return RedirectResponse(url=auth_url, status_code=303)
 
 @router.get("/login/google/callback")
-async def google_callback(request: Request):
-    db = request.app.state.mongo_db
+async def google_callback(request: Request, db=Depends(get_db)):
     if db is None:
         flash(request, "Database connection error.", "danger")
         return RedirectResponse(url="/login", status_code=303)
@@ -265,13 +248,12 @@ async def forgot_password_page(request: Request):
     return templates.TemplateResponse(request=request, name="forgot_password.html", context= {"request": request})
 
 @router.post("/forgot_password")
-async def forgot_password(request: Request, email: str = Form("")):
+async def forgot_password(request: Request, email: str = Form(""), db=Depends(get_db)):
     email = email.strip()
     if not email:
         flash(request, "Please enter your email address.", "danger")
         return RedirectResponse(url="/forgot_password", status_code=303)
         
-    db = request.app.state.mongo_db
     if db is None:
         flash(request, "Database connection error.", "danger")
         return RedirectResponse(url="/forgot_password", status_code=303)
@@ -312,9 +294,9 @@ async def reset_password(
     request: Request,
     token: str,
     password: str = Form(""),
-    confirm_password: str = Form("")
+    confirm_password: str = Form(""),
+    db=Depends(get_db)
 ):
-    db = request.app.state.mongo_db
     if db is None:
         flash(request, "Database connection error.", "danger")
         return RedirectResponse(url="/login", status_code=303)
@@ -353,20 +335,19 @@ async def reset_password(
     return RedirectResponse(url="/login", status_code=303)
 
 @router.get("/onboarding", response_class=HTMLResponse)
-async def onboarding_page(request: Request):
-    user = await get_current_user(request)
+async def onboarding_page(request: Request, user=Depends(get_current_user), db=Depends(get_db)):
     if not user:
         flash(request, "Please log in.", "warning")
         return RedirectResponse(url="/login", status_code=303)
         
-    db = request.app.state.mongo_db
     import ai_core
+    import re
     
     if ai_core.df is not None and not ai_core.df.empty:
-        user_track = user.get('track', '').lower()
+        user_track = re.escape(user.get('track', '').lower())
         relevant_df = pd.DataFrame()
         if user_track:
-            relevant_df = ai_core.df[ai_core.df['search_profile'].str.contains(user_track, case=False, na=False) | ai_core.df['title'].str.contains(user_track, case=False, na=False)]
+            relevant_df = ai_core.df[ai_core.df['search_profile'].str.contains(user_track, case=False, na=False, regex=True) | ai_core.df['title'].str.contains(user_track, case=False, na=False, regex=True)]
             
         if len(relevant_df) >= 5:
             random_courses = relevant_df.sample(n=5).to_dict('records')
@@ -377,7 +358,8 @@ async def onboarding_page(request: Request):
             others = other_df.sample(n=min(remaining, len(other_df))).to_dict('records') if not other_df.empty else []
             random_courses = relevant + others
         else:
-            random_courses = ai_core.df.sample(n=5).to_dict('records')
+            safe_n = min(5, len(ai_core.df))
+            random_courses = ai_core.df.sample(n=safe_n).to_dict('records') if safe_n > 0 else []
             
         for i, c in enumerate(random_courses):
             c['temp_id'] = f"course_{i}"
@@ -387,15 +369,14 @@ async def onboarding_page(request: Request):
     return templates.TemplateResponse(request=request, name='onboarding.html', context= {"request": request, "courses": random_courses})
 
 @router.post("/onboarding")
-async def onboarding(request: Request):
-    user = await get_current_user(request)
+async def onboarding(request: Request, user=Depends(get_current_user), db=Depends(get_db)):
     if not user:
         return RedirectResponse(url="/login", status_code=303)
         
     form_data = await request.form()
-    db = request.app.state.mongo_db
     
-    await db.users.update_one(
+    if db is not None:
+        await db.users.update_one(
         {"_id": request.session['user_id']},
         {"$set": {"onboarding_preferences": dict(form_data)}}
     )
@@ -403,8 +384,7 @@ async def onboarding(request: Request):
     return RedirectResponse(url="/", status_code=303)
 
 @router.get("/profile", response_class=HTMLResponse)
-async def profile_page(request: Request):
-    user = await get_current_user(request)
+async def profile_page(request: Request, user=Depends(get_current_user)):
     if not user:
         flash(request, "Please log in.", "warning")
         return RedirectResponse(url="/login", status_code=303)
@@ -424,14 +404,13 @@ async def profile(
     name: str = Form(None),
     track: str = Form(None),
     career_goals: str = Form(None),
-    current_skill_level: str = Form(None)
+    current_skill_level: str = Form(None),
+    user=Depends(get_current_user),
+    db=Depends(get_db)
 ):
-    user = await get_current_user(request)
     if not user:
         return RedirectResponse(url="/login", status_code=303)
         
-    db = request.app.state.mongo_db
-    
     updates = {}
     if name is not None: updates["name"] = name
     if track is not None: updates["track"] = track
@@ -445,12 +424,9 @@ async def profile(
     return RedirectResponse(url="/profile", status_code=303)
 
 @router.post("/delete_account")
-async def delete_account(request: Request, password: str = Form("")):
-    user = await get_current_user(request)
-    if not user:
+async def delete_account(request: Request, password: str = Form(""), user=Depends(get_current_user), db=Depends(get_db)):
+    if not user or db is None:
         return RedirectResponse(url="/login", status_code=303)
-        
-    db = request.app.state.mongo_db
     if user.get('password_hash'):
         if not check_password_hash(user['password_hash'], password):
             flash(request, "Incorrect password, please try again.", "danger")
