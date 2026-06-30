@@ -347,7 +347,8 @@ async def onboarding_page(request: Request, user=Depends(get_current_user), db=D
         user_track = re.escape(user.get('track', '').lower())
         relevant_df = pd.DataFrame()
         if user_track:
-            relevant_df = ai_core.df[ai_core.df['search_profile'].str.contains(user_track, case=False, na=False, regex=True) | ai_core.df['title'].str.contains(user_track, case=False, na=False, regex=True)]
+            search_col = 'search_profile' if 'search_profile' in ai_core.df.columns else 'content_text'
+            relevant_df = ai_core.df[ai_core.df[search_col].str.contains(user_track, case=False, na=False, regex=True) | ai_core.df['title'].str.contains(user_track, case=False, na=False, regex=True)]
             
         if len(relevant_df) >= 5:
             random_courses = relevant_df.sample(n=5).to_dict('records')

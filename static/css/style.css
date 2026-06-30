@@ -452,6 +452,10 @@ body {
     filter: none;
 }
 
+[data-theme="light"] .logo img {
+    filter: invert(1);
+}
+
 .stats-badge {
     background: rgba(15, 76, 117, 0.15);
     color: var(--secondary);
