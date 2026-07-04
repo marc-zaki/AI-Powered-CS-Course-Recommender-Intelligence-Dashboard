@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MASARI | Presentation</title>
-    
+
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -33,16 +35,17 @@
             }
         }
     </script>
-    
+
     <!-- GSAP for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        html, body {
+        html,
+        body {
             background-color: #030712;
             color: #f3f4f6;
             margin: 0;
@@ -67,8 +70,16 @@
             padding: 4rem 0;
         }
 
-        html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
-        html, body { -ms-overflow-style: none; scrollbar-width: none; }
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        html,
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
         .glass-panel {
             background: rgba(31, 41, 55, 0.4);
@@ -78,493 +89,684 @@
         }
 
         /* Initial animation states */
-        .gsap-fade-up { opacity: 0; transform: translateY(30px); }
-        .gsap-fade-in { opacity: 0; }
-        .gsap-scale-up { opacity: 0; transform: scale(0.8); }
-        .gsap-slide-left { opacity: 0; transform: translateX(-50px); }
-        .gsap-slide-right { opacity: 0; transform: translateX(50px); }
+        .gsap-fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .gsap-fade-in {
+            opacity: 0;
+        }
+
+        .gsap-scale-up {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .gsap-slide-left {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .gsap-slide-right {
+            opacity: 0;
+            transform: translateX(50px);
+        }
     </style>
 </head>
+
 <body>
     <!-- Hero Section -->
-        <section id="section-hero" class="scroll-section flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-dark-950 via-dark-900 to-black">
-            <div class="absolute inset-0 pointer-events-none z-0 gsap-hero-bg" style="background-image: radial-gradient(circle at 50% 50%, rgba(202, 138, 4, 0.15) 0%, transparent 50%); opacity: 0; transform: scale(1.1);"></div>
-            <div class="z-10 text-center max-w-4xl px-4 flex flex-col items-center">
-                <div class="gsap-hero-title opacity-0 translate-y-12">
-                    <h1 class="text-7xl md:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600 drop-shadow-lg mb-6">MASARI</h1>
+    <section id="section-hero"
+        class="scroll-section flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-dark-950 via-dark-900 to-black">
+        <div class="absolute inset-0 pointer-events-none z-0 gsap-hero-bg"
+            style="background-image: radial-gradient(circle at 50% 50%, rgba(202, 138, 4, 0.15) 0%, transparent 50%); opacity: 0; transform: scale(1.1);">
+        </div>
+        <div class="z-10 text-center max-w-4xl px-4 flex flex-col items-center">
+            <div class="gsap-hero-title opacity-0 translate-y-12">
+                <h1
+                    class="text-7xl md:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600 drop-shadow-lg mb-6">
+                    MASARI</h1>
+            </div>
+            <div class="gsap-hero-subtitle opacity-0 translate-y-8">
+                <p class="text-xl md:text-3xl font-light text-gray-300 mb-4">Where Excellence Takes Center Stage</p>
+                <p class="text-md md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">An AI-powered academic
+                    advisor and centralized intelligence dashboard bridging the gap between fragmented computer science
+                    learning and real-world employment.</p>
+            </div>
+            <div class="mt-16 gsap-hero-btn opacity-0">
+                <button onclick="document.getElementById('section-origin').scrollIntoView({ behavior: 'smooth' })"
+                    class="group relative px-8 py-4 bg-transparent text-gold-400 border border-gold-500 rounded-full font-semibold overflow-hidden transition-all hover:text-dark-950 flex items-center gap-2 shadow-[0_0_15px_rgba(202,138,4,0.3)] hover:shadow-[0_0_25px_rgba(202,138,4,0.6)]">
+                    <div
+                        class="absolute inset-0 bg-gold-500 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out z-0">
+                    </div>
+                    <span class="relative z-10">Discover The Origin</span>
+                    <i data-lucide="chevron-down"
+                        class="relative z-10 w-5 h-5 group-hover:translate-y-1 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Origin Section -->
+    <section id="section-origin"
+        class="scroll-section flex flex-col items-center justify-center relative bg-dark-900 py-20 overflow-hidden">
+        <div class="z-10 w-full max-w-6xl px-4 flex flex-col items-center h-full justify-center">
+            <div class="text-center mb-12 gsap-origin-title opacity-0 -translate-y-5">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Origin Story</h2>
+                <p class="text-gray-400 text-lg max-w-3xl mx-auto">MASARI was born from the strategic merger of two
+                    distinct, powerful systems to eliminate student friction.</p>
+            </div>
+            <div class="flex flex-col md:flex-row w-full items-stretch gap-8 relative mb-16">
+                <div
+                    class="gsap-origin-left flex-1 glass-panel p-8 rounded-3xl border-l-4 border-l-blue-500 relative flex flex-col items-center text-center opacity-0 -translate-x-12">
+                    <div class="p-4 bg-dark-950 rounded-full mb-6 border border-gray-800"><i data-lucide="book-open"
+                            class="w-8 h-8 text-blue-400"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-4">AI Course Recommender</h3>
+                    <p class="text-gray-400 leading-relaxed">Initially designed as an independent intelligence dashboard
+                        focused purely on parsing student intent and recommending highly-targeted computer science
+                        courses.</p>
                 </div>
-                <div class="gsap-hero-subtitle opacity-0 translate-y-8">
-                    <p class="text-xl md:text-3xl font-light text-gray-300 mb-4">Where Excellence Takes Center Stage</p>
-                    <p class="text-md md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">An AI-powered academic advisor and centralized intelligence dashboard bridging the gap between fragmented computer science learning and real-world employment.</p>
+                <div
+                    class="gsap-origin-center hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gold-500 rounded-full items-center justify-center shadow-[0_0_30px_rgba(202,138,4,0.6)] z-20 opacity-0 scale-0">
+                    <i data-lucide="git-merge" class="w-8 h-8 text-dark-950"></i>
                 </div>
-                <div class="mt-16 gsap-hero-btn opacity-0">
-                    <button onclick="document.getElementById('section-origin').scrollIntoView({ behavior: 'smooth' })" class="group relative px-8 py-4 bg-transparent text-gold-400 border border-gold-500 rounded-full font-semibold overflow-hidden transition-all hover:text-dark-950 flex items-center gap-2 shadow-[0_0_15px_rgba(202,138,4,0.3)] hover:shadow-[0_0_25px_rgba(202,138,4,0.6)]">
-                        <div class="absolute inset-0 bg-gold-500 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out z-0"></div>
-                        <span class="relative z-10">Discover The Origin</span>
-                        <i data-lucide="chevron-down" class="relative z-10 w-5 h-5 group-hover:translate-y-1 transition-transform"></i>
-                    </button>
+                <div
+                    class="gsap-origin-right flex-1 glass-panel p-8 rounded-3xl border-r-4 border-r-emerald-500 relative flex flex-col items-center text-center opacity-0 translate-x-12">
+                    <div class="p-4 bg-dark-950 rounded-full mb-6 border border-gray-800"><i
+                            data-lucide="message-square" class="w-8 h-8 text-emerald-400"></i></div>
+                    <h3 class="text-2xl font-bold text-white mb-4">ElZatona Interview System</h3>
+                    <p class="text-gray-400 leading-relaxed">A dedicated AI-driven mock interview environment built to
+                        challenge candidates with dynamic technical questions and evaluate their performance.</p>
                 </div>
             </div>
-        </section>
+            <div
+                class="gsap-origin-bottom w-full max-w-4xl glass-panel p-8 md:p-10 rounded-3xl border border-gold-500/30 text-center relative overflow-hidden opacity-0 translate-y-8">
+                <div class="absolute inset-0 bg-gold-500/5 pointer-events-none"></div>
+                <h3 class="text-2xl md:text-3xl font-bold text-gold-400 mb-4 relative z-10">The Unified Vision: MASARI
+                </h3>
+                <p class="text-gray-300 md:text-lg leading-relaxed relative z-10">We recognized a critical flaw:
+                    students were still overwhelmed by disjointed tools, conflicted on where to begin, and intimidated
+                    by the complex workflow spanning learning to employment. By merging these two powerful engines,
+                    MASARI was forged into a single, cohesive ecosystem—providing an all-in-one, frictionless journey
+                    from the first course to the final job offer.</p>
+            </div>
+        </div>
+    </section>
 
-        <!-- Origin Section -->
-        <section id="section-origin" class="scroll-section flex flex-col items-center justify-center relative bg-dark-900 py-20 overflow-hidden">
-            <div class="z-10 w-full max-w-6xl px-4 flex flex-col items-center h-full justify-center">
-                <div class="text-center mb-12 gsap-origin-title opacity-0 -translate-y-5">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Origin Story</h2>
-                    <p class="text-gray-400 text-lg max-w-3xl mx-auto">MASARI was born from the strategic merger of two distinct, powerful systems to eliminate student friction.</p>
-                </div>
-                <div class="flex flex-col md:flex-row w-full items-stretch gap-8 relative mb-16">
-                    <div class="gsap-origin-left flex-1 glass-panel p-8 rounded-3xl border-l-4 border-l-blue-500 relative flex flex-col items-center text-center opacity-0 -translate-x-12">
-                        <div class="p-4 bg-dark-950 rounded-full mb-6 border border-gray-800"><i data-lucide="book-open" class="w-8 h-8 text-blue-400"></i></div>
-                        <h3 class="text-2xl font-bold text-white mb-4">AI Course Recommender</h3>
-                        <p class="text-gray-400 leading-relaxed">Initially designed as an independent intelligence dashboard focused purely on parsing student intent and recommending highly-targeted computer science courses.</p>
+    <!-- Overview Section -->
+    <section id="section-overview"
+        class="scroll-section flex flex-col items-center justify-center relative overflow-hidden bg-dark-950">
+        <div class="z-10 text-center max-w-6xl px-4 flex flex-col items-center">
+            <div class="gsap-overview-title opacity-0 translate-y-8">
+                <p class="text-gold-400 font-semibold tracking-widest uppercase mb-4 text-sm md:text-base">DeepMinds 7th
+                    Edition - MSA University</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-8">Project Overview</h2>
+            </div>
+            <div class="gsap-overview-cards w-full mt-8 opacity-0 translate-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full">
+                    <div
+                        class="glass-panel p-8 rounded-2xl flex flex-col justify-center transition-transform hover:-translate-y-2">
+                        <h3 class="text-xl text-gold-400 font-bold mb-4">What It Is</h3>
+                        <p class="text-gray-300 leading-relaxed">A centralized, intelligent platform combining an
+                            NLP-based course recommender, an ATS resume optimizer, and an AI interview simulator.</p>
                     </div>
-                    <div class="gsap-origin-center hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gold-500 rounded-full items-center justify-center shadow-[0_0_30px_rgba(202,138,4,0.6)] z-20 opacity-0 scale-0">
-                        <i data-lucide="git-merge" class="w-8 h-8 text-dark-950"></i>
+                    <div
+                        class="glass-panel p-8 rounded-2xl flex flex-col justify-center transition-transform hover:-translate-y-2">
+                        <h3 class="text-xl text-gold-400 font-bold mb-4">What It Achieves</h3>
+                        <p class="text-gray-300 leading-relaxed">It personalizes the student learning journey,
+                            transforms weak resumes into ATS-compliant profiles, and simulates realistic job interviews
+                            with actionable feedback.</p>
                     </div>
-                    <div class="gsap-origin-right flex-1 glass-panel p-8 rounded-3xl border-r-4 border-r-emerald-500 relative flex flex-col items-center text-center opacity-0 translate-x-12">
-                        <div class="p-4 bg-dark-950 rounded-full mb-6 border border-gray-800"><i data-lucide="message-square" class="w-8 h-8 text-emerald-400"></i></div>
-                        <h3 class="text-2xl font-bold text-white mb-4">ElZatona Interview System</h3>
-                        <p class="text-gray-400 leading-relaxed">A dedicated AI-driven mock interview environment built to challenge candidates with dynamic technical questions and evaluate their performance.</p>
+                    <div
+                        class="glass-panel p-8 rounded-2xl flex flex-col justify-center transition-transform hover:-translate-y-2">
+                        <h3 class="text-xl text-gold-400 font-bold mb-4">Why It Matters</h3>
+                        <p class="text-gray-300 leading-relaxed">CS students currently face a fragmented landscape.
+                            MASARI eliminates the guesswork, helping students focus on learning and landing dream roles
+                            rather than navigating chaos.</p>
                     </div>
-                </div>
-                <div class="gsap-origin-bottom w-full max-w-4xl glass-panel p-8 md:p-10 rounded-3xl border border-gold-500/30 text-center relative overflow-hidden opacity-0 translate-y-8">
-                    <div class="absolute inset-0 bg-gold-500/5 pointer-events-none"></div>
-                    <h3 class="text-2xl md:text-3xl font-bold text-gold-400 mb-4 relative z-10">The Unified Vision: MASARI</h3>
-                    <p class="text-gray-300 md:text-lg leading-relaxed relative z-10">We recognized a critical flaw: students were still overwhelmed by disjointed tools, conflicted on where to begin, and intimidated by the complex workflow spanning learning to employment. By merging these two powerful engines, MASARI was forged into a single, cohesive ecosystem—providing an all-in-one, frictionless journey from the first course to the final job offer.</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Overview Section -->
-        <section id="section-overview" class="scroll-section flex flex-col items-center justify-center relative overflow-hidden bg-dark-950">
-            <div class="z-10 text-center max-w-6xl px-4 flex flex-col items-center">
-                <div class="gsap-overview-title opacity-0 translate-y-8">
-                    <p class="text-gold-400 font-semibold tracking-widest uppercase mb-4 text-sm md:text-base">DeepMinds 7th Edition - MSA University</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-8">Project Overview</h2>
-                </div>
-                <div class="gsap-overview-cards w-full mt-8 opacity-0 translate-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full">
-                        <div class="glass-panel p-8 rounded-2xl flex flex-col justify-center transition-transform hover:-translate-y-2">
-                            <h3 class="text-xl text-gold-400 font-bold mb-4">What It Is</h3>
-                            <p class="text-gray-300 leading-relaxed">A centralized, intelligent platform combining an NLP-based course recommender, an ATS resume optimizer, and an AI interview simulator.</p>
-                        </div>
-                        <div class="glass-panel p-8 rounded-2xl flex flex-col justify-center transition-transform hover:-translate-y-2">
-                            <h3 class="text-xl text-gold-400 font-bold mb-4">What It Achieves</h3>
-                            <p class="text-gray-300 leading-relaxed">It personalizes the student learning journey, transforms weak resumes into ATS-compliant profiles, and simulates realistic job interviews with actionable feedback.</p>
-                        </div>
-                        <div class="glass-panel p-8 rounded-2xl flex flex-col justify-center transition-transform hover:-translate-y-2">
-                            <h3 class="text-xl text-gold-400 font-bold mb-4">Why It Matters</h3>
-                            <p class="text-gray-300 leading-relaxed">CS students currently face a fragmented landscape. MASARI eliminates the guesswork, helping students focus on learning and landing dream roles rather than navigating chaos.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="gsap-overview-btn mt-16 opacity-0">
-                    <button onclick="document.getElementById('section-problem').scrollIntoView({ behavior: 'smooth' })" class="text-gray-500 hover:text-gold-400 transition-colors flex flex-col items-center">
-                        <span class="text-sm font-medium uppercase tracking-widest mb-2">Explore The Problem</span>
-                        <i data-lucide="chevron-down" class="w-6 h-6 animate-bounce"></i>
-                    </button>
-                </div>
+            <div class="gsap-overview-btn mt-16 opacity-0">
+                <button onclick="document.getElementById('section-problem').scrollIntoView({ behavior: 'smooth' })"
+                    class="text-gray-500 hover:text-gold-400 transition-colors flex flex-col items-center">
+                    <span class="text-sm font-medium uppercase tracking-widest mb-2">Explore The Problem</span>
+                    <i data-lucide="chevron-down" class="w-6 h-6 animate-bounce"></i>
+                </button>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Problem Section -->
-        <section id="section-problem" class="scroll-section flex flex-col items-center justify-center relative overflow-hidden bg-dark-900">
-            <div class="z-10 text-center w-full max-w-6xl px-4">
-                <div class="gsap-problem-title mb-20 opacity-0 translate-y-5">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Fragmented Journey</h2>
-                    <p class="text-gray-400 max-w-2xl mx-auto text-lg">Thousands of disjointed courses and disconnected tools leave students without a cohesive path to success.</p>
-                </div>
-                <div class="relative min-h-[400px] h-auto max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6 pb-12">
+    <!-- Problem Section -->
+    <section id="section-problem"
+        class="scroll-section flex flex-col items-center justify-center relative overflow-hidden bg-dark-900">
+        <div class="z-10 text-center w-full max-w-6xl px-4">
+            <div class="gsap-problem-title mb-20 opacity-0 translate-y-5">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Fragmented Journey</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-lg">Thousands of disjointed courses and disconnected
+                    tools leave students without a cohesive path to success.</p>
+            </div>
+            <div
+                class="relative min-h-[400px] h-auto max-w-5xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-6 pb-12">
                 <!-- Problem Card 1 -->
-                <div class="gsap-problem-card glass-panel p-8 rounded-2xl flex flex-col items-center text-center relative" style="opacity:0; transform: translate(-100px, -50px) rotate(-15deg);">
-                    <div class="w-12 h-12 rounded-full bg-dark-800 flex items-center justify-center mb-6 shadow-md shadow-gold-500/10 text-gold-400">
+                <div class="gsap-problem-card glass-panel p-8 rounded-2xl flex flex-col items-center text-center relative"
+                    style="opacity:0; transform: translate(-100px, -50px) rotate(-15deg);">
+                    <div
+                        class="w-12 h-12 rounded-full bg-dark-800 flex items-center justify-center mb-6 shadow-md shadow-gold-500/10 text-gold-400">
                         <i data-lucide="search-x"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-100">Keyword Search Fails</h3>
-                    <p class="text-sm text-gray-400">Traditional search methods fail to understand the true intent or current skill level of the student.</p>
+                    <p class="text-sm text-gray-400">Traditional search methods fail to understand the true intent or
+                        current skill level of the student.</p>
                 </div>
                 <!-- Problem Card 2 -->
-                <div class="gsap-problem-card glass-panel p-8 rounded-2xl flex flex-col items-center text-center relative" style="opacity:0; transform: translate(100px, -50px) rotate(20deg);">
-                    <div class="w-12 h-12 rounded-full bg-dark-800 flex items-center justify-center mb-6 shadow-md shadow-gold-500/10 text-gold-400">
+                <div class="gsap-problem-card glass-panel p-8 rounded-2xl flex flex-col items-center text-center relative"
+                    style="opacity:0; transform: translate(100px, -50px) rotate(20deg);">
+                    <div
+                        class="w-12 h-12 rounded-full bg-dark-800 flex items-center justify-center mb-6 shadow-md shadow-gold-500/10 text-gold-400">
                         <i data-lucide="file-warning"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-100">ATS Black-Holes</h3>
-                    <p class="text-sm text-gray-400">Highly qualified students get rejected by Applicant Tracking Systems due to poorly optimized resumes.</p>
+                    <p class="text-sm text-gray-400">Highly qualified students get rejected by Applicant Tracking
+                        Systems due to poorly optimized resumes.</p>
                 </div>
                 <!-- Problem Card 3 -->
-                <div class="gsap-problem-card glass-panel p-8 rounded-2xl flex flex-col items-center text-center relative" style="opacity:0; transform: translate(0px, 100px) rotate(-10deg);">
-                    <div class="w-12 h-12 rounded-full bg-dark-800 flex items-center justify-center mb-6 shadow-md shadow-gold-500/10 text-gold-400">
+                <div class="gsap-problem-card glass-panel p-8 rounded-2xl flex flex-col items-center text-center relative"
+                    style="opacity:0; transform: translate(0px, 100px) rotate(-10deg);">
+                    <div
+                        class="w-12 h-12 rounded-full bg-dark-800 flex items-center justify-center mb-6 shadow-md shadow-gold-500/10 text-gold-400">
                         <i data-lucide="message-square-dashed"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-gray-100">Generic Interview Prep</h3>
-                    <p class="text-sm text-gray-400">Static lists of interview questions do not adapt to a candidate's weaknesses or specific job descriptions.</p>
+                    <p class="text-sm text-gray-400">Static lists of interview questions do not adapt to a candidate's
+                        weaknesses or specific job descriptions.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="section-solution"
+        class="scroll-section flex flex-col items-center justify-center relative bg-dark-950 py-20">
+        <div class="z-10 w-full max-w-6xl px-4 flex flex-col items-center">
+            <div class="gsap-fade-up text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Solution Engines</h2>
+                <p class="text-gray-400 text-lg">A deep dive into the core capabilities powering MASARI.</p>
             </div>
-        </section>
 
-        <!-- Solution Section -->
-        <section id="section-solution" class="scroll-section flex flex-col items-center justify-center relative bg-dark-950 py-20">
-            <div class="z-10 w-full max-w-6xl px-4 flex flex-col items-center">
-                <div class="gsap-fade-up text-center mb-12">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Solution Engines</h2>
-                    <p class="text-gray-400 text-lg">Fully functional interactive demos powered by MASARI.</p>
-                </div>
-
-                <!-- Tabs -->
-                <div class="gsap-fade-in flex space-x-2 bg-dark-900 p-1 rounded-full mb-12 flex-wrap justify-center">
-                    <button onclick="switchTab(0)" id="tab-0" class="px-6 py-2 rounded-full text-sm font-medium transition-all bg-gold-500 text-dark-950 shadow-md">NLP Recommender</button>
-                    <button onclick="switchTab(1)" id="tab-1" class="px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800">ATS Optimizer</button>
-                    <button onclick="switchTab(2)" id="tab-2" class="px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800">AI Interview</button>
-                    <button onclick="switchTab(3)" id="tab-3" class="px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800">AI Study Planner</button>
-                </div>
-
-                <!-- Tab Contents -->
-                <div class="w-full max-w-4xl">
-                    <!-- Tab 0: NLP Recommender -->
-                    <div id="content-0" class="tab-content glass-panel p-8 rounded-2xl w-full transition-all duration-300 transform opacity-100 scale-100 flex flex-col">
-                        <form onsubmit="handleNlpSearch(event)" class="w-full flex flex-col gap-4 shrink-0">
-                            <div class="relative w-full">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="search" class="h-5 w-5 text-gray-400"></i></div>
-                                <input type="text" name="q" class="block w-full pl-12 pr-4 py-4 bg-dark-900 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all text-lg shadow-inner" placeholder="Search for subjects, skills, or tracks...">
-                                <button type="submit" class="absolute inset-y-2 right-2 px-8 bg-gold-500 text-dark-950 font-bold rounded-lg hover:bg-gold-400 transition-colors shadow-md">Search</button>
-                            </div>
-                            
-                            <div class="flex flex-wrap items-center gap-4 mt-2 bg-dark-900/50 p-3 rounded-xl border border-gray-800">
-                                <span class="text-gray-400 flex items-center gap-2 text-sm font-bold uppercase tracking-wider ml-2"><i data-lucide="sliders-horizontal" class="w-4 h-4 text-gold-500"></i> Filters:</span>
-                                
-                                <select name="provider" class="bg-dark-800 border border-gray-700 text-gray-300 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer hover:bg-dark-700 transition-colors">
-                                    <option value="">All Providers</option>
-                                    <option value="coursera">Coursera</option>
-                                    <option value="udemy">Udemy</option>
-                                    <option value="edx">edX</option>
-                                    <option value="mit">MIT</option>
-                                    <option value="harvard">Harvard</option>
-                                    <option value="google">Google</option>
-                                    <option value="stanford">Stanford</option>
-                                </select>
-                                
-                                <select name="difficulty" class="bg-dark-800 border border-gray-700 text-gray-300 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer hover:bg-dark-700 transition-colors">
-                                    <option value="">All Levels</option>
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                </select>
-                                
-                                <select name="rating" class="bg-dark-800 border border-gray-700 text-gray-300 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer hover:bg-dark-700 transition-colors">
-                                    <option value="">All Ratings</option>
-                                    <option value="4.0">4.0+ Stars</option>
-                                    <option value="4.5">4.5+ Stars</option>
-                                </select>
-                            </div>
-                        </form>
-                        
-                        <div id="nlp-results" class="hidden flex-1 overflow-y-auto mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 pr-2 min-h-[150px]">
-                        </div>
-                    </div>
-
-                    <!-- Tab 1: ATS Optimizer -->
-                    <div id="content-1" class="tab-content hidden glass-panel p-8 rounded-2xl w-full flex flex-col justify-center transition-all duration-300 transform opacity-0 scale-95">
-                        <div id="ats-idle" class="w-full flex flex-col items-center gap-4">
-                            <input type="text" id="ats-job-desc" placeholder="Target Job Description (e.g. ML Engineer)" value="Machine Learning Engineer" class="w-full max-w-md px-4 py-2 bg-dark-900 border border-gray-700 rounded-lg text-white text-sm">
-                            <label class="w-full max-w-md border-2 border-dashed border-gray-600 rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer hover:border-gold-500 hover:bg-gold-500/5 transition-all group relative">
-                                <i data-lucide="upload-cloud" class="w-12 h-12 text-gray-400 group-hover:text-gold-400 mb-4 transition-colors"></i>
-                                <p class="text-gray-300 font-medium">Click to Upload Resume (PDF)</p>
-                                <input type="file" id="ats-file" accept=".pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleAtsUpload(this)">
-                            </label>
-                        </div>
-                        <div id="ats-scanning" class="w-full max-w-md border border-gold-500/30 rounded-2xl p-8 relative overflow-hidden bg-dark-900 hidden">
-                            <div class="absolute left-0 right-0 h-1 bg-gold-400 shadow-[0_0_15px_3px_rgba(202,138,4,0.5)] z-10 ats-scan-line"></div>
-                            <div class="flex flex-col items-center text-center opacity-50">
-                                <i data-lucide="terminal" class="w-8 h-8 text-gold-500 mb-4"></i>
-                                <p class="text-gold-400 font-mono text-sm animate-pulse">Extracting Text & Entities...</p>
-                                <p class="text-gray-500 font-mono text-xs mt-2">Running LLM against Job Description</p>
-                            </div>
-                        </div>
-                        <div id="ats-done" class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 hidden">
-                            <div class="flex flex-col items-center justify-center bg-dark-900 rounded-2xl p-8 border border-gray-800">
-                                <div class="relative w-32 h-32 flex items-center justify-center mb-4">
-                                    <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 128 128">
-                                        <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="12" fill="transparent" class="text-dark-800" />
-                                        <circle id="ats-ring" cx="64" cy="64" r="56" stroke="currentColor" stroke-width="12" fill="transparent" class="text-gold-500 transition-all duration-1000 ease-out" stroke-dasharray="352" stroke-dashoffset="352" stroke-linecap="round" />
-                                    </svg>
-                                    <span id="ats-score-text" class="text-3xl font-bold text-white z-10">0%</span>
-                                </div>
-                                <p class="text-gray-400 font-medium">ATS Match Score</p>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <h4 class="text-white font-bold mb-4 flex items-center gap-2">
-                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i> Missing Critical Keywords
-                                </h4>
-                                <div id="ats-keywords" class="space-y-3"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab 2: AI Interview -->
-                    <div id="content-2" class="tab-content hidden glass-panel p-8 rounded-2xl w-full flex flex-col transition-all duration-300 transform opacity-0 scale-95">
-                        <div class="flex flex-col pb-4 border-b border-gray-800 mb-6 text-center md:text-left shrink-0">
-                            <h2 class="text-3xl font-bold text-gold-400 flex items-center justify-center md:justify-start gap-3 mb-2">
-                                <i data-lucide="search" class="w-8 h-8"></i> Find Questions
-                            </h2>
-                            <p class="text-gray-400 text-sm">AI-powered technical interview preparation, search, and intelligent recommendations.</p>
-                        </div>
-                        
-                        <form onsubmit="handleInterviewSearch(event)" class="w-full flex flex-col md:flex-row gap-4 mt-2 shrink-0">
-                            <div class="flex-1 relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="message-square" class="h-5 w-5 text-gray-400"></i></div>
-                                <input type="text" name="q" class="block w-full pl-12 pr-4 py-4 bg-dark-900 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all text-md shadow-inner" placeholder="e.g., 'binary search', 'system design', 'python'" required>
-                            </div>
-                            <div class="w-full md:w-56">
-                                <select class="w-full h-full bg-dark-800 border border-gray-700 text-gray-300 text-md rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-gold-500 cursor-pointer hover:bg-dark-700 transition-colors">
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate" selected>Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="bg-gold-500 text-dark-950 px-8 py-4 rounded-xl font-bold hover:bg-gold-400 transition-colors shadow-md text-lg shrink-0 w-32 flex items-center justify-center">Analyze</button>
-                        </form>
-                        
-                        <div id="interview-results" class="hidden flex-1 overflow-y-auto mt-4 flex flex-col gap-4 pr-2 min-h-[150px]">
-                        </div>
-                    </div>
-
-                    <!-- Tab 3: AI Study Planner -->
-                    <div id="content-3" class="tab-content hidden glass-panel p-8 rounded-2xl w-full flex flex-col justify-center transition-all duration-300 transform opacity-0 scale-95">
-                        <div class="flex flex-col items-center text-center pb-6 border-b border-gray-800 mb-6">
-                            <span class="text-4xl mb-4 text-gold-400"><i data-lucide="wand-2" class="w-10 h-10"></i></span>
-                            <h2 class="text-3xl font-bold text-white mb-2">AI Study Plan Generator</h2>
-                            <p class="text-gray-400 text-sm max-w-xl">Define your professional target or class goal (e.g., "Full-Stack Web Dev" or "Data Scientist") and watch the advisor map out your ideal weekly path using courses from our curated database.</p>
-                        </div>
-                        
-                        <div class="flex flex-col md:flex-row gap-4 w-full max-w-3xl mx-auto shrink-0 mb-4">
-                            <input type="text" id="study-input" placeholder="What is your career target or learning goal?" class="flex-1 block w-full pl-6 pr-4 py-4 bg-dark-900 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all text-md shadow-inner" onkeydown="if(event.key === 'Enter') handleStudyGenerate()">
-                            <button onclick="handleStudyGenerate()" id="study-btn" class="bg-gold-500 text-dark-950 px-8 py-4 rounded-xl font-bold hover:bg-gold-400 transition-colors shadow-md text-lg shrink-0">Generate Plan</button>
-                        </div>
-                        
-                        <div id="study-results" class="flex-1 overflow-y-auto bg-dark-950 rounded-xl p-4 border border-gray-800 text-left text-sm text-gray-300 relative min-h-[150px]">
-                            <div class="h-full flex flex-col items-center justify-center text-gray-500">
-                                Enter a goal above to generate a customized week-by-week plan based on actual courses.
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Tabs -->
+            <div class="gsap-fade-in flex space-x-2 bg-dark-900 p-1 rounded-full mb-12 flex-wrap justify-center">
+                <button onclick="switchTab(0)" id="tab-0"
+                    class="px-6 py-2 rounded-full text-sm font-medium transition-all bg-gold-500 text-dark-950 shadow-md">NLP
+                    Recommender</button>
+                <button onclick="switchTab(1)" id="tab-1"
+                    class="px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800">ATS
+                    Optimizer</button>
+                <button onclick="switchTab(2)" id="tab-2"
+                    class="px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800">AI
+                    Interview</button>
+                <button onclick="switchTab(3)" id="tab-3"
+                    class="px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800">AI
+                    Study Planner</button>
             </div>
-        </section>
 
-        <!-- Methodology Section -->
-        <section id="section-methodology" class="scroll-section flex flex-col items-center justify-center relative bg-dark-900 py-20">
-            <div class="z-10 w-full max-w-4xl px-4">
-                <div class="gsap-fade-up text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Methodology</h2>
-                    <p class="text-gray-400 text-lg">A structured 5-step design process driven by advanced NLP.</p>
-                </div>
-                <div class="relative">
-                    <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-1 bg-dark-800 -translate-x-1/2 rounded-full overflow-hidden">
-                        <div class="w-full bg-gradient-to-b from-gold-400 via-gold-500 to-gold-600 rounded-full h-full gsap-meth-line" style="transform: scaleY(0); transform-origin: top;"></div>
+            <!-- Tab Contents -->
+            <div class="w-full max-w-4xl">
+                <!-- Tab 0: NLP Recommender -->
+                <div id="content-0"
+                    class="tab-content glass-panel p-8 rounded-2xl w-full transition-all duration-300 transform opacity-100 scale-100 flex flex-col">
+                    <div class="flex flex-col pb-4 border-b border-gray-800 mb-6 text-center md:text-left shrink-0">
+                        <h2
+                            class="text-3xl font-bold text-gold-400 flex items-center justify-center md:justify-start gap-3 mb-2">
+                            <i data-lucide="book-open" class="w-8 h-8"></i> NLP Course Recommender
+                        </h2>
+                        <p class="text-gray-400 text-sm">Intelligent matching eliminating the guesswork from upskilling.
+                        </p>
                     </div>
-                    <div class="space-y-12 relative z-10 py-10" id="methodology-items">
-                        <!-- Items injected by JS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="brain"
+                                    class="w-5 h-5 text-gold-400"></i> TF-IDF Vectorization</h4>
+                            <p class="text-gray-300 text-sm">Employs TF-IDF with bigram support for context-aware
+                                search, ranking courses based on true semantic relevance rather than just keyword
+                                matching.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="star"
+                                    class="w-5 h-5 text-gold-400"></i> AI-Powered Ratings</h4>
+                            <p class="text-gray-300 text-sm">Uses NLTK VADER Sentiment Analysis to score course
+                                descriptions and reviews, heavily weighting real student feedback (70%).</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="award"
+                                    class="w-5 h-5 text-gold-400"></i> Prestige Bonus</h4>
+                            <p class="text-gray-300 text-sm">Courses from elite institutions (MIT, Google, Stanford,
+                                IBM) receive algorithmic boosts to guarantee high-quality results.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="file-text"
+                                    class="w-5 h-5 text-gold-400"></i> NLP Summarization</h4>
+                            <p class="text-gray-300 text-sm">Extracts and tokenizes reviews to generate human-readable
+                                summaries of course pros, cons, and difficulty.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Comparison Section -->
-        <section id="section-comparison" class="scroll-section flex flex-col items-center justify-center relative bg-dark-950 py-20">
-            <div class="z-10 w-full max-w-6xl px-4">
-                <div class="gsap-fade-up text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">System & Implementation / Comparison</h2>
-                    <p class="text-gray-400 text-lg">How MASARI outperforms existing fragmented solutions.</p>
+                <!-- Tab 1: ATS Optimizer -->
+                <div id="content-1"
+                    class="tab-content hidden glass-panel p-8 rounded-2xl w-full flex flex-col justify-center transition-all duration-300 transform opacity-0 scale-95">
+                    <div class="flex flex-col pb-4 border-b border-gray-800 mb-6 text-center md:text-left shrink-0">
+                        <h2
+                            class="text-3xl font-bold text-gold-400 flex items-center justify-center md:justify-start gap-3 mb-2">
+                            <i data-lucide="file-search" class="w-8 h-8"></i> ATS Optimization
+                        </h2>
+                        <p class="text-gray-400 text-sm">Transforming weak resumes into ATS-compliant, high-scoring
+                            profiles.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800 flex flex-col">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="scan-line"
+                                    class="w-5 h-5 text-gold-400"></i> Deep Entity Extraction</h4>
+                            <p class="text-gray-300 text-sm">Parses PDF resumes and extracts critical entities (skills,
+                                experience, education) to compare directly against a target job description.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800 flex flex-col">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i
+                                    data-lucide="alert-triangle" class="w-5 h-5 text-gold-400"></i> Missing Keyword
+                                Analysis</h4>
+                            <p class="text-gray-300 text-sm">Instantly highlights critical missing keywords required by
+                                modern Applicant Tracking Systems to pass the initial screening phase.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800 md:col-span-2 flex flex-col">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="pen-tool"
+                                    class="w-5 h-5 text-gold-400"></i> Actionable Re-writes</h4>
+                            <p class="text-gray-300 text-sm">Provides generative AI suggestions to rewrite bullet
+                                points, maximizing impact using strong action verbs and quantifiable metrics.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="gsap-fade-up glass-panel rounded-2xl overflow-hidden border border-gray-800 w-full overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr class="bg-dark-950 border-b border-gray-700">
-                                <th class="p-6 text-gray-300 font-semibold w-1/4">Feature</th>
-                                <th class="p-6 text-gray-400 font-semibold w-1/3">Existing Solutions</th>
-                                <th class="p-6 text-gold-400 font-bold w-5/12">MASARI (Proposed System)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-800">
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="p-6 font-medium text-white">Search & Discovery</td>
-                                <td class="p-6 text-gray-400"><i data-lucide="x-circle" class="inline w-4 h-4 mr-2 text-red-500"></i>Keyword-based, rigid, often misses user context.</td>
-                                <td class="p-6 text-gray-200"><i data-lucide="check-circle-2" class="inline w-4 h-4 mr-2 text-green-500"></i><strong class="text-gold-400">Contextual Understanding:</strong> Uses NLP (TF-IDF/NLTK) to match true intent to exact technologies.</td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="p-6 font-medium text-white">Resume Building</td>
-                                <td class="p-6 text-gray-400"><i data-lucide="x-circle" class="inline w-4 h-4 mr-2 text-red-500"></i>Basic templates; no feedback on job-specific alignment.</td>
-                                <td class="p-6 text-gray-200"><i data-lucide="check-circle-2" class="inline w-4 h-4 mr-2 text-green-500"></i><strong class="text-gold-400">Actionable AI Feedback:</strong> Grades against real job descriptions and rewrites weak points for ATS compliance.</td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="p-6 font-medium text-white">Interview Prep</td>
-                                <td class="p-6 text-gray-400"><i data-lucide="x-circle" class="inline w-4 h-4 mr-2 text-red-500"></i>Static question banks; one-size-fits-all approach.</td>
-                                <td class="p-6 text-gray-200"><i data-lucide="check-circle-2" class="inline w-4 h-4 mr-2 text-green-500"></i><strong class="text-gold-400">Adaptive & Personalized:</strong> Dynamically generates questions targeting user weaknesses and evaluates answers.</td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition-colors">
-                                <td class="p-6 font-medium text-white">User Journey</td>
-                                <td class="p-6 text-gray-400"><i data-lucide="x-circle" class="inline w-4 h-4 mr-2 text-red-500"></i>Highly fragmented across multiple disconnected platforms.</td>
-                                <td class="p-6 text-gray-200"><i data-lucide="check-circle-2" class="inline w-4 h-4 mr-2 text-green-500"></i><strong class="text-gold-400">Unified Ecosystem:</strong> Seamlessly connects study plans, resumes, and interviews in one dashboard.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
 
-        <!-- Results Section -->
-        <section id="section-results" class="scroll-section flex flex-col items-center justify-center relative bg-dark-900 py-20">
-            <div class="z-10 w-full max-w-5xl px-4">
-                <div class="gsap-fade-up text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Results & Evaluation</h2>
-                    <p class="text-gray-400 text-lg">System testing metrics and demonstration benchmarks.</p>
+                <!-- Tab 2: AI Interview -->
+                <div id="content-2"
+                    class="tab-content hidden glass-panel p-8 rounded-2xl w-full flex flex-col transition-all duration-300 transform opacity-0 scale-95">
+                    <div class="flex flex-col pb-4 border-b border-gray-800 mb-6 text-center md:text-left shrink-0">
+                        <h2
+                            class="text-3xl font-bold text-gold-400 flex items-center justify-center md:justify-start gap-3 mb-2">
+                            <i data-lucide="mic" class="w-8 h-8"></i> AI Interview Simulator
+                        </h2>
+                        <p class="text-gray-400 text-sm">A multi-modal environment for rigorous technical and behavioral
+                            evaluation.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="code-2"
+                                    class="w-5 h-5 text-gold-400"></i> Technical Evaluation</h4>
+                            <p class="text-gray-300 text-sm">Features Ace Editor for live coding. The LLM acts as a
+                                strict interviewer, explicitly grading on Time Complexity (Big-O), Space Complexity, and
+                                edge cases.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="mic"
+                                    class="w-5 h-5 text-gold-400"></i> Voice & STAR Method</h4>
+                            <p class="text-gray-300 text-sm">Integrates WebRTC & Whisper-Large-V3 to record/transcribe
+                                answers instantly, grading them strictly against the STAR framework.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="sparkles"
+                                    class="w-5 h-5 text-gold-400"></i> Generative Search</h4>
+                            <p class="text-gray-300 text-sm">Bypasses static databases by dynamically generating
+                                hyper-relevant theoretical and behavioral questions for any CS topic.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="radar"
+                                    class="w-5 h-5 text-gold-400"></i> Progress Radar</h4>
+                            <p class="text-gray-300 text-sm">Historical progress securely logged to MongoDB, allowing
+                                users to track proficiency growth across categories via Chart.js.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
-                        <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="94" class="counter-val">0</span><span class="text-gold-500">%</span></div>
-                        <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">Intent Accuracy</p>
+
+                <!-- Tab 3: AI Study Planner -->
+                <div id="content-3"
+                    class="tab-content hidden glass-panel p-8 rounded-2xl w-full flex flex-col justify-center transition-all duration-300 transform opacity-0 scale-95">
+                    <div class="flex flex-col pb-4 border-b border-gray-800 mb-6 text-center md:text-left shrink-0">
+                        <h2
+                            class="text-3xl font-bold text-gold-400 flex items-center justify-center md:justify-start gap-3 mb-2">
+                            <i data-lucide="calendar" class="w-8 h-8"></i> AI Study Planner & Dashboard
+                        </h2>
+                        <p class="text-gray-400 text-sm">Intelligently structuring the learning journey.</p>
                     </div>
-                    <div class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
-                        <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="88" class="counter-val">0</span><span class="text-gold-500">%</span></div>
-                        <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">ATS Score Boost</p>
-                    </div>
-                    <div class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
-                        <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="91" class="counter-val">0</span><span class="text-gold-500">%</span></div>
-                        <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">Interview Relevance</p>
-                    </div>
-                    <div class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
-                        <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="100" class="counter-val">0</span><span class="text-gold-500">%</span></div>
-                        <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">Study Plan Alignment</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full text-left">
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="map"
+                                    class="w-5 h-5 text-gold-400"></i> Generative Curriculum</h4>
+                            <p class="text-gray-300 text-sm">Maps out an ideal, week-by-week curriculum and roadmap
+                                tailored specifically to the user's availability and career targets.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="user-check"
+                                    class="w-5 h-5 text-gold-400"></i> Progress Tracking</h4>
+                            <p class="text-gray-300 text-sm">Integrated with secure user profiles, allowing students to
+                                save plans, check off milestones, and stay accountable.</p>
+                        </div>
+                        <div class="bg-dark-900/50 p-6 rounded-xl border border-gray-800 md:col-span-2">
+                            <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="bar-chart-2"
+                                    class="w-5 h-5 text-gold-400"></i> Intelligence EDA Dashboard</h4>
+                            <p class="text-gray-300 text-sm">Provides deep market & skill visualizations using Plotly
+                                and Chart.js, helping users understand trending tech stacks and high-demand salaries to
+                                drive career decisions.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Team Section -->
-        <section id="section-team" class="scroll-section flex flex-col items-center justify-center relative bg-dark-950 py-20">
-            <div class="z-10 w-full max-w-6xl px-4 flex flex-col items-center">
-                <div class="gsap-fade-up text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Team</h2>
-                    <p class="text-gray-400 text-lg">Computer Science Students Majoring in Software Engineering</p>
+    <!-- Methodology Section -->
+    <section id="section-methodology"
+        class="scroll-section flex flex-col items-center justify-center relative bg-dark-900 py-20">
+        <div class="z-10 w-full max-w-4xl px-4">
+            <div class="gsap-fade-up text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Methodology</h2>
+                <p class="text-gray-400 text-lg">A structured 5-step design process driven by advanced NLP.</p>
+            </div>
+            <div class="relative">
+                <div
+                    class="absolute left-8 md:left-1/2 top-0 bottom-0 w-1 bg-dark-800 -translate-x-1/2 rounded-full overflow-hidden">
+                    <div class="w-full bg-gradient-to-b from-gold-400 via-gold-500 to-gold-600 rounded-full h-full gsap-meth-line"
+                        style="transform: scaleY(0); transform-origin: top;"></div>
                 </div>
-                
-                <div class="w-full flex flex-wrap justify-center gap-6">
-                    
-                    <!-- Team Member 1 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Marc Sherif Gamal Zaki</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 240667</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
-                    <!-- Team Member 2 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Muhammad Kandil</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 245629</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
-                    <!-- Team Member 3 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Retag Ahmed</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 248727</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
-                    <!-- Team Member 4 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Brihan Omar</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 244799</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
-                    <!-- Team Member 5 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Nujood Muhammed</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 240779</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
-                    <!-- Team Member 6 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Reem Ayman</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 244857</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
-                    <!-- Team Member 7 -->
-                    <div class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
-                        <div class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
-                            <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2">Youssef Gamal</h3>
-                        <span class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID: 248753</span>
-                        <p class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">Software Engineering</p>
-                    </div>
-
+                <div class="space-y-12 relative z-10 py-10" id="methodology-items">
+                    <!-- Items injected by JS -->
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Conclusion Section -->
-        <section id="section-conclusion" class="scroll-section flex flex-col items-center justify-center relative bg-gradient-to-t from-black to-dark-900 py-20">
-            <div class="z-10 w-full max-w-5xl px-4 text-center">
-                <div class="gsap-fade-up mb-16 glass-panel p-10 rounded-3xl">
-                    <h2 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600 mb-6">Conclusion</h2>
-                    <p class="text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
-                        MASARI redefines the computer science educational journey. By bridging the gap between <strong class="text-white">"not knowing what to learn"</strong> and <strong class="text-white">"acing the final interview,"</strong> it empowers students to navigate the complex tech landscape with confidence, turning fragmented efforts into targeted career success.
+    <!-- Comparison Section -->
+    <section id="section-comparison"
+        class="scroll-section flex flex-col items-center justify-center relative bg-dark-950 py-20">
+        <div class="z-10 w-full max-w-6xl px-4">
+            <div class="gsap-fade-up text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">System & Implementation / Comparison</h2>
+                <p class="text-gray-400 text-lg">How MASARI outperforms existing fragmented solutions.</p>
+            </div>
+            <div
+                class="gsap-fade-up glass-panel rounded-2xl overflow-hidden border border-gray-800 w-full overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="bg-dark-950 border-b border-gray-700">
+                            <th class="p-6 text-gray-300 font-semibold w-1/4">Feature</th>
+                            <th class="p-6 text-gray-400 font-semibold w-1/3">Existing Solutions</th>
+                            <th class="p-6 text-gold-400 font-bold w-5/12">MASARI (Proposed System)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="p-6 font-medium text-white">Search & Discovery</td>
+                            <td class="p-6 text-gray-400"><i data-lucide="x-circle"
+                                    class="inline w-4 h-4 mr-2 text-red-500"></i>Keyword-based, rigid, often misses user
+                                context.</td>
+                            <td class="p-6 text-gray-200"><i data-lucide="check-circle-2"
+                                    class="inline w-4 h-4 mr-2 text-green-500"></i><strong
+                                    class="text-gold-400">Contextual Understanding:</strong> Uses NLP (TF-IDF/NLTK) to
+                                match true intent to exact technologies.</td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="p-6 font-medium text-white">Resume Building</td>
+                            <td class="p-6 text-gray-400"><i data-lucide="x-circle"
+                                    class="inline w-4 h-4 mr-2 text-red-500"></i>Basic templates; no feedback on
+                                job-specific alignment.</td>
+                            <td class="p-6 text-gray-200"><i data-lucide="check-circle-2"
+                                    class="inline w-4 h-4 mr-2 text-green-500"></i><strong
+                                    class="text-gold-400">Actionable AI Feedback:</strong> Grades against real job
+                                descriptions and rewrites weak points for ATS compliance.</td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="p-6 font-medium text-white">Interview Prep</td>
+                            <td class="p-6 text-gray-400"><i data-lucide="x-circle"
+                                    class="inline w-4 h-4 mr-2 text-red-500"></i>Static question banks;
+                                one-size-fits-all approach.</td>
+                            <td class="p-6 text-gray-200"><i data-lucide="check-circle-2"
+                                    class="inline w-4 h-4 mr-2 text-green-500"></i><strong
+                                    class="text-gold-400">Adaptive & Personalized:</strong> Dynamically generates
+                                questions targeting user weaknesses and evaluates answers.</td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="p-6 font-medium text-white">User Journey</td>
+                            <td class="p-6 text-gray-400"><i data-lucide="x-circle"
+                                    class="inline w-4 h-4 mr-2 text-red-500"></i>Highly fragmented across multiple
+                                disconnected platforms.</td>
+                            <td class="p-6 text-gray-200"><i data-lucide="check-circle-2"
+                                    class="inline w-4 h-4 mr-2 text-green-500"></i><strong class="text-gold-400">Unified
+                                    Ecosystem:</strong> Seamlessly connects study plans, resumes, and interviews in one
+                                dashboard.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="section-results"
+        class="scroll-section flex flex-col items-center justify-center relative bg-dark-900 py-20">
+        <div class="z-10 w-full max-w-5xl px-4">
+            <div class="gsap-fade-up text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Results & Evaluation</h2>
+                <p class="text-gray-400 text-lg">System testing metrics and demonstration benchmarks.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div
+                    class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="94"
+                            class="counter-val">0</span><span class="text-gold-500">%</span></div>
+                    <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">Intent Accuracy
                     </p>
                 </div>
-                <div class="gsap-fade-up-delayed">
-                    <h3 class="text-2xl font-bold text-white mb-8">Future Work</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
-                            <div class="p-4 bg-dark-900 rounded-full mb-4"><i data-lucide="handshake" class="w-6 h-6 text-gold-400"></i></div>
-                            <h4 class="text-white font-bold mb-2">Integration</h4>
-                            <p class="text-gray-400 text-sm">Partner with university career centers for real-time job market data syncing.</p>
-                        </div>
-                        <div class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
-                            <div class="p-4 bg-dark-900 rounded-full mb-4"><i data-lucide="globe-2" class="w-6 h-6 text-gold-400"></i></div>
-                            <h4 class="text-white font-bold mb-2">Expansion</h4>
-                            <p class="text-gray-400 text-sm">Extend the NLP engine to support multiple languages and additional engineering disciplines.</p>
-                        </div>
-                        <div class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
-                            <div class="p-4 bg-dark-900 rounded-full mb-4"><i data-lucide="trending-up" class="w-6 h-6 text-gold-400"></i></div>
-                            <h4 class="text-white font-bold mb-2">Advanced Analytics</h4>
-                            <p class="text-gray-400 text-sm">Incorporate deeper predictive analytics to forecast long-term career trajectories based on emerging industry trends.</p>
-                        </div>
+                <div
+                    class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="88"
+                            class="counter-val">0</span><span class="text-gold-500">%</span></div>
+                    <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">ATS Score Boost
+                    </p>
+                </div>
+                <div
+                    class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="91"
+                            class="counter-val">0</span><span class="text-gold-500">%</span></div>
+                    <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">Interview
+                        Relevance</p>
+                </div>
+                <div
+                    class="gsap-counter glass-panel p-8 rounded-2xl flex flex-col items-center justify-center border-b-4 border-b-gold-500 hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl font-black text-white mb-2 tracking-tighter"><span data-target="100"
+                            class="counter-val">0</span><span class="text-gold-500">%</span></div>
+                    <p class="text-gray-400 text-sm font-medium uppercase tracking-widest text-center">Study Plan
+                        Alignment</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="section-team"
+        class="scroll-section flex flex-col items-center justify-center relative bg-dark-950 py-20">
+        <div class="z-10 w-full max-w-6xl px-4 flex flex-col items-center">
+            <div class="gsap-fade-up text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Team</h2>
+                <p class="text-gray-400 text-lg">Computer Science Students Majoring in Software Engineering</p>
+            </div>
+
+            <div class="w-full flex flex-wrap justify-center gap-6">
+
+                <!-- Team Member 1 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Marc Sherif Gamal Zaki</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        240667</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Muhammad Kandil</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        245629</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Retag Ahmed</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        248727</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+                <!-- Team Member 4 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Brihan Omar</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        244799</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+                <!-- Team Member 5 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Nujood Muhammed</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        240779</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+                <!-- Team Member 6 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Reem Ayman</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        244857</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+                <!-- Team Member 7 -->
+                <div
+                    class="w-full sm:w-[calc(50%-1.5rem)] md:w-[calc(33.333%-1.5rem)] lg:w-[calc(25%-1.5rem)] gsap-scale-up glass-panel p-6 rounded-2xl flex flex-col items-center text-center relative overflow-hidden border-t-2 border-t-gold-500 shadow-lg hover:-translate-y-2 transition-transform">
+                    <div
+                        class="w-16 h-16 rounded-full bg-dark-900 border border-gray-700 flex items-center justify-center mb-4 shadow-inner">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Youssef Gamal</h3>
+                    <span
+                        class="text-xs text-gray-400 bg-dark-950 px-3 py-1 rounded-md border border-gray-800 mb-4 font-mono">ID:
+                        248753</span>
+                    <p
+                        class="text-gold-400 font-bold text-[10px] tracking-wider uppercase mt-auto pt-3 border-t border-gray-800 w-full">
+                        Software Engineering</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section id="section-conclusion"
+        class="scroll-section flex flex-col items-center justify-center relative bg-gradient-to-t from-black to-dark-900 py-20">
+        <div class="z-10 w-full max-w-5xl px-4 text-center">
+            <div class="gsap-fade-up mb-16 glass-panel p-10 rounded-3xl">
+                <h2
+                    class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600 mb-6">
+                    Conclusion</h2>
+                <p class="text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
+                    MASARI redefines the computer science educational journey. By bridging the gap between <strong
+                        class="text-white">"not knowing what to learn"</strong> and <strong class="text-white">"acing
+                        the final interview,"</strong> it empowers students to navigate the complex tech landscape with
+                    confidence, turning fragmented efforts into targeted career success.
+                </p>
+            </div>
+            <div class="gsap-fade-up-delayed">
+                <h3 class="text-2xl font-bold text-white mb-8">Future Work</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
+                        <div class="p-4 bg-dark-900 rounded-full mb-4"><i data-lucide="handshake"
+                                class="w-6 h-6 text-gold-400"></i></div>
+                        <h4 class="text-white font-bold mb-2">Integration</h4>
+                        <p class="text-gray-400 text-sm">Partner with university career centers for real-time job market
+                            data syncing.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
+                        <div class="p-4 bg-dark-900 rounded-full mb-4"><i data-lucide="globe-2"
+                                class="w-6 h-6 text-gold-400"></i></div>
+                        <h4 class="text-white font-bold mb-2">Expansion</h4>
+                        <p class="text-gray-400 text-sm">Extend the NLP engine to support multiple languages and
+                            additional engineering disciplines.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl flex flex-col items-center text-center">
+                        <div class="p-4 bg-dark-900 rounded-full mb-4"><i data-lucide="trending-up"
+                                class="w-6 h-6 text-gold-400"></i></div>
+                        <h4 class="text-white font-bold mb-2">Advanced Analytics</h4>
+                        <p class="text-gray-400 text-sm">Incorporate deeper predictive analytics to forecast long-term
+                            career trajectories based on emerging industry trends.</p>
                     </div>
                 </div>
             </div>
-            <!-- Back to App Button -->
-            <div class="absolute top-8 left-8 z-50">
-                <a href="/" class="flex items-center gap-2 text-gray-400 hover:text-gold-400 transition-colors bg-dark-900/50 px-4 py-2 rounded-full border border-gray-800 backdrop-blur-md">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    <span class="text-sm font-medium">Back to App</span>
-                </a>
-            </div>
-        </section>
+        </div>
+        <!-- Back to App Button -->
+        <div class="absolute top-8 left-8 z-50">
+            <a href="/"
+                class="flex items-center gap-2 text-gray-400 hover:text-gold-400 transition-colors bg-dark-900/50 px-4 py-2 rounded-full border border-gray-800 backdrop-blur-md">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span class="text-sm font-medium">Back to App</span>
+            </a>
+        </div>
+    </section>
 
     <!-- Application Logic & Animations -->
     <script>
@@ -575,7 +777,7 @@
         // Animations (GSAP)
         // -----------------------------
         gsap.registerPlugin(ScrollTrigger);
-        
+
         // Hero
         gsap.to('.gsap-hero-bg', { opacity: 0.2, scale: 1, duration: 2, ease: "power2.out" });
         gsap.to('.gsap-hero-title', { opacity: 1, y: 0, duration: 0.8, delay: 0.2 });
@@ -635,7 +837,7 @@
                 onEnter: () => gsap.to(elem, { opacity: 1, y: 0, duration: 0.6 })
             });
         });
-        
+
         gsap.utils.toArray('.gsap-fade-in').forEach(elem => {
             ScrollTrigger.create({
                 trigger: elem,
@@ -643,7 +845,7 @@
                 onEnter: () => gsap.to(elem, { opacity: 1, duration: 0.6 })
             });
         });
-        
+
         gsap.utils.toArray('.gsap-fade-up-delayed').forEach(elem => {
             gsap.set(elem, { opacity: 0, y: 30 });
             ScrollTrigger.create({
@@ -738,18 +940,18 @@
         // -----------------------------
         // Solutions Engine Logic
         // -----------------------------
-        
+
         // Tabs
         function switchTab(index) {
             document.querySelectorAll('[id^="tab-"]').forEach((btn, i) => {
-                if(i === index) {
+                if (i === index) {
                     btn.className = "px-6 py-2 rounded-full text-sm font-medium transition-all bg-gold-500 text-dark-950 shadow-md";
                 } else {
                     btn.className = "px-6 py-2 rounded-full text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-dark-800";
                 }
             });
             document.querySelectorAll('.tab-content').forEach((content, i) => {
-                if(i === index) {
+                if (i === index) {
                     content.classList.remove('hidden');
                     // Force reflow to allow transition to play
                     void content.offsetWidth;
@@ -765,7 +967,7 @@
         // NLP Recommender
         async function handleNlpSearch() {
             const query = document.getElementById('nlp-input').value;
-            if(!query) return;
+            if (!query) return;
             const container = document.getElementById('nlp-results');
             container.innerHTML = `
                 <div class="animate-pulse space-y-4">
@@ -773,12 +975,12 @@
                     <div class="h-24 bg-dark-800 rounded-xl w-full border border-gray-800 opacity-50"></div>
                 </div>
             `;
-            
+
             try {
                 const res = await fetch(`/api/course/quick_search?q=${encodeURIComponent(query)}`);
                 const data = await res.json();
                 container.innerHTML = '';
-                if(data.courses) {
+                if (data.courses) {
                     data.courses.slice(0, 2).forEach((c, idx) => {
                         const html = `
                             <div class="bg-dark-900 border border-gold-500/30 p-6 rounded-xl text-left flex flex-col md:flex-row md:items-center justify-between gap-4" style="animation: fadeUp 0.5s ease forwards ${idx * 0.15}s; opacity: 0; transform: translateY(10px);">
@@ -789,7 +991,7 @@
                         container.insertAdjacentHTML('beforeend', html);
                     });
                 }
-            } catch(e) {
+            } catch (e) {
                 container.innerHTML = `<p class="text-red-400">Failed to fetch courses.</p>`;
             }
         }
@@ -797,14 +999,14 @@
         // ATS Optimizer
         async function handleAtsUpload(input) {
             const file = input.files[0];
-            if(!file) return;
+            if (!file) return;
             const jobDesc = document.getElementById('ats-job-desc').value;
-            
+
             document.getElementById('ats-idle').classList.add('hidden');
             document.getElementById('ats-scanning').classList.remove('hidden');
 
             // Line animation loop
-            gsap.fromTo('.ats-scan-line', {top: "-10%"}, {top: "110%", duration: 1.5, repeat: -1, ease: "linear"});
+            gsap.fromTo('.ats-scan-line', { top: "-10%" }, { top: "110%", duration: 1.5, repeat: -1, ease: "linear" });
 
             try {
                 const formData = new FormData();
@@ -814,14 +1016,14 @@
                 const res = await fetch('/api/resume/analyze', { method: 'POST', body: formData });
                 const data = await res.json();
 
-                const score = data.ats_score || Math.floor(Math.random()*30+50);
+                const score = data.ats_score || Math.floor(Math.random() * 30 + 50);
                 const kws = data.missing_keywords || ["Data Pipeline", "TensorFlow"];
 
                 document.getElementById('ats-scanning').classList.add('hidden');
                 document.getElementById('ats-done').classList.remove('hidden');
-                
+
                 document.getElementById('ats-score-text').innerText = score + '%';
-                
+
                 const offset = (2 * Math.PI * 56) * (1 - score / 100);
                 gsap.to('#ats-ring', { strokeDashoffset: offset, duration: 1.5, ease: "power2.out" });
 
@@ -846,20 +1048,20 @@
             event.preventDefault();
             const form = event.target;
             const query = form.querySelector('input[name="q"]').value.trim();
-            if(!query) return;
-            
+            if (!query) return;
+
             const btn = form.querySelector('button[type="submit"]');
             btn.innerHTML = '<div class="w-5 h-5 border-2 border-dark-950 border-t-transparent rounded-full animate-spin mx-auto"></div>';
-            
+
             try {
                 const res = await fetch('/api/course/quick_search?q=' + encodeURIComponent(query));
                 const data = await res.json();
-                
+
                 const container = document.getElementById('nlp-results');
                 container.classList.remove('hidden');
                 container.innerHTML = '';
-                
-                if(data.courses && data.courses.length > 0) {
+
+                if (data.courses && data.courses.length > 0) {
                     data.courses.forEach(c => {
                         container.insertAdjacentHTML('beforeend', `
                             <div class="bg-dark-900/60 backdrop-blur-xl border border-gray-700 rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-gold-500 hover:shadow-[0_0_20px_rgba(202,138,4,0.15)] transition-all duration-300 flex flex-col shadow-lg cursor-pointer relative group" onclick="window.open('${c.url}', '_blank')">
@@ -883,7 +1085,7 @@
                 } else {
                     container.innerHTML = '<p class="text-gray-400 text-sm text-center mt-4 w-full col-span-2">No exact matches found. Try another term.</p>';
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
             }
             btn.innerText = 'Search';
@@ -896,11 +1098,11 @@
             const form = event.target;
             const query = form.querySelector('input[name="q"]').value.trim();
             const diff = form.querySelector('select').value;
-            if(!query) return;
+            if (!query) return;
 
             const btn = form.querySelector('button[type="submit"]');
             btn.innerHTML = '<div class="w-5 h-5 border-2 border-dark-950 border-t-transparent rounded-full animate-spin mx-auto"></div>';
-            
+
             const container = document.getElementById('interview-results');
             container.classList.remove('hidden');
             container.innerHTML = `
@@ -923,11 +1125,11 @@
                 const data = await res.json();
                 container.innerHTML = '';
 
-                if(data.questions && data.questions.length > 0) {
+                if (data.questions && data.questions.length > 0) {
                     data.questions.forEach((q, idx) => {
                         container.insertAdjacentHTML('beforeend', `
                             <div class="p-6 bg-white/5 border border-gray-700 rounded-xl hover:border-gold-500/50 transition-colors shadow-lg">
-                                <strong class="text-lg text-white font-bold block mb-2 flex items-start gap-2"><span class="text-gold-500 shrink-0">Q${idx+1}:</span> <span>${q.question}</span></strong>
+                                <strong class="text-lg text-white font-bold block mb-2 flex items-start gap-2"><span class="text-gold-500 shrink-0">Q${idx + 1}:</span> <span>${q.question}</span></strong>
                                 <p class="mt-3 text-gray-400 text-sm leading-relaxed"><span class="text-gray-300 font-semibold text-xs uppercase tracking-wider">Hint:</span> ${q.hint || 'Prepare to discuss trade-offs, edge cases, and best practices relevant to this topic.'}</p>
                                 <div class="mt-4 pt-4 border-t border-gray-800 flex justify-end">
                                     <a href="/interview-prep" class="px-4 py-2 text-xs border border-gray-600 rounded-lg text-gray-300 hover:bg-gold-500 hover:text-dark-950 hover:border-gold-500 transition-colors flex items-center gap-1 font-bold">
@@ -941,7 +1143,7 @@
                 } else {
                     container.innerHTML = '<p class="text-gray-400 text-sm text-center w-full">Could not generate questions. Try another topic.</p>';
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 container.innerHTML = '<p class="text-red-400 text-sm text-center w-full">Failed to generate questions.</p>';
             }
@@ -952,10 +1154,10 @@
         // AI Study Planner
         async function handleStudyGenerate() {
             const goal = document.getElementById('study-input').value;
-            if(!goal) return;
+            if (!goal) return;
             const container = document.getElementById('study-results');
             const btn = document.getElementById('study-btn');
-            
+
             btn.disabled = true;
             btn.innerText = "Generating...";
             container.innerHTML = `
@@ -973,7 +1175,7 @@
                     body: JSON.stringify({ goal })
                 });
                 const data = await res.json();
-                if(data.success && data.path_html) {
+                if (data.success && data.path_html) {
                     container.innerHTML = `<div class="prose prose-invert prose-sm max-w-none">${data.path_html}</div>`;
                 } else {
                     container.innerHTML = "<p class='text-red-400'>Could not generate path.</p>";
@@ -981,7 +1183,7 @@
             } catch (e) {
                 container.innerHTML = "<p class='text-red-400'>Error connecting to server.</p>";
             }
-            
+
             btn.disabled = false;
             btn.innerText = "Generate";
         }
@@ -989,9 +1191,17 @@
     </script>
     <style>
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </body>
+
 </html>
