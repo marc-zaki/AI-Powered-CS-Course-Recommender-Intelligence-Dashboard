@@ -2,9 +2,10 @@
 
 {% block content %}
 <div class="container admin-container" style="margin: 3rem auto;">
-    <div class="glass-panel" style="padding: 2.5rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass);">
+    <div class="glass-panel"
+        style="padding: 2.5rem; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-glass);">
         <h2 style="color: var(--primary); font-weight: 800; font-size: 2rem; margin-bottom: 2rem;">Admin Dashboard</h2>
-        
+
         <div style="display: flex; flex-direction: column; gap: 2rem; min-width: 0; width: 100%;">
             <!-- Users Section -->
             <div style="min-width: 0; width: 100%;">
@@ -29,13 +30,19 @@
                                 <td data-label="Name">{{ u.name }}</td>
                                 <td data-label="Email">{{ u.email }}</td>
                                 <td data-label="Role">
-                                    <span class="admin-role-badge {% if u.role == 'admin' %}admin-role-admin{% else %}admin-role-user{% endif %}">{{ u.role|upper }}</span>
+                                    <span
+                                        class="admin-role-badge {% if u.role == 'admin' %}admin-role-admin{% else %}admin-role-user{% endif %}">{{
+                                        u.role|upper }}</span>
                                 </td>
                                 <td data-label="Premium">
                                     {% if u.role == 'admin' %}
-                                    <span style="color: var(--primary); font-weight: bold;"><i data-lucide="shield" style="width: 14px; height: 14px; vertical-align: text-bottom;"></i> Admin Access</span>
+                                    <span style="color: var(--primary); font-weight: bold;"><i data-lucide="shield"
+                                            style="width: 14px; height: 14px; vertical-align: text-bottom;"></i> Admin
+                                        Access</span>
                                     {% elif u.is_premium %}
-                                    <span style="color: #10b981; font-weight: bold;"><i data-lucide="check-circle" style="width: 14px; height: 14px; vertical-align: text-bottom;"></i> Yes</span>
+                                    <span style="color: #10b981; font-weight: bold;"><i data-lucide="check-circle"
+                                            style="width: 14px; height: 14px; vertical-align: text-bottom;"></i>
+                                        Yes</span>
                                     {% else %}
                                     <span style="color: var(--text-muted);">No</span>
                                     {% endif %}
@@ -46,14 +53,20 @@
                                 <td data-label="Actions">
                                     <div class="admin-actions">
                                         {% if u.role != 'admin' %}
-                                        <button onclick="togglePremium('{{ u._id }}', {{ 'true' if u.is_premium else 'false' }}, this)" class="btn btn-outline admin-action-btn" style="border-color: var(--secondary); color: var(--secondary);">
+                                        <button data-user-id="{{ u._id }}"
+                                            data-is-premium="{{ 'true' if u.is_premium else 'false' }}"
+                                            onclick="togglePremium(this.dataset.userId, this.dataset.isPremium === 'true', this)"
+                                            class="btn btn-outline admin-action-btn"
+                                            style="border-color: var(--secondary); color: var(--secondary);">
                                             {% if u.is_premium %}Remove Pro{% else %}Give Pro{% endif %}
                                         </button>
                                         {% endif %}
-                                        <button onclick="toggleUserRole('{{ u._id }}', '{{ u.role }}', this)" class="btn btn-outline admin-action-btn">
+                                        <button onclick="toggleUserRole('{{ u._id }}', '{{ u.role }}', this)"
+                                            class="btn btn-outline admin-action-btn">
                                             {% if u.role == 'admin' %}Demote{% else %}Make Admin{% endif %}
                                         </button>
-                                        <button onclick="deleteUser('{{ u._id }}', this)" class="btn btn-outline admin-action-btn admin-delete-btn">Delete</button>
+                                        <button onclick="deleteUser('{{ u._id }}', this)"
+                                            class="btn btn-outline admin-action-btn admin-delete-btn">Delete</button>
                                     </div>
                                 </td>
                             </tr>
@@ -65,7 +78,8 @@
 
             <!-- Pending Courses Section -->
             <div style="margin-top: 2rem; min-width: 0; width: 100%;">
-                <h3 style="margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Pending Course Submissions</h3>
+                <h3 style="margin-bottom: 1rem; color: var(--text-main); font-weight: 700;">Pending Course Submissions
+                </h3>
                 <div class="admin-table-wrap">
                     <table class="admin-table">
                         <thead>
@@ -80,19 +94,27 @@
                         <tbody>
                             {% if pending_courses|length == 0 %}
                             <tr>
-                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No pending submissions.</td>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No
+                                    pending submissions.</td>
                             </tr>
                             {% else %}
                             {% for c in pending_courses %}
                             <tr>
                                 <td data-label="Title">{{ c.title }}</td>
                                 <td data-label="Provider">{{ c.provider }}</td>
-                                <td data-label="URL"><a href="{{ c.url }}" target="_blank" style="color: var(--secondary); text-decoration: none;">Link <i data-lucide="external-link" style="width: 14px; height: 14px; display: inline-block;"></i></a></td>
-                                <td data-label="Description" class="admin-desc-cell" title="{{ c.content_text }}">{{ c.content_text }}</td>
+                                <td data-label="URL"><a href="{{ c.url }}" target="_blank"
+                                        style="color: var(--secondary); text-decoration: none;">Link <i
+                                            data-lucide="external-link"
+                                            style="width: 14px; height: 14px; display: inline-block;"></i></a></td>
+                                <td data-label="Description" class="admin-desc-cell" title="{{ c.content_text }}">{{
+                                    c.content_text }}</td>
                                 <td data-label="Actions">
                                     <div class="admin-actions">
-                                        <button onclick="approveCourse('{{ c._id }}', this)" class="btn btn-primary admin-action-btn" style="background-color: #22c55e; border-color: #22c55e;">Approve</button>
-                                        <button onclick="rejectCourse('{{ c._id }}', this)" class="btn btn-outline admin-action-btn admin-delete-btn">Reject</button>
+                                        <button onclick="approveCourse('{{ c._id }}', this)"
+                                            class="btn btn-primary admin-action-btn"
+                                            style="background-color: #22c55e; border-color: #22c55e;">Approve</button>
+                                        <button onclick="rejectCourse('{{ c._id }}', this)"
+                                            class="btn btn-outline admin-action-btn admin-delete-btn">Reject</button>
                                     </div>
                                 </td>
                             </tr>
@@ -107,72 +129,97 @@
             <!-- Data Management Section -->
             <!-- ═══════════════════════════════════════════════════════════ -->
             <div style="margin-top: 2rem; min-width: 0; width: 100%;">
-                <h3 style="margin-bottom: 1.25rem; color: var(--text-main); font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
-                    <i data-lucide="database" style="width: 20px; height: 20px; color: var(--primary);"></i> Data Management
+                <h3
+                    style="margin-bottom: 1.25rem; color: var(--text-main); font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="database" style="width: 20px; height: 20px; color: var(--primary);"></i> Data
+                    Management
                 </h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
 
                     <!-- Live Scraper Card -->
-                    <div class="glass-panel" style="padding: 1.75rem; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <div class="glass-panel"
+                        style="padding: 1.75rem; border-radius: 16px; border: 1px solid var(--border-glass);">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <div
+                                style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                 <i data-lucide="wifi" style="width: 20px; height: 20px; color: white;"></i>
                             </div>
                             <div>
-                                <h4 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.05rem;">Live Web Scraper</h4>
-                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Fetch courses from MIT, Coursera, Cybrary &amp; more</p>
+                                <h4 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.05rem;">
+                                    Live Web Scraper</h4>
+                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Fetch courses from
+                                    MIT, Coursera, Cybrary &amp; more</p>
                             </div>
                         </div>
 
                         <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem;">
                             <span style="font-size: 0.8rem; color: var(--text-muted);">Status:</span>
-                            <span id="scraper-status-badge" style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(100,116,139,0.2); color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em;">Idle</span>
+                            <span id="scraper-status-badge"
+                                style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: rgba(100,116,139,0.2); color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04em;">Idle</span>
                         </div>
 
                         <!-- Log Output -->
-                        <div id="scraper-log" style="display: none; background: #0f172a; border-radius: 10px; padding: 0.75rem; margin-bottom: 1rem; font-family: monospace; font-size: 0.78rem; color: #94a3b8; height: 160px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.07); line-height: 1.6;"></div>
+                        <div id="scraper-log"
+                            style="display: none; background: #0f172a; border-radius: 10px; padding: 0.75rem; margin-bottom: 1rem; font-family: monospace; font-size: 0.78rem; color: #94a3b8; height: 160px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.07); line-height: 1.6;">
+                        </div>
 
                         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                            <button id="run-scraper-btn" onclick="runScraper()" class="btn btn-primary" style="flex: 1; min-width: 130px; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                            <button id="run-scraper-btn" onclick="runScraper()" class="btn btn-primary"
+                                style="flex: 1; min-width: 130px; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
                                 <i data-lucide="play" style="width: 15px; height: 15px;"></i> Run Scraper
                             </button>
                         </div>
                         <p style="margin-top: 0.75rem; font-size: 0.76rem; color: var(--text-muted); line-height: 1.5;">
-                            ⚠️ Requires ChromeDriver installed locally. May take 10–20 min. New courses are deduplicated and added automatically.
+                            ⚠️ Requires ChromeDriver installed locally. May take 10–20 min. New courses are deduplicated
+                            and added automatically.
                         </p>
                     </div>
 
                     <!-- CSV Upload Card -->
-                    <div class="glass-panel" style="padding: 1.75rem; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <div class="glass-panel"
+                        style="padding: 1.75rem; border-radius: 16px; border: 1px solid var(--border-glass);">
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <div
+                                style="width: 40px; height: 40px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                 <i data-lucide="file-spreadsheet" style="width: 20px; height: 20px; color: white;"></i>
                             </div>
                             <div>
-                                <h4 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.05rem;">Upload CSV Dataset</h4>
-                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Import &amp; auto-clean course data from a CSV file</p>
+                                <h4 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.05rem;">
+                                    Upload CSV Dataset</h4>
+                                <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Import &amp;
+                                    auto-clean course data from a CSV file</p>
                             </div>
                         </div>
 
                         <!-- Drop Zone -->
-                        <label id="csv-drop-zone" for="csv-file-input" style="display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--border-glass); border-radius: 12px; padding: 1.5rem 1rem; cursor: pointer; transition: all 0.2s; margin-bottom: 1rem; background: rgba(255,255,255,0.02);"
+                        <label id="csv-drop-zone" for="csv-file-input"
+                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--border-glass); border-radius: 12px; padding: 1.5rem 1rem; cursor: pointer; transition: all 0.2s; margin-bottom: 1rem; background: rgba(255,255,255,0.02);"
                             ondragover="csvDragOver(event)" ondragleave="csvDragLeave(event)" ondrop="csvDrop(event)">
-                            <i data-lucide="upload-cloud" style="width: 32px; height: 32px; color: var(--primary); margin-bottom: 0.5rem;"></i>
-                            <span id="csv-drop-label" style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">Drag &amp; drop CSV here, or <strong style="color: var(--primary);">click to browse</strong></span>
+                            <i data-lucide="upload-cloud"
+                                style="width: 32px; height: 32px; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                            <span id="csv-drop-label"
+                                style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">Drag &amp;
+                                drop CSV here, or <strong style="color: var(--primary);">click to browse</strong></span>
                         </label>
-                        <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="csvFileSelected(this)">
+                        <input type="file" id="csv-file-input" accept=".csv" style="display:none;"
+                            onchange="csvFileSelected(this)">
 
                         <!-- Preview -->
-                        <div id="csv-preview" style="display: none; margin-bottom: 1rem; font-size: 0.82rem; color: var(--text-muted); background: rgba(255,255,255,0.03); border-radius: 8px; padding: 0.75rem;">
-                            <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem;">📋 File Preview</div>
+                        <div id="csv-preview"
+                            style="display: none; margin-bottom: 1rem; font-size: 0.82rem; color: var(--text-muted); background: rgba(255,255,255,0.03); border-radius: 8px; padding: 0.75rem;">
+                            <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem;">📋 File
+                                Preview</div>
                             <div id="csv-preview-content"></div>
                         </div>
 
-                        <button id="csv-import-btn" onclick="importCsv()" class="btn btn-primary" style="width: 100%; display: none; align-items: center; justify-content: center; gap: 0.4rem; background: linear-gradient(135deg, #10b981, #059669); border: none;">
+                        <button id="csv-import-btn" onclick="importCsv()" class="btn btn-primary"
+                            style="width: 100%; display: none; align-items: center; justify-content: center; gap: 0.4rem; background: linear-gradient(135deg, #10b981, #059669); border: none;">
                             <i data-lucide="database" style="width: 15px; height: 15px;"></i> Import &amp; Clean
                         </button>
                         <p style="margin-top: 0.75rem; font-size: 0.76rem; color: var(--text-muted); line-height: 1.5;">
-                            Auto-detects columns: <code style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.3rem; border-radius: 4px;">title, url, provider, description, rating</code>. Duplicates are skipped.
+                            Auto-detects columns: <code
+                                style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.3rem; border-radius: 4px;">title, url, provider, description, rating</code>.
+                            Duplicates are skipped.
                         </p>
                     </div>
 
@@ -181,9 +228,12 @@
 
             <!-- Courses Section -->
             <div style="margin-top: 2rem; min-width: 0; width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
                     <h3 style="color: var(--text-main); font-weight: 700; margin: 0;">Courses Management</h3>
-                    <button onclick="document.getElementById('add-course-modal').style.display='flex'" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;"><i data-lucide="plus" style="width: 16px; height: 16px;"></i> Add Course</button>
+                    <button onclick="document.getElementById('add-course-modal').style.display='flex'"
+                        class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;"><i data-lucide="plus"
+                            style="width: 16px; height: 16px;"></i> Add Course</button>
                 </div>
                 <div class="admin-table-wrap" style="max-height: 600px; overflow-y: auto;">
                     <table class="admin-table">
@@ -203,8 +253,11 @@
                                 <td data-label="Stars">{{ c.stars }}</td>
                                 <td data-label="Actions">
                                     <div class="admin-actions">
-                                        <button onclick="openEditCourseModal('{{ c.url|escape }}', '{{ c.title|escape }}', '{{ c.provider|escape }}', '{{ c.stars }}')" class="btn btn-outline admin-action-btn">Edit</button>
-                                        <button onclick="deleteCourse('{{ c.url|escape }}', this)" class="btn btn-outline admin-action-btn admin-delete-btn">Delete</button>
+                                        <button
+                                            onclick="openEditCourseModal('{{ c.url|escape }}', '{{ c.title|escape }}', '{{ c.provider|escape }}', '{{ c.stars }}')"
+                                            class="btn btn-outline admin-action-btn">Edit</button>
+                                        <button onclick="deleteCourse('{{ c.url|escape }}', this)"
+                                            class="btn btn-outline admin-action-btn admin-delete-btn">Delete</button>
                                     </div>
                                 </td>
                             </tr>
@@ -212,18 +265,21 @@
                         </tbody>
                     </table>
                 </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 0.75rem;">
+
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-glass); flex-wrap: wrap; gap: 0.75rem;">
                     <div style="color: var(--text-muted); font-size: 0.9rem;">
-                        Page <strong style="color: var(--text-main);">{{ page }}</strong> of <strong style="color: var(--text-main);">{{ total_pages }}</strong>
+                        Page <strong style="color: var(--text-main);">{{ page }}</strong> of <strong
+                            style="color: var(--text-main);">{{ total_pages }}</strong>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
                         {% if page > 1 %}
-                        <a href="{{ url_for('admin_dashboard') }}?page={{ page-1 }}" class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Previous</a>
+                        <a href="{{ url_for('admin_dashboard') }}?page={{ page-1 }}" class="btn btn-outline"
+                            style="padding: 0.4rem 1rem; text-decoration: none;">Previous</a>
                         {% endif %}
-                        {% if page < total_pages %}
-                        <a href="{{ url_for('admin_dashboard') }}?page={{ page+1 }}" class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Next</a>
-                        {% endif %}
+                        {% if page < total_pages %} <a href="{{ url_for('admin_dashboard') }}?page={{ page+1 }}"
+                            class="btn btn-outline" style="padding: 0.4rem 1rem; text-decoration: none;">Next</a>
+                            {% endif %}
                     </div>
                 </div>
             </div>
@@ -232,28 +288,36 @@
 </div>
 
 <!-- Add Course Modal -->
-<div id="add-course-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 500px; width: 90%;">
-        <h3 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Add New Course</h3>
+<div id="add-course-modal"
+    style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div
+        style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 500px; width: 90%;">
+        <h3 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Add New Course
+        </h3>
         <form id="add-course-form" onsubmit="submitAddCourse(event)">
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Course Title</label>
+                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Course
+                    Title</label>
                 <input type="text" id="add-course-title" required class="search-input">
             </div>
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Provider</label>
+                <label
+                    style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Provider</label>
                 <input type="text" id="add-course-provider" required class="search-input">
             </div>
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">URL</label>
+                <label
+                    style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">URL</label>
                 <input type="url" id="add-course-url" required class="search-input">
             </div>
             <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Initial AI Rating (Stars)</label>
+                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Initial
+                    AI Rating (Stars)</label>
                 <input type="number" step="0.1" min="0" max="5" id="add-course-stars" required class="search-input">
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button type="button" onclick="document.getElementById('add-course-modal').style.display='none'" class="btn btn-outline" style="flex: 1;">Cancel</button>
+                <button type="button" onclick="document.getElementById('add-course-modal').style.display='none'"
+                    class="btn btn-outline" style="flex: 1;">Cancel</button>
                 <button type="submit" class="btn btn-primary" style="flex: 1;">Save Course</button>
             </div>
         </form>
@@ -261,29 +325,37 @@
 </div>
 
 <!-- Edit Course Modal -->
-<div id="edit-course-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 500px; width: 90%;">
-        <h3 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Edit Course</h3>
+<div id="edit-course-modal"
+    style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div
+        style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 500px; width: 90%;">
+        <h3 style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1.5rem;">Edit Course
+        </h3>
         <form id="edit-course-form" onsubmit="submitEditCourse(event)">
             <input type="hidden" id="edit-course-old-url">
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Course Title</label>
+                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Course
+                    Title</label>
                 <input type="text" id="edit-course-title" required class="search-input">
             </div>
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Provider</label>
+                <label
+                    style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Provider</label>
                 <input type="text" id="edit-course-provider" required class="search-input">
             </div>
             <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">URL</label>
+                <label
+                    style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">URL</label>
                 <input type="url" id="edit-course-url" required class="search-input">
             </div>
             <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">AI Rating (Stars)</label>
+                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">AI
+                    Rating (Stars)</label>
                 <input type="number" step="0.1" min="0" max="5" id="edit-course-stars" required class="search-input">
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button type="button" onclick="document.getElementById('edit-course-modal').style.display='none'" class="btn btn-outline" style="flex: 1;">Cancel</button>
+                <button type="button" onclick="document.getElementById('edit-course-modal').style.display='none'"
+                    class="btn btn-outline" style="flex: 1;">Cancel</button>
                 <button type="submit" class="btn btn-primary" style="flex: 1;">Update Course</button>
             </div>
         </form>
@@ -291,10 +363,15 @@
 </div>
 
 <!-- Custom Confirmation Modal -->
-<div id="confirm-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 400px; width: 90%; text-align: center;">
-        <h3 id="confirm-modal-title" style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Confirm Action</h3>
-        <p id="confirm-modal-message" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5;"></p>
+<div id="confirm-modal"
+    style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div
+        style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 400px; width: 90%; text-align: center;">
+        <h3 id="confirm-modal-title"
+            style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Confirm Action
+        </h3>
+        <p id="confirm-modal-message"
+            style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5;"></p>
         <div style="display: flex; gap: 1rem;">
             <button id="confirm-modal-cancel" class="btn btn-outline" style="flex: 1;">Cancel</button>
             <button id="confirm-modal-confirm" class="btn btn-primary" style="flex: 1;">Confirm</button>
@@ -303,10 +380,14 @@
 </div>
 
 <!-- Custom Alert Modal -->
-<div id="alert-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 400px; width: 90%; text-align: center;">
-        <h3 id="alert-modal-title" style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Notice</h3>
-        <p id="alert-modal-message" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5;"></p>
+<div id="alert-modal"
+    style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div
+        style="background: var(--bg-card); padding: 2.5rem; border-radius: 20px; border: 1px solid var(--border-glass); max-width: 400px; width: 90%; text-align: center;">
+        <h3 id="alert-modal-title"
+            style="color: var(--text-main); font-weight: 800; font-size: 1.5rem; margin-bottom: 1rem;">Notice</h3>
+        <p id="alert-modal-message"
+            style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5;"></p>
         <button id="alert-modal-ok" class="btn btn-primary" style="width: 100%;">OK</button>
     </div>
 </div>
@@ -314,437 +395,437 @@
 
 {% block scripts %}
 <script>
-function showCustomAlert(title, message) {
-    const modal = document.getElementById('alert-modal');
-    const titleEl = document.getElementById('alert-modal-title');
-    const msgEl = document.getElementById('alert-modal-message');
-    const okBtn = document.getElementById('alert-modal-ok');
-    
-    titleEl.textContent = title;
-    msgEl.textContent = message;
-    
-    modal.style.display = 'flex';
-    
-    // Clear and re-bind click listener
-    const newOk = okBtn.cloneNode(true);
-    okBtn.parentNode.replaceChild(newOk, okBtn);
-    
-    newOk.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-}
+    function showCustomAlert(title, message) {
+        const modal = document.getElementById('alert-modal');
+        const titleEl = document.getElementById('alert-modal-title');
+        const msgEl = document.getElementById('alert-modal-message');
+        const okBtn = document.getElementById('alert-modal-ok');
 
-function showCustomConfirm(title, message, onConfirm) {
-    const modal = document.getElementById('confirm-modal');
-    const titleEl = document.getElementById('confirm-modal-title');
-    const msgEl = document.getElementById('confirm-modal-message');
-    const cancelBtn = document.getElementById('confirm-modal-cancel');
-    const confirmBtn = document.getElementById('confirm-modal-confirm');
-    
-    titleEl.textContent = title;
-    msgEl.textContent = message;
-    
-    modal.style.display = 'flex';
-    
-    // Clone nodes to remove old event listeners cleanly
-    const newCancel = cancelBtn.cloneNode(true);
-    const newConfirm = confirmBtn.cloneNode(true);
-    
-    cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
-    confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
-    
-    newCancel.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-    
-    newConfirm.addEventListener('click', () => {
-        modal.style.display = 'none';
-        onConfirm();
-    });
-}
+        titleEl.textContent = title;
+        msgEl.textContent = message;
 
-function deleteCourse(url, btn) {
-    showCustomConfirm("Delete Course", "Are you sure you want to delete this course?", () => {
-        fetch('/api/delete_course', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({url: url})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                const row = btn.closest('tr');
-                if(row) row.remove();
-            } else {
-                showCustomAlert("Error", "Error deleting course: " + data.error);
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+        modal.style.display = 'flex';
 
-function togglePremium(userId, isPremium, btn) {
-    const newStatus = !isPremium;
-    const msg = isPremium 
-        ? "Are you sure you want to remove Premium access from this user?"
-        : "Are you sure you want to grant Premium access to this user?";
-    
-    showCustomConfirm("Change Premium Status", msg, () => {
-        fetch('/api/admin/toggle_premium', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({user_id: userId, is_premium: newStatus})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                window.location.reload();
-            } else {
-                showCustomAlert("Error", data.error);
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+        // Clear and re-bind click listener
+        const newOk = okBtn.cloneNode(true);
+        okBtn.parentNode.replaceChild(newOk, okBtn);
 
-function toggleUserRole(userId, currentRole, btn) {
-    const newRole = currentRole === 'admin' ? 'user' : 'admin';
-    const msg = currentRole === 'admin' 
-        ? "Are you sure you want to demote this user from Admin to a regular User?"
-        : "Are you sure you want to promote this user to an Admin?";
-    
-    showCustomConfirm("Change User Role", msg, () => {
-        fetch('/api/admin/toggle_user_role', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({user_id: userId, role: newRole})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                window.location.reload();
-            } else {
-                showCustomAlert("Action Restricted", data.error);
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+        newOk.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
 
-function deleteUser(userId, btn) {
-    showCustomConfirm("Delete User", "Are you sure you want to permanently delete this user? This cannot be undone.", () => {
-        fetch('/api/admin/delete_user', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({user_id: userId})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                const row = btn.closest('tr');
-                if(row) row.remove();
-            } else {
-                showCustomAlert("Action Restricted", data.error);
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+    function showCustomConfirm(title, message, onConfirm) {
+        const modal = document.getElementById('confirm-modal');
+        const titleEl = document.getElementById('confirm-modal-title');
+        const msgEl = document.getElementById('confirm-modal-message');
+        const cancelBtn = document.getElementById('confirm-modal-cancel');
+        const confirmBtn = document.getElementById('confirm-modal-confirm');
 
-function submitAddCourse(e) {
-    e.preventDefault();
-    const payload = {
-        title: document.getElementById('add-course-title').value,
-        provider: document.getElementById('add-course-provider').value,
-        url: document.getElementById('add-course-url').value,
-        stars: parseFloat(document.getElementById('add-course-stars').value)
-    };
-    
-    fetch('/api/admin/add_course', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            window.location.reload();
-        } else {
-            showCustomAlert("Error", data.error);
-        }
-    })
-    .catch(err => console.error(err));
-}
+        titleEl.textContent = title;
+        msgEl.textContent = message;
 
-function approveCourse(courseId, btn) {
-    showCustomConfirm("Approve Course", "Approve this course and add it to the catalog?", () => {
-        btn.textContent = "Approving...";
-        btn.disabled = true;
-        fetch('/api/admin/approve_course', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({course_id: courseId})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                window.location.reload();
-            } else {
-                showCustomAlert("Error", data.error);
-                btn.textContent = "Approve";
-                btn.disabled = false;
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+        modal.style.display = 'flex';
 
-function rejectCourse(courseId, btn) {
-    showCustomConfirm("Reject Course", "Are you sure you want to reject this course submission?", () => {
-        btn.textContent = "Rejecting...";
-        btn.disabled = true;
-        fetch('/api/admin/reject_course', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({course_id: courseId})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                const row = btn.closest('tr');
-                if(row) row.remove();
-            } else {
-                showCustomAlert("Error", data.error);
-                btn.textContent = "Reject";
-                btn.disabled = false;
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+        // Clone nodes to remove old event listeners cleanly
+        const newCancel = cancelBtn.cloneNode(true);
+        const newConfirm = confirmBtn.cloneNode(true);
 
-function openEditCourseModal(url, title, provider, stars) {
-    document.getElementById('edit-course-old-url').value = url;
-    document.getElementById('edit-course-title').value = title;
-    document.getElementById('edit-course-provider').value = provider;
-    document.getElementById('edit-course-url').value = url;
-    document.getElementById('edit-course-stars').value = stars;
-    document.getElementById('edit-course-modal').style.display = 'flex';
-}
+        cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+        confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
 
-function submitEditCourse(e) {
-    e.preventDefault();
-    const payload = {
-        old_url: document.getElementById('edit-course-old-url').value,
-        title: document.getElementById('edit-course-title').value,
-        provider: document.getElementById('edit-course-provider').value,
-        url: document.getElementById('edit-course-url').value,
-        stars: parseFloat(document.getElementById('edit-course-stars').value)
-    };
-    
-    fetch('/api/admin/edit_course', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            window.location.reload();
-        } else {
-            showCustomAlert("Error", data.error);
-        }
-    })
-    .catch(err => console.error(err));
-}
+        newCancel.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
 
-// ─── Live Scraper ────────────────────────────────────────────────
-let scraperPollInterval = null;
+        newConfirm.addEventListener('click', () => {
+            modal.style.display = 'none';
+            onConfirm();
+        });
+    }
 
-function setScraperBadge(status) {
-    const badge = document.getElementById('scraper-status-badge');
-    const colors = {
-        idle:     { bg: 'rgba(100,116,139,0.2)', color: '#94a3b8' },
-        starting: { bg: 'rgba(251,191,36,0.2)',  color: '#fbbf24' },
-        running:  { bg: 'rgba(59,130,246,0.2)',  color: '#60a5fa' },
-        done:     { bg: 'rgba(16,185,129,0.2)',  color: '#34d399' },
-        error:    { bg: 'rgba(239,68,68,0.2)',   color: '#f87171' },
-    };
-    const c = colors[status] || colors.idle;
-    badge.style.background = c.bg;
-    badge.style.color = c.color;
-    badge.textContent = status.toUpperCase();
-}
-
-function appendScraperLog(lines) {
-    const logEl = document.getElementById('scraper-log');
-    logEl.style.display = 'block';
-    logEl.innerHTML = lines.map(l => `<div>${escapeAdminHtml(l)}</div>`).join('');
-    logEl.scrollTop = logEl.scrollHeight;
-}
-
-function escapeAdminHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function runScraper() {
-    showCustomConfirm(
-        "Run Live Scraper",
-        "This will start the web scraper in the background. It may take 10–20 minutes and requires ChromeDriver. Continue?",
-        () => {
-            const btn = document.getElementById('run-scraper-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;" class="spin"></i> Starting...';
-            if (window.lucide) lucide.createIcons();
-
-            fetch('/api/admin/run_scraper', { method: 'POST' })
-                .then(r => r.json())
+    function deleteCourse(url, btn) {
+        showCustomConfirm("Delete Course", "Are you sure you want to delete this course?", () => {
+            fetch('/api/delete_course', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            })
+                .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        setScraperBadge('starting');
-                        // Start polling
-                        if (scraperPollInterval) clearInterval(scraperPollInterval);
-                        scraperPollInterval = setInterval(pollScraperStatus, 2500);
+                        const row = btn.closest('tr');
+                        if (row) row.remove();
+                    } else {
+                        showCustomAlert("Error", "Error deleting course: " + data.error);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    }
+
+    function togglePremium(userId, isPremium, btn) {
+        const newStatus = !isPremium;
+        const msg = isPremium
+            ? "Are you sure you want to remove Premium access from this user?"
+            : "Are you sure you want to grant Premium access to this user?";
+
+        showCustomConfirm("Change Premium Status", msg, () => {
+            fetch('/api/admin/toggle_premium', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, is_premium: newStatus })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
                     } else {
                         showCustomAlert("Error", data.error);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    }
+
+    function toggleUserRole(userId, currentRole, btn) {
+        const newRole = currentRole === 'admin' ? 'user' : 'admin';
+        const msg = currentRole === 'admin'
+            ? "Are you sure you want to demote this user from Admin to a regular User?"
+            : "Are you sure you want to promote this user to an Admin?";
+
+        showCustomConfirm("Change User Role", msg, () => {
+            fetch('/api/admin/toggle_user_role', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, role: newRole })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        showCustomAlert("Action Restricted", data.error);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    }
+
+    function deleteUser(userId, btn) {
+        showCustomConfirm("Delete User", "Are you sure you want to permanently delete this user? This cannot be undone.", () => {
+            fetch('/api/admin/delete_user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = btn.closest('tr');
+                        if (row) row.remove();
+                    } else {
+                        showCustomAlert("Action Restricted", data.error);
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    }
+
+    function submitAddCourse(e) {
+        e.preventDefault();
+        const payload = {
+            title: document.getElementById('add-course-title').value,
+            provider: document.getElementById('add-course-provider').value,
+            url: document.getElementById('add-course-url').value,
+            stars: parseFloat(document.getElementById('add-course-stars').value)
+        };
+
+        fetch('/api/admin/add_course', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    showCustomAlert("Error", data.error);
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    function approveCourse(courseId, btn) {
+        showCustomConfirm("Approve Course", "Approve this course and add it to the catalog?", () => {
+            btn.textContent = "Approving...";
+            btn.disabled = true;
+            fetch('/api/admin/approve_course', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ course_id: courseId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        showCustomAlert("Error", data.error);
+                        btn.textContent = "Approve";
+                        btn.disabled = false;
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    }
+
+    function rejectCourse(courseId, btn) {
+        showCustomConfirm("Reject Course", "Are you sure you want to reject this course submission?", () => {
+            btn.textContent = "Rejecting...";
+            btn.disabled = true;
+            fetch('/api/admin/reject_course', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ course_id: courseId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = btn.closest('tr');
+                        if (row) row.remove();
+                    } else {
+                        showCustomAlert("Error", data.error);
+                        btn.textContent = "Reject";
+                        btn.disabled = false;
+                    }
+                })
+                .catch(err => console.error(err));
+        });
+    }
+
+    function openEditCourseModal(url, title, provider, stars) {
+        document.getElementById('edit-course-old-url').value = url;
+        document.getElementById('edit-course-title').value = title;
+        document.getElementById('edit-course-provider').value = provider;
+        document.getElementById('edit-course-url').value = url;
+        document.getElementById('edit-course-stars').value = stars;
+        document.getElementById('edit-course-modal').style.display = 'flex';
+    }
+
+    function submitEditCourse(e) {
+        e.preventDefault();
+        const payload = {
+            old_url: document.getElementById('edit-course-old-url').value,
+            title: document.getElementById('edit-course-title').value,
+            provider: document.getElementById('edit-course-provider').value,
+            url: document.getElementById('edit-course-url').value,
+            stars: parseFloat(document.getElementById('edit-course-stars').value)
+        };
+
+        fetch('/api/admin/edit_course', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    showCustomAlert("Error", data.error);
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    // ─── Live Scraper ────────────────────────────────────────────────
+    let scraperPollInterval = null;
+
+    function setScraperBadge(status) {
+        const badge = document.getElementById('scraper-status-badge');
+        const colors = {
+            idle: { bg: 'rgba(100,116,139,0.2)', color: '#94a3b8' },
+            starting: { bg: 'rgba(251,191,36,0.2)', color: '#fbbf24' },
+            running: { bg: 'rgba(59,130,246,0.2)', color: '#60a5fa' },
+            done: { bg: 'rgba(16,185,129,0.2)', color: '#34d399' },
+            error: { bg: 'rgba(239,68,68,0.2)', color: '#f87171' },
+        };
+        const c = colors[status] || colors.idle;
+        badge.style.background = c.bg;
+        badge.style.color = c.color;
+        badge.textContent = status.toUpperCase();
+    }
+
+    function appendScraperLog(lines) {
+        const logEl = document.getElementById('scraper-log');
+        logEl.style.display = 'block';
+        logEl.innerHTML = lines.map(l => `<div>${escapeAdminHtml(l)}</div>`).join('');
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function escapeAdminHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function runScraper() {
+        showCustomConfirm(
+            "Run Live Scraper",
+            "This will start the web scraper in the background. It may take 10–20 minutes and requires ChromeDriver. Continue?",
+            () => {
+                const btn = document.getElementById('run-scraper-btn');
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;" class="spin"></i> Starting...';
+                if (window.lucide) lucide.createIcons();
+
+                fetch('/api/admin/run_scraper', { method: 'POST' })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            setScraperBadge('starting');
+                            // Start polling
+                            if (scraperPollInterval) clearInterval(scraperPollInterval);
+                            scraperPollInterval = setInterval(pollScraperStatus, 2500);
+                        } else {
+                            showCustomAlert("Error", data.error);
+                            btn.disabled = false;
+                            btn.innerHTML = '<i data-lucide="play" style="width:15px;height:15px;"></i> Run Scraper';
+                            if (window.lucide) lucide.createIcons();
+                        }
+                    })
+                    .catch(err => {
+                        showCustomAlert("Error", "Request failed: " + err);
                         btn.disabled = false;
                         btn.innerHTML = '<i data-lucide="play" style="width:15px;height:15px;"></i> Run Scraper';
                         if (window.lucide) lucide.createIcons();
-                    }
-                })
-                .catch(err => {
-                    showCustomAlert("Error", "Request failed: " + err);
+                    });
+            }
+        );
+    }
+
+    function pollScraperStatus() {
+        fetch('/api/admin/scraper_status')
+            .then(r => r.json())
+            .then(data => {
+                setScraperBadge(data.status);
+                if (data.log && data.log.length) appendScraperLog(data.log);
+
+                const btn = document.getElementById('run-scraper-btn');
+
+                if (data.status === 'running' || data.status === 'starting') {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;" class="spin"></i> Running...';
+                    if (window.lucide) lucide.createIcons();
+                } else {
+                    // Finished (done or error)
+                    clearInterval(scraperPollInterval);
+                    scraperPollInterval = null;
                     btn.disabled = false;
                     btn.innerHTML = '<i data-lucide="play" style="width:15px;height:15px;"></i> Run Scraper';
                     if (window.lucide) lucide.createIcons();
-                });
-        }
-    );
-}
 
-function pollScraperStatus() {
-    fetch('/api/admin/scraper_status')
-        .then(r => r.json())
-        .then(data => {
-            setScraperBadge(data.status);
-            if (data.log && data.log.length) appendScraperLog(data.log);
-
-            const btn = document.getElementById('run-scraper-btn');
-
-            if (data.status === 'running' || data.status === 'starting') {
-                btn.disabled = true;
-                btn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;" class="spin"></i> Running...';
-                if (window.lucide) lucide.createIcons();
-            } else {
-                // Finished (done or error)
-                clearInterval(scraperPollInterval);
-                scraperPollInterval = null;
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="play" style="width:15px;height:15px;"></i> Run Scraper';
-                if (window.lucide) lucide.createIcons();
-
-                if (data.status === 'done') {
-                    showCustomAlert("Scraper Complete",
-                        `✅ Finished! Found ${data.found} courses — inserted ${data.inserted} new entries into the database. The AI model has been retrained.`);
-                } else if (data.status === 'error') {
-                    showCustomAlert("Scraper Error", "The scraper encountered an error. Check the log for details.");
+                    if (data.status === 'done') {
+                        showCustomAlert("Scraper Complete",
+                            `✅ Finished! Found ${data.found} courses — inserted ${data.inserted} new entries into the database. The AI model has been retrained.`);
+                    } else if (data.status === 'error') {
+                        showCustomAlert("Scraper Error", "The scraper encountered an error. Check the log for details.");
+                    }
                 }
-            }
-        })
-        .catch(err => console.warn("Scraper poll error:", err));
-}
-
-// ─── CSV Upload ──────────────────────────────────────────────────
-let csvSelectedFile = null;
-
-function csvDragOver(e) {
-    e.preventDefault();
-    document.getElementById('csv-drop-zone').style.borderColor = 'var(--primary)';
-    document.getElementById('csv-drop-zone').style.background = 'rgba(139,92,246,0.08)';
-}
-function csvDragLeave(e) {
-    document.getElementById('csv-drop-zone').style.borderColor = 'var(--border-glass)';
-    document.getElementById('csv-drop-zone').style.background = 'rgba(255,255,255,0.02)';
-}
-function csvDrop(e) {
-    e.preventDefault();
-    csvDragLeave(e);
-    const file = e.dataTransfer.files[0];
-    if (file && file.name.toLowerCase().endsWith('.csv')) {
-        csvSelectedFile = file;
-        showCsvPreview(file);
-    } else {
-        showCustomAlert("Invalid File", "Please drop a .csv file.");
+            })
+            .catch(err => console.warn("Scraper poll error:", err));
     }
-}
-function csvFileSelected(input) {
-    if (input.files && input.files[0]) {
-        csvSelectedFile = input.files[0];
-        showCsvPreview(csvSelectedFile);
+
+    // ─── CSV Upload ──────────────────────────────────────────────────
+    let csvSelectedFile = null;
+
+    function csvDragOver(e) {
+        e.preventDefault();
+        document.getElementById('csv-drop-zone').style.borderColor = 'var(--primary)';
+        document.getElementById('csv-drop-zone').style.background = 'rgba(139,92,246,0.08)';
     }
-}
+    function csvDragLeave(e) {
+        document.getElementById('csv-drop-zone').style.borderColor = 'var(--border-glass)';
+        document.getElementById('csv-drop-zone').style.background = 'rgba(255,255,255,0.02)';
+    }
+    function csvDrop(e) {
+        e.preventDefault();
+        csvDragLeave(e);
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.toLowerCase().endsWith('.csv')) {
+            csvSelectedFile = file;
+            showCsvPreview(file);
+        } else {
+            showCustomAlert("Invalid File", "Please drop a .csv file.");
+        }
+    }
+    function csvFileSelected(input) {
+        if (input.files && input.files[0]) {
+            csvSelectedFile = input.files[0];
+            showCsvPreview(csvSelectedFile);
+        }
+    }
 
-function showCsvPreview(file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const lines = e.target.result.split('\n').filter(l => l.trim());
-        const headerLine = lines[0] || '';
-        const columns = headerLine.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-        const rowCount = lines.length - 1;
+    function showCsvPreview(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const lines = e.target.result.split('\n').filter(l => l.trim());
+            const headerLine = lines[0] || '';
+            const columns = headerLine.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+            const rowCount = lines.length - 1;
 
-        document.getElementById('csv-drop-label').innerHTML =
-            `<strong style="color: var(--primary);">📄 ${escapeAdminHtml(file.name)}</strong>`;
-        document.getElementById('csv-preview-content').innerHTML =
-            `<div><strong>Rows:</strong> ${rowCount} &nbsp;|&nbsp; <strong>Columns:</strong> ${columns.length}</div>
+            document.getElementById('csv-drop-label').innerHTML =
+                `<strong style="color: var(--primary);">📄 ${escapeAdminHtml(file.name)}</strong>`;
+            document.getElementById('csv-preview-content').innerHTML =
+                `<div><strong>Rows:</strong> ${rowCount} &nbsp;|&nbsp; <strong>Columns:</strong> ${columns.length}</div>
              <div style="margin-top: 0.4rem; display: flex; flex-wrap: wrap; gap: 0.3rem;">
                ${columns.map(c => `<span style="background: rgba(139,92,246,0.15); color: var(--primary); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">${escapeAdminHtml(c)}</span>`).join('')}
              </div>`;
-        document.getElementById('csv-preview').style.display = 'block';
-        document.getElementById('csv-import-btn').style.display = 'flex';
+            document.getElementById('csv-preview').style.display = 'block';
+            document.getElementById('csv-import-btn').style.display = 'flex';
+            if (window.lucide) lucide.createIcons();
+        };
+        reader.readAsText(file);
+    }
+
+    function importCsv() {
+        if (!csvSelectedFile) return;
+        const btn = document.getElementById('csv-import-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;" class="spin"></i> Importing...';
         if (window.lucide) lucide.createIcons();
-    };
-    reader.readAsText(file);
-}
 
-function importCsv() {
-    if (!csvSelectedFile) return;
-    const btn = document.getElementById('csv-import-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" style="width:15px;height:15px;" class="spin"></i> Importing...';
-    if (window.lucide) lucide.createIcons();
+        const formData = new FormData();
+        formData.append('file', csvSelectedFile);
 
-    const formData = new FormData();
-    formData.append('file', csvSelectedFile);
+        fetch('/api/admin/upload_csv', { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="database" style="width:15px;height:15px;"></i> Import &amp; Clean';
+                if (window.lucide) lucide.createIcons();
 
-    fetch('/api/admin/upload_csv', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(data => {
-            btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="database" style="width:15px;height:15px;"></i> Import &amp; Clean';
-            if (window.lucide) lucide.createIcons();
-
-            if (data.success) {
-                showCustomAlert("Import Complete",
-                    `✅ ${data.message}\n\nFile had ${data.total_in_file} valid rows — inserted ${data.inserted} new courses, skipped ${data.skipped} duplicates.`);
-                // Reset UI
-                csvSelectedFile = null;
-                document.getElementById('csv-file-input').value = '';
-                document.getElementById('csv-preview').style.display = 'none';
-                document.getElementById('csv-import-btn').style.display = 'none';
-                document.getElementById('csv-drop-label').innerHTML = 'Drag &amp; drop CSV here, or <strong style="color: var(--primary);">click to browse</strong>';
-            } else {
-                showCustomAlert("Import Error", data.error);
-            }
-        })
-        .catch(err => {
-            btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="database" style="width:15px;height:15px;"></i> Import &amp; Clean';
-            showCustomAlert("Error", "Request failed: " + err);
-            if (window.lucide) lucide.createIcons();
-        });
-}
+                if (data.success) {
+                    showCustomAlert("Import Complete",
+                        `✅ ${data.message}\n\nFile had ${data.total_in_file} valid rows — inserted ${data.inserted} new courses, skipped ${data.skipped} duplicates.`);
+                    // Reset UI
+                    csvSelectedFile = null;
+                    document.getElementById('csv-file-input').value = '';
+                    document.getElementById('csv-preview').style.display = 'none';
+                    document.getElementById('csv-import-btn').style.display = 'none';
+                    document.getElementById('csv-drop-label').innerHTML = 'Drag &amp; drop CSV here, or <strong style="color: var(--primary);">click to browse</strong>';
+                } else {
+                    showCustomAlert("Import Error", data.error);
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="database" style="width:15px;height:15px;"></i> Import &amp; Clean';
+                showCustomAlert("Error", "Request failed: " + err);
+                if (window.lucide) lucide.createIcons();
+            });
+    }
 
 </script>
 {% endblock %}

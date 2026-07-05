@@ -249,18 +249,16 @@ class IREngine:
         
         os.makedirs(output_dir, exist_ok=True)
         
+        import joblib
         # Save TF-IDF vectorizer
-        with open(f'{output_dir}/tfidf_vectorizer.pkl', 'wb') as f:
-            pickle.dump(self.tfidf_vectorizer, f)
+        joblib.dump(self.tfidf_vectorizer, f'{output_dir}/tfidf_vectorizer.pkl')
         
         # Save TF-IDF matrix
-        with open(f'{output_dir}/tfidf_matrix.pkl', 'wb') as f:
-            pickle.dump(self.tfidf_matrix, f)
+        joblib.dump(self.tfidf_matrix, f'{output_dir}/tfidf_matrix.pkl')
         
         # Save BM25 scorer
         if self.bm25_scorer:
-            with open(f'{output_dir}/bm25_scorer.pkl', 'wb') as f:
-                pickle.dump(self.bm25_scorer, f)
+            joblib.dump(self.bm25_scorer, f'{output_dir}/bm25_scorer.pkl')
         
         # Save keyword index
         with open(f'{output_dir}/keyword_index.json', 'w') as f:
@@ -272,18 +270,16 @@ class IREngine:
         """Load index from files."""
         print(f"[IREngine] Loading index from {input_dir}...")
         
+        import joblib
         # Load TF-IDF vectorizer
-        with open(f'{input_dir}/tfidf_vectorizer.pkl', 'rb') as f:
-            self.tfidf_vectorizer = pickle.load(f)
+        self.tfidf_vectorizer = joblib.load(f'{input_dir}/tfidf_vectorizer.pkl')
         
         # Load TF-IDF matrix
-        with open(f'{input_dir}/tfidf_matrix.pkl', 'rb') as f:
-            self.tfidf_matrix = pickle.load(f)
+        self.tfidf_matrix = joblib.load(f'{input_dir}/tfidf_matrix.pkl')
         
         # Load BM25 scorer if exists
         try:
-            with open(f'{input_dir}/bm25_scorer.pkl', 'rb') as f:
-                self.bm25_scorer = pickle.load(f)
+            self.bm25_scorer = joblib.load(f'{input_dir}/bm25_scorer.pkl')
         except FileNotFoundError:
             pass
         

@@ -44,15 +44,9 @@ def load_and_train_model(db=None):
     if os.path.exists(cache_file):
         try:
             print("Loading TF-IDF vectorizer and model from disk cache...")
-            import pickle
-            class CompatibilityUnpickler(pickle.Unpickler):
-                def find_class(self, module, name):
-                    if module == "numpy._core" or module.startswith("numpy._core."):
-                        module = module.replace("numpy._core", "numpy.core")
-                    return super().find_class(module, name)
-
-            with open(cache_file, "rb") as f:
-                cache_data = CompatibilityUnpickler(f).load()
+            import joblib
+            
+            cache_data = joblib.load(cache_file)
             vectorizer = cache_data["vectorizer"]
             tfidf_matrix = cache_data["tfidf_matrix"]
             global_featured_courses = cache_data["global_featured_courses"]
@@ -79,10 +73,9 @@ def load_and_train_model(db=None):
     global_featured_courses = df.sort_values(by=['stars', 'has_review'], ascending=[False, False]).head(12)
     
     try:
-        import pickle
+        import joblib
         cache_data = {"vectorizer": vectorizer, "tfidf_matrix": tfidf_matrix, "global_featured_courses": global_featured_courses}
-        with open(cache_file, "wb") as f:
-            pickle.dump(cache_data, f)
+        joblib.dump(cache_data, cache_file)
         print("Saved optimized TF-IDF cache to disk.")
     except Exception as save_err:
         pass

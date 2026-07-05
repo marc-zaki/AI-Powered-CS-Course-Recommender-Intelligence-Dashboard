@@ -57,6 +57,15 @@ async def pricing(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse(request=request, name="pricing.html", context= {"request": request, "current_user": user})
 
+@router.get("/dashboard")
+async def dashboard_redirect(request: Request):
+    user = await get_current_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+    if user.get("role") == "admin":
+        return RedirectResponse(url="/admin", status_code=303)
+    return RedirectResponse(url="/profile", status_code=303)
+
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     try:

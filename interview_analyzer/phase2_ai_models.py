@@ -264,8 +264,8 @@ class AIModels:
         
         # Save classifier
         if self.classifier_pipeline:
-            with open(f'{output_dir}/classifier_model.pkl', 'wb') as f:
-                pickle.dump(self.classifier_pipeline, f)
+            import joblib
+            joblib.dump(self.classifier_pipeline, f'{output_dir}/classifier_model.pkl')
         
         # Save skills dictionary
         with open(f'{output_dir}/skills_keywords.json', 'w') as f:
@@ -282,8 +282,8 @@ class AIModels:
         print(f"[AIModels] Loading models from {input_dir}...")
         
         try:
-            with open(f'{input_dir}/classifier_model.pkl', 'rb') as f:
-                self.classifier_pipeline = pickle.load(f)
+            import joblib
+            self.classifier_pipeline = joblib.load(f'{input_dir}/classifier_model.pkl')
             
             with open(f'{input_dir}/categories_list.json', 'r') as f:
                 self.categories_list = json.load(f)

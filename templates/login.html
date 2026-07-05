@@ -12,7 +12,7 @@
         <form action="{{ url_for('login') }}" method="POST">
             <div style="margin-bottom: 1.25rem;">
                 <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Email Address</label>
-                <input type="email" id="email" name="email" required class="search-input" placeholder="you@example.com">
+                <input type="email" id="email" name="email" required class="search-input" placeholder="you@example.com" data-testid="email">
             </div>
             
             <div style="margin-bottom: 1.5rem;">
@@ -20,10 +20,10 @@
                     <label for="password" style="display: block; font-weight: 600; margin: 0; color: var(--text-main);">Password</label>
                     <a href="{{ url_for('forgot_password') }}" style="color: var(--secondary); font-size: 0.85rem; font-weight: 500; text-decoration: none;" onmouseenter="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">Forgot password?</a>
                 </div>
-                <input type="password" id="password" name="password" required class="search-input" placeholder="••••••••">
+                <input type="password" id="password" name="password" required class="search-input" placeholder="••••••••" data-testid="password">
             </div>
             
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Log In</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;" data-testid="submit">Log In</button>
         </form>
 
         <div style="display: flex; align-items: center; margin: 1.5rem 0; text-align: center; color: var(--text-muted); font-size: 0.85rem;">

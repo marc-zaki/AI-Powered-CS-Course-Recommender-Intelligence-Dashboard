@@ -49,6 +49,10 @@ async def register(
         flash(request, "Name, email, and password are required.", "danger")
         return RedirectResponse(url="/register", status_code=303)
         
+    if len(password) < 6:
+        flash(request, "Password must be at least 6 characters long.", "danger")
+        return RedirectResponse(url="/register", status_code=303)
+        
     existing_user = await db.users.find_one({"email": email})
     if existing_user:
         flash(request, "Email already registered.", "danger")

@@ -12,17 +12,17 @@
         <form action="{{ url_for('register') }}" method="POST">
             <div style="margin-bottom: 1.25rem;">
                 <label for="name" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Full Name</label>
-                <input type="text" id="name" name="name" required class="search-input" placeholder="John Doe">
+                <input type="text" id="name" name="name" required class="search-input" placeholder="John Doe" data-testid="name">
             </div>
             
             <div style="margin-bottom: 1.25rem;">
                 <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Email Address</label>
-                <input type="email" id="email" name="email" required class="search-input" placeholder="you@example.com">
+                <input type="email" id="email" name="email" required class="search-input" placeholder="you@example.com" data-testid="email">
             </div>
             
             <div style="margin-bottom: 1.25rem;">
                 <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">Password</label>
-                <input type="password" id="password" name="password" required class="search-input" placeholder="••••••••">
+                <input type="password" id="password" name="password" required class="search-input" placeholder="••••••••" data-testid="password">
             </div>
 
             <div style="margin-bottom: 1.25rem;">
@@ -51,7 +51,7 @@
                 <textarea id="career_goals" name="career_goals" class="search-input" style="min-height: 100px; resize: vertical;" placeholder="E.g., I want to become a machine learning engineer at a top tech company..."></textarea>
             </div>
             
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Create Account</button>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;" data-testid="submit">Create Account</button>
         </form>
 
         <div style="display: flex; align-items: center; margin: 1.5rem 0; text-align: center; color: var(--text-muted); font-size: 0.85rem;">

@@ -16,7 +16,7 @@
 
 <div class="container">
 
-    {% if not is_premium_user %}
+    {% if not current_user or (not current_user.is_premium and current_user.role != 'admin' and current_user.get('resume_credits', 0) <= 0) %}
     <!-- Paywall UI -->
     <div
         style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 0 3rem;">
@@ -43,58 +43,42 @@
 
             <div class="paywall-grid">
 
-                <!-- Student Tier -->
-                <div
-                    style="border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.5rem; background: rgba(255,255,255,0.02); position: relative; display: flex; flex-direction: column;">
-                    <h3
-                        style="font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-muted);">
-                        Student Pass</h3>
-                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">0 EGP</div>
-                    <ul
-                        style="list-style: none; padding: 0; margin: 0; margin-bottom: 1.5rem; color: var(--text-main); font-size: 0.85rem; flex: 1;">
-                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i
-                                data-lucide="check" style="color: #10b981; width: 16px;"></i> Unlimited ATS Scans</li>
-                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i
-                                data-lucide="check" style="color: #10b981; width: 16px;"></i> AI Bullet Rewrites</li>
-                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i
-                                data-lucide="check" style="color: #10b981; width: 16px;"></i> Missing Keyword Analysis
-                        </li>
+                <!-- $10 Tier -->
+                <div style="border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.5rem; background: rgba(255,255,255,0.02); position: relative; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-muted);">Starter</h3>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">$10 <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">One-time</span></div>
+                    <ul style="list-style: none; padding: 0; margin: 0; margin-bottom: 1.5rem; color: var(--text-main); font-size: 0.85rem; flex: 1;">
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text" style="color: #10b981; width: 16px;"></i> <strong>10</strong> Resume Scans</li>
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: #10b981; width: 16px;"></i> AI Bullet Rewrites</li>
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: #10b981; width: 16px;"></i> Missing Keyword Analysis</li>
                     </ul>
-                    <div
-                        style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.5rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; text-align: center;">
-                        <i data-lucide="info"
-                            style="width: 12px; height: 12px; display: inline-block; vertical-align: text-bottom;"></i>
-                        Login with .edu email
-                    </div>
+                    <a href="/checkout/premium?tier=10" class="btn" style="display: block; text-align: center; width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 700; border-radius: 8px; background: rgba(99,102,241,0.1); color: var(--primary); border: 1px solid rgba(99,102,241,0.2);">Buy 10 Scans</a>
                 </div>
 
-                <!-- Pro Tier -->
-                <div
-                    style="border: 2px solid var(--primary); border-radius: 16px; padding: 1.5rem; background: linear-gradient(180deg, rgba(99,102,241,0.1) 0%, rgba(0,0,0,0) 100%); position: relative; box-shadow: 0 10px 30px rgba(99,102,241,0.1); display: flex; flex-direction: column;">
-                    <div
-                        style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;">
-                        Most Popular</div>
-                    <h3
-                        style="font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--primary);">
-                        Job Hunter Pass</h3>
-                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem;">249.99 EGP <span
-                            style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">One-time</span></div>
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">Lifetime access. No
-                        recurring fees.</p>
-                    <ul
-                        style="list-style: none; padding: 0; margin: 0; margin-bottom: 1.5rem; color: var(--text-main); font-size: 0.85rem; flex: 1;">
-                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i
-                                data-lucide="check" style="color: #10b981; width: 16px;"></i> All Student Features</li>
-                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i
-                                data-lucide="check" style="color: #10b981; width: 16px;"></i> Priority LLM Processing
-                        </li>
-                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i
-                                data-lucide="check" style="color: #10b981; width: 16px;"></i> Support Independent Devs
-                        </li>
+                <!-- $15 Tier -->
+                <div style="border: 2px solid var(--primary); border-radius: 16px; padding: 1.5rem; background: linear-gradient(180deg, rgba(99,102,241,0.1) 0%, rgba(0,0,0,0) 100%); position: relative; box-shadow: 0 10px 30px rgba(99,102,241,0.1); display: flex; flex-direction: column;">
+                    <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;">Most Popular</div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--primary);">Professional</h3>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem;">$15 <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">One-time</span></div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">Best value for active job seekers.</p>
+                    <ul style="list-style: none; padding: 0; margin: 0; margin-bottom: 1.5rem; color: var(--text-main); font-size: 0.85rem; flex: 1;">
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text" style="color: #10b981; width: 16px;"></i> <strong>20</strong> Resume Scans</li>
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: #10b981; width: 16px;"></i> Priority LLM Processing</li>
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: #10b981; width: 16px;"></i> Full ATS Analysis</li>
                     </ul>
-                    <a href="/checkout/premium" class="btn btn-primary"
-                        style="display: block; text-align: center; width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 700; border-radius: 8px;">Upgrade
-                        to PRO</a>
+                    <a href="/checkout/premium?tier=15" class="btn btn-primary" style="display: block; text-align: center; width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 700; border-radius: 8px;">Buy 20 Scans</a>
+                </div>
+
+                <!-- $25 Tier -->
+                <div style="border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.5rem; background: rgba(255,255,255,0.02); position: relative; display: flex; flex-direction: column;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; color: var(--text-muted);">Ultimate</h3>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">$25 <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">One-time</span></div>
+                    <ul style="list-style: none; padding: 0; margin: 0; margin-bottom: 1.5rem; color: var(--text-main); font-size: 0.85rem; flex: 1;">
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text" style="color: #10b981; width: 16px;"></i> <strong>50</strong> Resume Scans</li>
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: #10b981; width: 16px;"></i> Lowest cost per scan</li>
+                        <li style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: #10b981; width: 16px;"></i> Support independent devs</li>
+                    </ul>
+                    <a href="/checkout/premium?tier=25" class="btn" style="display: block; text-align: center; width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 700; border-radius: 8px; background: rgba(99,102,241,0.1); color: var(--primary); border: 1px solid rgba(99,102,241,0.2);">Buy 50 Scans</a>
                 </div>
 
             </div>
@@ -106,6 +90,24 @@
 
     <div class="glass-panel"
         style="padding: 2.5rem; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px; margin-bottom: 2rem;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <i data-lucide="battery-charging" style="width: 18px; height: 18px;"></i>
+                    {% if current_user.role == 'admin' %}
+                        Remaining Scans: Unlimited (Admin)
+                    {% elif current_user.is_premium %}
+                        Remaining Scans: Unlimited (Pro)
+                    {% else %}
+                        Remaining Scans: {{ current_user.get('resume_credits', 0) }}
+                    {% endif %}
+                </div>
+            </div>
+            {% if not current_user.is_premium and current_user.role != 'admin' %}
+            <a href="#buy-more" onclick="location.reload()" style="font-size: 0.9rem; color: var(--primary); font-weight: 600; text-decoration: none;">Want more? Refresh or logout to buy.</a>
+            {% endif %}
+        </div>
 
         <form id="ats-form" onsubmit="analyzeResume(event)">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
@@ -234,15 +236,14 @@
         border-color: var(--secondary) !important;
     }
 
-    /* Paywall Responsiveness */
     .paywall-modal {
         padding: 2rem;
-        max-width: 750px !important;
+        max-width: 1000px !important;
     }
 
     .paywall-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
         text-align: left;
         position: relative;

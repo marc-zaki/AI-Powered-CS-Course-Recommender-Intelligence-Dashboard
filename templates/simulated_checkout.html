@@ -209,8 +209,9 @@
                 <i data-lucide="layers"></i> MASARI
             </div>
             
-            <div class="product-name">Subscribe to</div>
-            <div class="price">$9.99<span>/month</span></div>
+            <div class="product-name">Purchase</div>
+            <div class="price">${{ price }}<span></span></div>
+            <div style="font-weight: 600; font-size: 1.2rem; margin-bottom: 1rem; color: #38bdf8;">{{ product_name }}</div>
             
             <ul class="features">
                 <li><i data-lucide="check-circle-2"></i> Unlimited Resume Analysis</li>
@@ -231,7 +232,7 @@
             <form id="simulated-checkout-form">
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" value="{{ current_user.email if current_user else '' }}" placeholder="you@example.com" required>
+                    <input type="email" id="email" value="" placeholder="you@example.com" required>
                 </div>
 
                 <div class="form-group">
@@ -249,7 +250,7 @@
                 </div>
 
                 <button type="submit" class="btn-pay" id="pay-btn">
-                    <span id="btn-text">Pay $9.99</span>
+                    <span id="btn-text">Pay ${{ price }}</span>
                     <i data-lucide="loader-2" class="spinner" id="spinner"></i>
                 </button>
 
@@ -293,7 +294,7 @@
                 
                 // Redirect to the actual success route to upgrade user
                 setTimeout(() => {
-                    window.location.href = "/checkout/success";
+                    window.location.href = "/checkout/success/{{ tier }}";
                 }, 1000);
             }, 2500);
         });

@@ -28,35 +28,61 @@ def extract_json_from_llm(text):
         return {}
 
 @router.get("/checkout/premium")
-async def checkout_premium(request: Request):
+async def checkout_premium(request: Request, tier: str = "10"):
     user_id = request.session.get('user_id')
     if not user_id:
-        flash(request, "Please log in to upgrade.", "warning")
+        flash(request, "Please log in to purchase scans.", "warning")
         return RedirectResponse(url="/login", status_code=303)
         
-    db = request.app.state.mongo_db
-    user = None
-    if db is not None:
-        user = await db.users.find_one({"_id": user_id})
-        
-    from core_templates import templates
-    return templates.TemplateResponse(request=request, name="simulated_checkout.html", context= {"request": request, "current_user": user})
+    prices = {
+        "10": ("10 Resume Scans", "10.00"),
+        "15": ("20 Resume Scans", "15.00"),
+        "25": ("50 Resume Scans", "25.00")
+    }
+    
+    product_name, price = prices.get(tier, ("10 Resume Scans", "10.00"))
+    
+    # Render simulated checkout page until Paymob is fully integrated
+    from fastapi.templating import Jinja2Templates
+    templates = Jinja2Templates(directory="templates")
+    context = {
+        "tier": tier,
+        "product_name": product_name,
+        "price": price,
+        "current_user": None
+    }
+    return templates.TemplateResponse(request, "simulated_checkout.html", context)
 
-@router.get("/checkout/success")
-async def checkout_success(request: Request):
+@router.get("/checkout/success/{tier}")
+async def checkout_success(request: Request, tier: str):
     user_id = request.session.get('user_id')
     if not user_id:
         return RedirectResponse(url="/login", status_code=303)
         
-    db = request.app.state.mongo_db
-    if db is not None:
-        await db.users.update_one({"_id": user_id}, {"$set": {"is_premium": True, "subscription_type": "pro"}})
+    credits_to_add = {
+        "10": 10,
+        "15": 20,
+        "25": 50
+    }.get(tier, 0)
         
-    flash(request, "Payment successful! You are now a PRO user.", "success")
+    db = request.app.state.mongo_db
+    if db is not None and credits_to_add > 0:
+        await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": credits_to_add}})
+        
+    flash(request, f"Payment successful! You received {credits_to_add} Resume Scans.", "success")
     return RedirectResponse(url="/resume-optimizer", status_code=303)
 
 @router.post("/api/resume/analyze")
 async def api_resume_analyze(request: Request, job_description: str = Form(""), resume: UploadFile = File(None)):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return JSONResponse({"error": "You must be logged in to analyze resumes."}, status_code=401)
+        
+    db = request.app.state.mongo_db
+    user = await db.users.find_one({"_id": user_id})
+    if not user or (not user.get('is_premium') and user.get('role') != 'admin' and user.get('resume_credits', 0) <= 0):
+        return JSONResponse({"error": "You have 0 Resume Scans remaining. Please purchase more scans to continue."}, status_code=403)
+
     if not resume:
         return JSONResponse({"error": "No resume file uploaded"}, status_code=400)
         
@@ -141,7 +167,11 @@ async def api_resume_analyze(request: Request, job_description: str = Form(""), 
             pass
 
     if not result:
-        return JSONResponse({"error": "AI model unavailable or failed to generate analysis. Please try again."}, status_code=503)
+        return JSONResponse({"error": "Our AI servers are currently experiencing high load or your API keys are invalid. No credits were consumed. Please check your API limits or try again later."}, status_code=503)
+
+    # Decrement credit only on success
+    if not user.get('is_premium') and user.get('role') != 'admin':
+        await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": -1}})
 
     result.setdefault("ats_score", 0)
     result.setdefault("perfect_job_title", "Software Engineer")

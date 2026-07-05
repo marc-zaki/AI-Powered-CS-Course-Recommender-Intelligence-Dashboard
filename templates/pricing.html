@@ -5,50 +5,29 @@
     <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-main);">Simple, Transparent Pricing</h1>
     <p style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 4rem;">Upgrade your career with the ultimate AI toolset.</p>
 
-    <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-        <!-- Free Tier -->
-        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; width: 100%; max-width: 380px; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <h3 style="font-size: 1.5rem; margin-top: 0; color: var(--text-main);">Basic</h3>
-            <div style="font-size: 3rem; font-weight: 800; margin: 1rem 0; color: var(--text-main);">$0<span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/forever</span></div>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">Perfect for getting started with course discovery.</p>
+    <!-- Pay As You Go Section for Resume Credits -->
+    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; width: 100%; max-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h4 style="font-size: 1.25rem; color: var(--text-main); margin-bottom: 0.5rem;">Starter Pack</h4>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem;">$10</div>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">10 Resume Scans</p>
+                <a href="{{ url_for('resume_optimizer') }}#buy-more" class="btn btn-outline" style="display: block; width: 100%; padding: 0.8rem; border-radius: 6px; text-decoration: none;">Buy Credits</a>
+            </div>
             
-            <ul style="list-style: none; padding: 0; margin: 0 0 2rem 0;">
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: var(--success); width: 20px;"></i> Browse 10,000+ Courses</li>
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: var(--success); width: 20px;"></i> Semantic Search Engine</li>
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="x" style="color: var(--text-muted); width: 20px;"></i> No Resume Optimizer</li>
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="x" style="color: var(--text-muted); width: 20px;"></i> No AI Mock Interviews</li>
-            </ul>
+            <div style="background: var(--surface); border: 2px solid var(--secondary); border-radius: 12px; padding: 2rem; width: 100%; max-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: relative;">
+                <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">Best Value</div>
+                <h4 style="font-size: 1.25rem; color: var(--text-main); margin-bottom: 0.5rem;">Professional Pack</h4>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem;">$15</div>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">20 Resume Scans</p>
+                <a href="{{ url_for('resume_optimizer') }}#buy-more" class="btn btn-primary" style="display: block; width: 100%; padding: 0.8rem; border-radius: 6px; text-decoration: none;">Buy Credits</a>
+            </div>
             
-            {% if current_user and current_user.is_premium %}
-                <button class="btn btn-outline" style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: default;" disabled>Current Plan</button>
-            {% elif current_user %}
-                <button class="btn btn-outline" style="width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: default;" disabled>Current Plan</button>
-            {% else %}
-                <a href="{{ url_for('register') }}" class="btn btn-outline" style="display: block; text-align: center; width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); text-decoration: none; color: var(--text-main); font-weight: 600;">Sign Up Free</a>
-            {% endif %}
+            <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; width: 100%; max-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h4 style="font-size: 1.25rem; color: var(--text-main); margin-bottom: 0.5rem;">Ultimate Pack</h4>
+                <div style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 1rem;">$25</div>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">50 Resume Scans</p>
+                <a href="{{ url_for('resume_optimizer') }}#buy-more" class="btn btn-outline" style="display: block; width: 100%; padding: 0.8rem; border-radius: 6px; text-decoration: none;">Buy Credits</a>
+            </div>
         </div>
-
-        <!-- Pro Tier -->
-        <div style="background: #0f172a; color: white; border-radius: 16px; padding: 3rem; width: 100%; max-width: 380px; text-align: left; box-shadow: 0 20px 40px rgba(0,0,0,0.15); position: relative; transform: scale(1.05);">
-            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Most Popular</div>
-            
-            <h3 style="font-size: 1.5rem; margin-top: 0; color: white;">MASARI Pro</h3>
-            <div style="font-size: 3rem; font-weight: 800; margin: 1rem 0; color: white;">$9.99<span style="font-size: 1rem; color: #94a3b8; font-weight: 500;">/month</span></div>
-            <p style="color: #cbd5e1; margin-bottom: 2rem;">Unlock the full power of AI for your career.</p>
-            
-            <ul style="list-style: none; padding: 0; margin: 0 0 2rem 0;">
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: var(--primary); width: 20px;"></i> Everything in Basic</li>
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: var(--primary); width: 20px;"></i> Unlimited ATS Resume Optimization</li>
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: var(--primary); width: 20px;"></i> Interactive AI Mock Interviews</li>
-                <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="check" style="color: var(--primary); width: 20px;"></i> Detailed Actionable Feedback</li>
-            </ul>
-            
-            {% if current_user and current_user.is_premium %}
-                <button class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: 8px; font-weight: 600; cursor: default; background: var(--success); border: none; color: white;" disabled>You are PRO</button>
-            {% else %}
-                <a href="{{ url_for('checkout_premium') }}" class="btn btn-primary" style="display: block; text-align: center; width: 100%; padding: 1rem; border-radius: 8px; background: var(--primary); color: white; text-decoration: none; font-weight: 600; transition: background 0.2s;">Upgrade to Pro</a>
-            {% endif %}
-        </div>
-    </div>
 </div>
 {% endblock %}
