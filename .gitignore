@@ -19,5 +19,17 @@ Thumbs.db
 .idea/
 
 # Model / Data Cache
-server.log
+*.log
 .vercel
+*.pkl
+datasets/*.pkl
+interview_analyzer/storage/*.pkl
+
+# Testing & Virtual Environments
+.pytest_cache/
+venv/
+env/
+
+# PDF Reports
+*.pdf
+
