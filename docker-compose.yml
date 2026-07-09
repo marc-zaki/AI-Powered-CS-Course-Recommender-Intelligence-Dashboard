@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: masari-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
