@@ -7,7 +7,7 @@ import uuid
 
 from fastapi import APIRouter, Request, Form, UploadFile, File
 from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
+from core_templates import templates
 import httpx
 import google.generativeai as genai
 from pdfminer.high_level import extract_text
@@ -15,7 +15,6 @@ from pdfminer.high_level import extract_text
 from flash import flash
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
