@@ -27,7 +27,7 @@ from flash import get_flashed_messages
 load_dotenv(override=True)
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
-SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(24).hex())
+SECRET_KEY = os.environ.get("SECRET_KEY", "masari_super_secret_fallback_key_2026")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 if GEMINI_API_KEY:
