@@ -78,11 +78,14 @@
                     <p>{{ description }}</p>
                 </div>
                 
-                <!-- The URL links to Gumroad with wanted=true to instantly show the checkout and injects the user_id custom field -->
-                <a href="{{ gumroad_url }}?wanted=true&user_id={{ user_id }}" class="gumroad-button group w-full bg-gradient-to-r from-secondary-600 to-primary-600 hover:from-secondary-500 hover:to-primary-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_8px_25px_rgba(37,99,235,0.25)] hover:shadow-[0_12px_35px_rgba(37,99,235,0.4)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3 no-underline" style="background-image: linear-gradient(to right, var(--tw-gradient-stops)) !important; color: white !important;">
+                <!-- Hidden Gumroad link that gets intercepted by their script -->
+                <a href="{{ gumroad_url }}?wanted=true&user_id={{ user_id }}" class="gumroad-button" id="gumroad-proxy-btn" style="display: none;">Checkout</a>
+
+                <!-- Our beautiful Tailwind button that clicks the hidden link -->
+                <button type="button" onclick="document.getElementById('gumroad-proxy-btn').click()" class="group w-full bg-gradient-to-r from-secondary-600 to-primary-600 hover:from-secondary-500 hover:to-primary-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_8px_25px_rgba(37,99,235,0.25)] hover:shadow-[0_12px_35px_rgba(37,99,235,0.4)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3 border-0 cursor-pointer">
                     <span class="text-lg">Secure Your Credits</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </a>
+                </button>
                 
                 <p class="mt-6 text-center text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5 opacity-80">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
