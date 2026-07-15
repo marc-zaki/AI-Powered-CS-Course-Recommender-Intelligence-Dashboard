@@ -7,6 +7,7 @@ import uuid
 
 from fastapi import APIRouter, Request, Form, UploadFile, File
 from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 import httpx
 import google.generativeai as genai
 from pdfminer.high_level import extract_text
@@ -14,6 +15,7 @@ from pdfminer.high_level import extract_text
 from flash import flash
 
 router = APIRouter()
+templates = Jinja2Templates(directory="templates")
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
@@ -40,16 +42,37 @@ async def checkout_premium(request: Request, tier: str = "10"):
         flash(request, "Please log in to purchase scans.", "warning")
         return RedirectResponse(url="/login", status_code=303)
         
-    gumroad_urls = {
-        "10": "https://6633544132319.gumroad.com/l/masari-10",
-        "15": "https://6633544132319.gumroad.com/l/masari-20", # 20 Scans (Professional Pack)
-        "25": "https://6633544132319.gumroad.com/l/masari-25"  # 50 Scans (Ultimate Pack)
+    products = {
+        "10": {
+            "product_name": "MASARI PRO 10 SCANS",
+            "product_price": "10",
+            "product_cover": "h23hlttkyiwe3x8own7qitxfvqcw",
+            "gumroad_url": "https://gumroad.com/l/masari-10",
+            "description": "Instantly unlock 10 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
+        },
+        "15": {
+            "product_name": "MASARI PRO 20 SCANS",
+            "product_price": "15",
+            "product_cover": "arw29xgaucbl0zg583emwr6rwyse",
+            "gumroad_url": "https://gumroad.com/l/masari-20",
+            "description": "Instantly unlock 20 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
+        },
+        "25": {
+            "product_name": "MASARI PRO 50 SCANS",
+            "product_price": "25",
+            "product_cover": "2c74gmg3i7sbb5wc75epnracqxr3",
+            "gumroad_url": "https://gumroad.com/l/masari-25",
+            "description": "Instantly unlock 50 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
+        }
     }
     
-    checkout_url = gumroad_urls.get(tier, gumroad_urls["10"])
+    product = products.get(tier, products["10"])
     
-    # Append user_id so Gumroad pre-fills the hidden custom field and passes it in the webhook
-    return RedirectResponse(url=f"{checkout_url}?user_id={user_id}", status_code=303)
+    return templates.TemplateResponse("gumroad_checkout.html", {
+        "request": request,
+        "user_id": user_id,
+        **product
+    })
 
 @router.get("/checkout/success")
 async def checkout_success(request: Request):
