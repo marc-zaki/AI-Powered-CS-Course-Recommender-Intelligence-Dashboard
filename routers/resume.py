@@ -2,6 +2,8 @@ import os
 import json
 import tempfile
 import asyncio
+import base64
+import uuid
 
 from fastapi import APIRouter, Request, Form, UploadFile, File
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -27,6 +29,10 @@ def extract_json_from_llm(text):
     except:
         return {}
 
+import hmac
+import hashlib
+from datetime import datetime, timezone
+
 @router.get("/checkout/premium")
 async def checkout_premium(request: Request, tier: str = "10"):
     user_id = request.session.get('user_id')
@@ -34,43 +40,81 @@ async def checkout_premium(request: Request, tier: str = "10"):
         flash(request, "Please log in to purchase scans.", "warning")
         return RedirectResponse(url="/login", status_code=303)
         
-    prices = {
-        "10": ("10 Resume Scans", "10.00"),
-        "15": ("20 Resume Scans", "15.00"),
-        "25": ("50 Resume Scans", "25.00")
+    gumroad_urls = {
+        "10": "https://6633544132319.gumroad.com/l/masari-10",
+        "15": "https://6633544132319.gumroad.com/l/masari-20", # 20 Scans (Professional Pack)
+        "25": "https://6633544132319.gumroad.com/l/masari-25"  # 50 Scans (Ultimate Pack)
     }
     
-    product_name, price = prices.get(tier, ("10 Resume Scans", "10.00"))
+    checkout_url = gumroad_urls.get(tier, gumroad_urls["10"])
     
-    # Render simulated checkout page until Paymob is fully integrated
-    from fastapi.templating import Jinja2Templates
-    templates = Jinja2Templates(directory="templates")
-    context = {
-        "tier": tier,
-        "product_name": product_name,
-        "price": price,
-        "current_user": None
-    }
-    return templates.TemplateResponse(request, "simulated_checkout.html", context)
+    # Append user_id so Gumroad pre-fills the hidden custom field and passes it in the webhook
+    return RedirectResponse(url=f"{checkout_url}?user_id={user_id}", status_code=303)
 
-@router.get("/checkout/success/{tier}")
-async def checkout_success(request: Request, tier: str):
-    user_id = request.session.get('user_id')
+@router.get("/checkout/success")
+async def checkout_success(request: Request):
+    flash(request, "Successfully purchased credits! They have been added to your account.", "success")
+    return RedirectResponse(url="/dashboard", status_code=303)
+
+from fastapi import HTTPException
+import logging
+
+@router.post("/api/webhooks/gumroad")
+async def gumroad_webhook(request: Request):
+    payload = await request.body()
+    signature = request.headers.get("x-gumroad-signature")
+    
+    if not signature:
+        raise HTTPException(status_code=400, detail="Missing signature")
+        
+    gumroad_secret = os.environ.get("GUMROAD_SECRET")
+    if not gumroad_secret:
+        raise HTTPException(status_code=500, detail="Webhook secret not configured")
+        
+    expected_signature = hmac.new(
+        gumroad_secret.encode('utf-8'),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+    
+    if not hmac.compare_digest(expected_signature, signature):
+        raise HTTPException(status_code=403, detail="Invalid signature")
+        
+    content_type = request.headers.get("content-type", "")
+    try:
+        if "application/json" in content_type:
+            data = await request.json()
+        else:
+            data = await request.form()
+    except:
+        return {"status": "error", "message": "Failed to parse payload"}
+        
+    user_id = data.get("user_id")
+    permalink = data.get("permalink") # e.g. "masari-10"
+    
     if not user_id:
-        return RedirectResponse(url="/login", status_code=303)
+        # Sometimes custom fields are nested in Gumroad
+        user_id = data.get("url_params[user_id]")
         
-    credits_to_add = {
-        "10": 10,
-        "15": 20,
-        "25": 50
-    }.get(tier, 0)
+    if not user_id:
+        logging.error(f"Gumroad Webhook: No user_id found in payload. Data: {data}")
+        return {"status": "ignored", "reason": "No user_id found"}
         
-    db = request.app.state.mongo_db
-    if db is not None and credits_to_add > 0:
-        await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": credits_to_add}})
+    credits_map = {
+        "masari-10": 10,
+        "masari-20": 20,
+        "masari-25": 50
+    }
+    
+    amount = credits_map.get(permalink, 0)
+    
+    if amount > 0:
+        db = request.app.state.mongo_db
+        if db is not None:
+            await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": amount}})
+            logging.info(f"Gumroad Webhook: Added {amount} credits to user {user_id}")
         
-    flash(request, f"Payment successful! You received {credits_to_add} Resume Scans.", "success")
-    return RedirectResponse(url="/resume-optimizer", status_code=303)
+    return {"status": "success"}
 
 @router.post("/api/resume/analyze")
 async def api_resume_analyze(request: Request, job_description: str = Form(""), resume: UploadFile = File(None)):

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-gumroad-field="name">MASARI PRO 50 SCANS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        },
+                        secondary: {
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass-panel {
+                @apply bg-white/90 dark:bg-zinc-900/80 backdrop-blur-xl border border-blue-600/15 dark:border-white/10 shadow-2xl;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-100 dark:bg-zinc-950 text-slate-900 dark:text-slate-50 min-h-screen flex items-center justify-center p-4 sm:p-8 overflow-x-hidden relative">
+
+    <!-- Ambient Background Effects -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-primary-600/10 dark:bg-primary-500/10 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-[10%] -right-[10%] w-[40%] h-[60%] bg-secondary-600/10 dark:bg-secondary-500/10 blur-[120px] rounded-full"></div>
+    </div>
+
+    <div class="glass-panel w-full max-w-5xl rounded-3xl overflow-hidden flex flex-col md:flex-row relative">
+        
+        <!-- Left Image Section -->
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center items-center relative border-b md:border-b-0 md:border-r border-blue-600/10 dark:border-white/10 bg-gradient-to-br from-white to-slate-50/50 dark:from-zinc-800/50 dark:to-zinc-900/50">
+            
+            <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-white/[0.02] bg-[length:16px_16px]"></div>
+            
+            <img src="https://public-files.gumroad.com/2c74gmg3i7sbb5wc75epnracqxr3" alt="MASARI PRO Cover" class="w-full h-auto object-contain max-h-[350px] drop-shadow-xl relative z-10 hover:scale-105 transition-transform duration-500">
+            
+        </div>
+
+        <!-- Right Content Section -->
+        <div class="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center relative bg-white dark:bg-zinc-900/50">
+            <div class="inline-block px-4 py-1.5 mb-6 rounded-full bg-secondary-600/10 dark:bg-secondary-500/20 text-secondary-600 dark:text-secondary-500 text-xs font-bold uppercase tracking-widest w-max border border-secondary-600/20">
+                Premium Access
+            </div>
+            
+            <h1 class="text-3xl lg:text-4xl font-extrabold mb-4 text-primary-600 dark:text-primary-500 tracking-tight" data-gumroad-field="name">
+                MASARI PRO 50 SCANS
+            </h1>
+            
+            <div class="text-5xl font-black mb-8 text-slate-900 dark:text-white flex items-center" data-gumroad-field="price">
+                $25
+            </div>
+            
+            <div class="prose prose-sm md:prose-base dark:prose-invert mb-10 text-slate-600 dark:text-slate-300 leading-relaxed" data-gumroad-field="description">
+                <p>Instantly unlock 50 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews.</p>
+            </div>
+            
+            <button data-gumroad-action="buy" class="group w-full bg-gradient-to-r from-secondary-600 to-primary-600 hover:from-secondary-500 hover:to-primary-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_8px_25px_rgba(37,99,235,0.25)] hover:shadow-[0_12px_35px_rgba(37,99,235,0.4)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                <span class="text-lg">Secure Your Credits</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+            
+            <p class="mt-6 text-center text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5 opacity-80">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Encrypted & Secure Checkout by Gumroad
+            </p>
+        </div>
+    </div>
+</body>
+</html>
