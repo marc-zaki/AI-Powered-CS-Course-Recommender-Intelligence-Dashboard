@@ -88,13 +88,32 @@ import logging
 async def gumroad_webhook(request: Request):
     payload = await request.body()
     signature = request.headers.get("x-gumroad-signature")
+    db = request.app.state.mongo_db
     
+    content_type = request.headers.get("content-type", "")
+    try:
+        if "application/json" in content_type:
+            data = await request.json()
+        else:
+            data = dict(await request.form())
+    except:
+        data = {"raw_payload": payload.decode('utf-8', errors='ignore')}
+        
+    # Log the webhook for debugging
+    if db is not None:
+        await db.webhook_logs.insert_one({
+            "source": "gumroad",
+            "signature_present": bool(signature),
+            "data": data,
+            "timestamp": datetime.now(timezone.utc)
+        })
+        
     if not signature:
-        raise HTTPException(status_code=400, detail="Missing signature")
+        return {"status": "ignored", "reason": "No signature"}
         
     gumroad_secret = os.environ.get("GUMROAD_SECRET")
     if not gumroad_secret:
-        raise HTTPException(status_code=500, detail="Webhook secret not configured")
+        return {"status": "ignored", "reason": "No secret configured"}
         
     expected_signature = hmac.new(
         gumroad_secret.encode('utf-8'),
@@ -103,26 +122,22 @@ async def gumroad_webhook(request: Request):
     ).hexdigest()
     
     if not hmac.compare_digest(expected_signature, signature):
-        raise HTTPException(status_code=403, detail="Invalid signature")
-        
-    content_type = request.headers.get("content-type", "")
-    try:
-        if "application/json" in content_type:
-            data = await request.json()
-        else:
-            data = await request.form()
-    except:
-        return {"status": "error", "message": "Failed to parse payload"}
+        return {"status": "ignored", "reason": "Invalid signature"}
         
     user_id = data.get("user_id")
-    permalink = data.get("permalink") # e.g. "masari-10"
+    permalink = data.get("permalink") or data.get("product_permalink")
     
     if not user_id:
-        # Sometimes custom fields are nested in Gumroad
         user_id = data.get("url_params[user_id]")
         
     if not user_id:
-        logging.error(f"Gumroad Webhook: No user_id found in payload. Data: {data}")
+        # Check all keys
+        for k, v in data.items():
+            if "user_id" in k.lower():
+                user_id = v
+                break
+                
+    if not user_id:
         return {"status": "ignored", "reason": "No user_id found"}
         
     credits_map = {
@@ -133,11 +148,8 @@ async def gumroad_webhook(request: Request):
     
     amount = credits_map.get(permalink, 0)
     
-    if amount > 0:
-        db = request.app.state.mongo_db
-        if db is not None:
-            await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": amount}})
-            logging.info(f"Gumroad Webhook: Added {amount} credits to user {user_id}")
+    if amount > 0 and db is not None:
+        await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": amount}})
         
     return {"status": "success"}
 
