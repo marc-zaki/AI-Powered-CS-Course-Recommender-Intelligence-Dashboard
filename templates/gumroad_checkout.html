@@ -78,10 +78,12 @@
                     <p>{{ description }}</p>
                 </div>
                 
-                <!-- Our beautiful Tailwind button that acts as the Gumroad overlay trigger -->
-                <a href="{{ gumroad_url }}?wanted=true&user_id={{ user_id }}" data-gumroad-overlay-checkout="true" class="group w-full bg-gradient-to-r from-secondary-600 to-primary-600 hover:from-secondary-500 hover:to-primary-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_8px_25px_rgba(37,99,235,0.25)] hover:shadow-[0_12px_35px_rgba(37,99,235,0.4)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3 no-underline border-0 cursor-pointer">
-                    <span class="text-lg">Secure Your Credits</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <!-- Use official gumroad-button class but strip its CSS to let our inner div handle the styling -->
+                <a href="{{ gumroad_url }}?wanted=true&user_id={{ user_id }}" class="gumroad-button" style="all: unset !important; display: block !important; width: 100% !important; cursor: pointer !important;">
+                    <div class="group w-full bg-gradient-to-r from-secondary-600 to-primary-600 hover:from-secondary-500 hover:to-primary-500 text-white font-bold py-4 px-8 rounded-2xl shadow-[0_8px_25px_rgba(37,99,235,0.25)] hover:shadow-[0_12px_35px_rgba(37,99,235,0.4)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3 no-underline border-0">
+                        <span class="text-lg">Secure Your Credits</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </div>
                 </a>
                 
                 <p class="mt-6 text-center text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5 opacity-80">
