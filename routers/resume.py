@@ -76,9 +76,24 @@ async def checkout_premium(request: Request, tier: str = "10"):
         }
     )
 
-@router.get("/checkout/success")
-async def checkout_success(request: Request):
-    flash(request, "Successfully purchased credits! They have been added to your account.", "success")
+@router.get("/checkout/demo_unlock")
+async def demo_unlock(request: Request, tier: str = "10"):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=303)
+        
+    credits_map = {
+        "10": 10,
+        "15": 20,
+        "25": 50
+    }
+    
+    amount = credits_map.get(tier, 10)
+    db = request.app.state.mongo_db
+    if db is not None:
+        await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": amount}})
+        
+    flash(request, f"Demo Successful! {amount} credits have been added to your account.", "success")
     return RedirectResponse(url="/dashboard", status_code=303)
 
 from fastapi import HTTPException
