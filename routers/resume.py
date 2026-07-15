@@ -46,21 +46,18 @@ async def checkout_premium(request: Request, tier: str = "10"):
             "product_name": "MASARI PRO 10 SCANS",
             "product_price": "10",
             "product_cover": "h23hlttkyiwe3x8own7qitxfvqcw",
-            "gumroad_url": "https://gumroad.com/l/masari-10",
             "description": "Instantly unlock 10 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
         },
         "15": {
             "product_name": "MASARI PRO 20 SCANS",
             "product_price": "15",
             "product_cover": "arw29xgaucbl0zg583emwr6rwyse",
-            "gumroad_url": "https://gumroad.com/l/masari-20",
             "description": "Instantly unlock 20 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
         },
         "25": {
             "product_name": "MASARI PRO 50 SCANS",
             "product_price": "25",
             "product_cover": "2c74gmg3i7sbb5wc75epnracqxr3",
-            "gumroad_url": "https://gumroad.com/l/masari-25",
             "description": "Instantly unlock 50 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
         }
     }
@@ -69,7 +66,7 @@ async def checkout_premium(request: Request, tier: str = "10"):
     
     return templates.TemplateResponse(
         request=request,
-        name="gumroad_checkout.html", 
+        name="demo_checkout.html", 
         context={
             "user_id": user_id,
             **product
@@ -98,65 +95,6 @@ async def demo_unlock(request: Request, tier: str = "10"):
 
 from fastapi import HTTPException
 import logging
-
-@router.post("/api/webhooks/gumroad")
-async def gumroad_webhook(request: Request):
-    payload = await request.body()
-    signature = request.headers.get("x-gumroad-signature")
-    db = request.app.state.mongo_db
-    
-    content_type = request.headers.get("content-type", "")
-    try:
-        if "application/json" in content_type:
-            data = await request.json()
-        else:
-            data = dict(await request.form())
-    except:
-        data = {"raw_payload": payload.decode('utf-8', errors='ignore')}
-        
-    # Log the webhook for debugging
-    if db is not None:
-        await db.webhook_logs.insert_one({
-            "source": "gumroad",
-            "signature_present": bool(signature),
-            "data": data,
-            "timestamp": datetime.now(timezone.utc)
-        })
-        
-    user_id = data.get("user_id")
-    permalink = data.get("permalink") or data.get("product_permalink")
-    email = data.get("email")
-    
-    if not user_id:
-        user_id = data.get("url_params[user_id]")
-        
-    if not user_id:
-        for k, v in data.items():
-            if "user_id" in k.lower():
-                user_id = v
-                break
-                
-    # FOOLPROOF FALLBACK: Look up by email
-    if not user_id and email and db is not None:
-        user = await db.users.find_one({"email": email})
-        if user:
-            user_id = str(user["_id"])
-            
-    if not user_id:
-        return {"status": "ignored", "reason": "No user_id found (and email didn't match)"}
-        
-    credits_map = {
-        "masari-10": 10,
-        "masari-20": 20,
-        "masari-25": 50
-    }
-    
-    amount = credits_map.get(permalink, 0)
-    
-    if amount > 0 and db is not None:
-        await db.users.update_one({"_id": user_id}, {"$inc": {"resume_credits": amount}})
-        
-    return {"status": "success"}
 
 @router.post("/api/resume/analyze")
 async def api_resume_analyze(request: Request, job_description: str = Form(""), resume: UploadFile = File(None)):
