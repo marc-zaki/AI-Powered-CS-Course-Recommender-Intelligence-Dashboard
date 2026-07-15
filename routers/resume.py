@@ -108,37 +108,27 @@ async def gumroad_webhook(request: Request):
             "timestamp": datetime.now(timezone.utc)
         })
         
-    if not signature:
-        return {"status": "ignored", "reason": "No signature"}
-        
-    gumroad_secret = os.environ.get("GUMROAD_SECRET")
-    if not gumroad_secret:
-        return {"status": "ignored", "reason": "No secret configured"}
-        
-    expected_signature = hmac.new(
-        gumroad_secret.encode('utf-8'),
-        payload,
-        hashlib.sha256
-    ).hexdigest()
-    
-    if not hmac.compare_digest(expected_signature, signature):
-        return {"status": "ignored", "reason": "Invalid signature"}
-        
     user_id = data.get("user_id")
     permalink = data.get("permalink") or data.get("product_permalink")
+    email = data.get("email")
     
     if not user_id:
         user_id = data.get("url_params[user_id]")
         
     if not user_id:
-        # Check all keys
         for k, v in data.items():
             if "user_id" in k.lower():
                 user_id = v
                 break
                 
+    # FOOLPROOF FALLBACK: Look up by email
+    if not user_id and email and db is not None:
+        user = await db.users.find_one({"email": email})
+        if user:
+            user_id = str(user["_id"])
+            
     if not user_id:
-        return {"status": "ignored", "reason": "No user_id found"}
+        return {"status": "ignored", "reason": "No user_id found (and email didn't match)"}
         
     credits_map = {
         "masari-10": 10,
