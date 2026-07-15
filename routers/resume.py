@@ -67,11 +67,14 @@ async def checkout_premium(request: Request, tier: str = "10"):
     
     product = products.get(tier, products["10"])
     
-    return templates.TemplateResponse("gumroad_checkout.html", {
-        "request": request,
-        "user_id": user_id,
-        **product
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="gumroad_checkout.html", 
+        context={
+            "user_id": user_id,
+            **product
+        }
+    )
 
 @router.get("/checkout/success")
 async def checkout_success(request: Request):
