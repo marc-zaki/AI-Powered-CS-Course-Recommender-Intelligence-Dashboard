@@ -20,14 +20,14 @@
                                 <th>Premium</th>
                                 <th>Track</th>
                                 <th>Level</th>
-                                <th>Taken</th>
+                                <th>Credits</th>
+                                <th>Courses Taken</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for u in users %}
                             <tr>
-                                <td data-label="Name">{{ u.name }}</td>
                                 <td data-label="Email">{{ u.email }}</td>
                                 <td data-label="Role">
                                     <span
@@ -49,6 +49,9 @@
                                 </td>
                                 <td data-label="Track">{{ u.track }}</td>
                                 <td data-label="Level">{{ u.current_skill_level }}</td>
+                                <td data-label="Credits">
+                                    <span style="font-weight: 700; color: var(--primary);">{{ u.resume_credits|default(0, true) }}</span>
+                                </td>
                                 <td data-label="Courses Taken">{{ u.taken_courses|length }}</td>
                                 <td data-label="Actions">
                                     <div class="admin-actions">
