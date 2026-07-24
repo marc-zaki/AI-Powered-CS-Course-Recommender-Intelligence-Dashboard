@@ -11,6 +11,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import nltk
 from dotenv import load_dotenv
+
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from dependencies import limiter
+
+
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 try:
@@ -100,6 +107,9 @@ async def lifespan(app: FastAPI):
         mongo_client.close()
 
 app = FastAPI(lifespan=lifespan)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 # --- VERCEL SERVERLESS COMPATIBILITY ---
 # Vercel's Python runtime skips FastAPI lifespan events.

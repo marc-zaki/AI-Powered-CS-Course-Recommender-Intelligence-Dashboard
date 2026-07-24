@@ -13,6 +13,8 @@ import httpx
 import google.generativeai as genai
 import tempfile
 
+from dependencies import limiter
+
 router = APIRouter()
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
@@ -300,6 +302,7 @@ async def api_interview_followup(request: Request):
 
 
 @router.post("/api/interview/generate_technical")
+@limiter.limit("5/minute")
 async def api_interview_generate_technical(request: Request):
     try:
         data = await request.json()
@@ -424,6 +427,7 @@ async def api_interview_transcribe(audio: UploadFile = File(...)):
 
 
 @router.post("/api/interview/behavioral")
+@limiter.limit("5/minute")
 async def api_interview_behavioral(request: Request):
     try:
         data = await request.json()
@@ -497,6 +501,7 @@ async def api_interview_behavioral(request: Request):
 
 
 @router.post("/api/interview/star_analyze")
+@limiter.limit("5/minute")
 async def api_interview_star_analyze(request: Request):
     try:
         data = await request.json()
@@ -719,6 +724,7 @@ async def api_interview_stats(request: Request):
         return JSONResponse({"error": str(e)}, status_code=500)
 
 @router.post("/api/chat_assistant_stream")
+@limiter.limit("10/minute")
 async def chat_assistant_stream(request: Request):
     try:
         data = await request.json()
@@ -803,6 +809,7 @@ async def chat_assistant_stream(request: Request):
     return StreamingResponse(generate(), media_type="text/event-stream")
 
 @router.get("/api/generate_quiz")
+@limiter.limit("5/minute")
 async def generate_quiz(request: Request):
     db = request.app.state.mongo_db
     user_id = request.session.get('user_id')
@@ -908,6 +915,7 @@ async def submit_quiz(request: Request):
     })
 
 @router.post("/api/cheatsheet/generate")
+@limiter.limit("5/minute")
 async def api_cheatsheet_generate(request: Request):
     try:
         data = await request.json()

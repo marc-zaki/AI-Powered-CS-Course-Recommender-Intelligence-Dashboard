@@ -13,6 +13,7 @@ import google.generativeai as genai
 from pdfminer.high_level import extract_text
 
 from flash import flash
+from dependencies import limiter
 
 router = APIRouter()
 
@@ -97,6 +98,7 @@ from fastapi import HTTPException
 import logging
 
 @router.post("/api/resume/analyze")
+@limiter.limit("3/minute")
 async def api_resume_analyze(request: Request, job_description: str = Form(""), resume: UploadFile = File(None)):
     user_id = request.session.get('user_id')
     if not user_id:

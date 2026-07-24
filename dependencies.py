@@ -1,4 +1,8 @@
 from fastapi import Request, Depends
+from slowapi import Limiter
+from slowapi.util import get_remote_address  # type: ignore
+
+limiter = Limiter(key_func=get_remote_address)
 
 async def get_db(request: Request):
     return request.app.state.mongo_db if hasattr(request.app.state, 'mongo_db') else None

@@ -15,6 +15,9 @@ import networkx as nx
 from sklearn.metrics.pairwise import cosine_similarity
 
 import ai_core
+import google.generativeai as genai
+
+from dependencies import limiter
 
 router = APIRouter()
 
@@ -221,6 +224,7 @@ def generate_local_fallback_path(user_goal, matched_courses):
     return "".join(html)
 
 @router.post('/generate_path')
+@limiter.limit("10/minute")
 async def generate_path(request: Request):
     if ai_core.df is None:
         return JSONResponse({"success": False, "error": "Dataset is not loaded."}, status_code=500)
@@ -503,6 +507,7 @@ async def delete_path(request: Request):
     return JSONResponse({"success": True})
 
 @router.post('/api/chat_assistant')
+@limiter.limit("10/minute")
 async def chat_assistant(request: Request):
     from routers.auth import get_current_user
     user = await get_current_user(request)

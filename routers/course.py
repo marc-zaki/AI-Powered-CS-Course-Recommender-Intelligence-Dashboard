@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 import httpx
 import google.generativeai as genai
 
-from dependencies import get_db, get_current_user
+from dependencies import get_db, get_current_user, limiter
 import ai_core
 
 router = APIRouter()
@@ -201,6 +201,7 @@ async def api_course_quick_search(q: str = ""):
 
 
 @router.post("/api/course/analyze")
+@limiter.limit("5/minute")
 async def api_course_analyze(request: Request, db=Depends(get_db), user=Depends(get_current_user)):
     try:
         data = await request.json()
@@ -270,6 +271,7 @@ async def api_course_analyze(request: Request, db=Depends(get_db), user=Depends(
 
 
 @router.post("/api/course/compare")
+@limiter.limit("5/minute")
 async def api_course_compare(request: Request, db=Depends(get_db), user=Depends(get_current_user)):
     try:
         data = await request.json()
@@ -412,6 +414,7 @@ async def check_link_cached(db, url, title, provider):
     return valid, fallback_url
 
 @router.get('/validate_link')
+@limiter.limit("20/minute")
 async def validate_link(request: Request, db=Depends(get_db)):
     url = request.query_params.get('url', '').strip()
     title = request.query_params.get('title', '').strip()
@@ -423,6 +426,7 @@ async def validate_link(request: Request, db=Depends(get_db)):
     return JSONResponse({"valid": valid, "fallback_url": url if valid else fallback_url})
 
 @router.get('/verify_link')
+@limiter.limit("20/minute")
 async def verify_link(request: Request, db=Depends(get_db)):
     url = request.query_params.get('url', '').strip()
     title = request.query_params.get('title', '').strip()
