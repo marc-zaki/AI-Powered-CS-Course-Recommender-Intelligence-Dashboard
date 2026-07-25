@@ -43,36 +43,20 @@ async def checkout_premium(request: Request, tier: str = "10"):
         return RedirectResponse(url="/login", status_code=303)
         
     products = {
-        "10": {
-            "product_name": "MASARI PRO 10 SCANS",
-            "product_price": "10",
-            "product_cover": "h23hlttkyiwe3x8own7qitxfvqcw",
-            "description": "Instantly unlock 10 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
-        },
-        "15": {
-            "product_name": "MASARI PRO 20 SCANS",
-            "product_price": "15",
-            "product_cover": "arw29xgaucbl0zg583emwr6rwyse",
-            "description": "Instantly unlock 20 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
-        },
-        "25": {
-            "product_name": "MASARI PRO 50 SCANS",
-            "product_price": "25",
-            "product_cover": "2c74gmg3i7sbb5wc75epnracqxr3",
-            "description": "Instantly unlock 50 Premium ATS Scans on the MASARI platform! Get AI-powered feedback on your software engineering resume, discover missing keywords, and optimize your bullet points to bypass ATS filters and land more interviews."
-        }
+        "10": {"name": "MASARI Starter Pack", "price": "10", "desc": "Unlock 10 AI-powered ATS Resume Scans and detailed tailoring recommendations."},
+        "15": {"name": "MASARI Career Growth Pack", "price": "15", "desc": "Unlock 20 AI-powered ATS Resume Scans and comprehensive skill gap analysis."},
+        "25": {"name": "MASARI Executive Power Pack", "price": "25", "desc": "Unlock 50 AI-powered ATS Resume Scans, priority processing, and unlimited interview prep."}
     }
     
-    product = products.get(tier, products["10"])
+    prod = products.get(tier, products["10"])
     
-    return templates.TemplateResponse(
-        request=request,
-        name="demo_checkout.html", 
-        context={
-            "user_id": user_id,
-            **product
-        }
-    )
+    return templates.TemplateResponse(request=request, name="paypal_checkout.html", context={
+        "request": request,
+        "product_name": prod["name"],
+        "product_price": prod["price"],
+        "description": prod["desc"],
+        "paypal_client_id": os.environ.get("PAYPAL_CLIENT_ID", "test")
+    })
 
 @router.get("/checkout/demo_unlock")
 async def demo_unlock(request: Request, tier: str = "10"):

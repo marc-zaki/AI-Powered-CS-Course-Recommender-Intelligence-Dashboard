@@ -138,7 +138,7 @@ app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.
 
 
 # We will import and mount routers here:
-from routers import pages, auth, course, interview, resume, admin, dashboard
+from routers import pages, auth, course, interview, resume, admin, dashboard, payments
 
 app.include_router(pages.router)
 app.include_router(auth.router)
@@ -147,4 +147,5 @@ app.include_router(interview.router)
 app.include_router(resume.router)
 app.include_router(admin.router)
 app.include_router(dashboard.router)
+app.include_router(payments.router)
 
