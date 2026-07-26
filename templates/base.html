@@ -10,9 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MASARI | AI Powered Learning Dashboard{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', path='favicon.png') }}">
+    <link rel="icon" type="image/png" href="/static/favicon.png">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -25,7 +25,7 @@
         <aside class="app-sidebar" id="app-sidebar">
             <div class="app-sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <a href="/" class="logo">
-                    <img src="{{ url_for('static', path='logo.png') }}" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
+                    <img src="/static/logo.png" alt="MASARI" style="height: 26px; width: auto; max-width: 150px; object-fit: contain;">
                 </a>
                 <button class="mobile-close-btn" onclick="toggleSidebar(event)">
                     <i data-lucide="x" style="width: 20px; height: 20px;"></i>
@@ -69,7 +69,7 @@
                         <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
                     </button>
                     <a href="/" class="logo header-logo">
-                        <img src="{{ url_for('static', path='logo.png') }}" alt="MASARI" style="height: 18px; width: auto; max-width: 150px; object-fit: contain;">
+                        <img src="/static/logo.png" alt="MASARI" style="height: 18px; width: auto; max-width: 150px; object-fit: contain;">
                     </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -186,7 +186,7 @@
     <script>
       lucide.createIcons();
     </script>
-    <script src="{{ url_for('static', path='js/main.js') }}"></script>
+    <script src="/static/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
