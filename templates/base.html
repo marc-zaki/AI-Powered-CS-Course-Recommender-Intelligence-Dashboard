@@ -182,9 +182,10 @@
     </div>
 
     <!-- Move main script to end for logic updates -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script>
-      lucide.createIcons();
+      document.addEventListener('DOMContentLoaded', () => { if (window.lucide) { lucide.createIcons(); } });
+      if (window.lucide) { lucide.createIcons(); }
     </script>
     <script src="/static/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
