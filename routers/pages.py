@@ -52,6 +52,16 @@ async def terms(request: Request):
     user = await get_current_user(request)
     return templates.TemplateResponse(request=request, name="terms.html", context= {"request": request, "current_user": user})
 
+@router.get("/contact", response_class=HTMLResponse)
+async def contact(request: Request):
+    user = await get_current_user(request)
+    return templates.TemplateResponse(request=request, name="contact.html", context= {"request": request, "current_user": user})
+
+@router.get("/refund", response_class=HTMLResponse)
+async def refund(request: Request):
+    user = await get_current_user(request)
+    return templates.TemplateResponse(request=request, name="refund.html", context= {"request": request, "current_user": user})
+
 @router.get("/pricing", response_class=HTMLResponse)
 async def pricing(request: Request):
     user = await get_current_user(request)

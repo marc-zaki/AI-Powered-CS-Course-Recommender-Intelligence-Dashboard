@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Refund Policy | MASARI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; padding: 4rem 1rem;">
+    <div style="background: var(--bg-card); padding: 3rem; border-radius: 16px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass);">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--text-color);">Refund Policy</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">Last updated: August 2026</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; color: var(--text-color); line-height: 1.6;">
+            <div>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">1. All Sales Are Final</h3>
+                <p style="color: var(--text-muted);">Because MASARI provides digital goods and API-driven AI services that consume compute resources immediately upon usage, we do not offer refunds once a purchase is completed and ATS Scans are credited to your account.</p>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">2. Technical Issues</h3>
+                <p style="color: var(--text-muted);">If you experience technical difficulties using our platform, or if an ATS Scan fails to process due to a system error on our end, please contact our support team. We will investigate the issue and, if verified, re-credit your account with the lost scan(s).</p>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">3. Fraudulent Transactions</h3>
+                <p style="color: var(--text-muted);">If you suspect a fraudulent transaction on your card, please contact your bank or credit card provider. We cooperate fully with payment providers to resolve unauthorized charges.</p>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">4. Contact Us</h3>
+                <p style="color: var(--text-muted);">If you have any questions about this Refund Policy, please contact us at <a href="mailto:support@masari-ai.com" style="color: var(--primary);">support@masari-ai.com</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
