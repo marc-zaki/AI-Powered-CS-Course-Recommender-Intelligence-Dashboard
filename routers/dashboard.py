@@ -524,6 +524,7 @@ async def chat_assistant(request: Request):
         "Answer the student's questions concisely, helpfully, and professionally.\n"
         "Explain complex CS concepts clearly, suggest appropriate learning habits, "
         "and mention matching courses or track guidelines when appropriate.\n"
+        "STRICT RULE: If the user asks a question that is NOT relevant to computer science, programming, career advice, or academics (e.g. 'how to bake a cake', 'tell me a joke', general knowledge), you MUST respectfully decline to answer it and remind them that you are an AI focused exclusively on Computer Science.\n"
         "Formatting tip: Use standard Markdown formatting like **bold** or `code` snippets where appropriate."
     )
     
