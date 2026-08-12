@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}About Us | MASARI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; padding: 4rem 1rem;">
+    <!-- Hero Section -->
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem; color: var(--text-color);">Meet the Team Behind MASARI</h1>
+        <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">We are a passionate team of developers and AI enthusiasts dedicated to revolutionizing computer science education and career prep.</p>
+    </div>
+
+    <!-- Team Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+        
+        <!-- Team Member 1: Marc -->
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass); text-align: center; transition: transform 0.3s ease;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); margin: 0 auto 1.5rem auto; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 4px solid var(--bg-main);">
+                <i data-lucide="user" style="width: 48px; height: 48px; color: white;"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-color);">Marc Zaki</h3>
+            <p style="color: var(--primary); font-weight: 600; margin-bottom: 1rem;">Co-Founder & Developer</p>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Driving the vision and technical architecture for MASARI's AI engine.</p>
+            <a href="https://www.linkedin.com/in/marc-zakii/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); color: var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='white';" onmouseout="this.style.background='rgba(var(--primary-rgb), 0.1)'; this.style.color='var(--primary)';">
+                <i data-lucide="linkedin" style="width: 20px; height: 20px;"></i>
+            </a>
+        </div>
+
+        <!-- Team Member 2: Retag -->
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass); text-align: center; transition: transform 0.3s ease;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #3b82f6); margin: 0 auto 1.5rem auto; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 4px solid var(--bg-main);">
+                <i data-lucide="user" style="width: 48px; height: 48px; color: white;"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-color);">Retag Ahmed</h3>
+            <p style="color: var(--primary); font-weight: 600; margin-bottom: 1rem;">Co-Founder & Developer</p>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Ensuring robust system design and seamless user experiences across the platform.</p>
+            <a href="https://www.linkedin.com/in/retag-ahmed-retagahmed/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); color: var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='white';" onmouseout="this.style.background='rgba(var(--primary-rgb), 0.1)'; this.style.color='var(--primary)';">
+                <i data-lucide="linkedin" style="width: 20px; height: 20px;"></i>
+            </a>
+        </div>
+
+        <!-- Team Member 3: Muhammad -->
+        <div style="background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glass); text-align: center; transition: transform 0.3s ease;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #ec4899); margin: 0 auto 1.5rem auto; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 4px solid var(--bg-main);">
+                <i data-lucide="user" style="width: 48px; height: 48px; color: white;"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-color);">Muhammad Kandil</h3>
+            <p style="color: var(--primary); font-weight: 600; margin-bottom: 1rem;">Co-Founder & Developer</p>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">Innovating the core recommendation algorithms and data pipelines.</p>
+            <a href="https://www.linkedin.com/in/muhammad-kandil-/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(var(--primary-rgb), 0.1); color: var(--primary); transition: all 0.2s ease;" onmouseover="this.style.background='var(--primary)'; this.style.color='white';" onmouseout="this.style.background='rgba(var(--primary-rgb), 0.1)'; this.style.color='var(--primary)';">
+                <i data-lucide="linkedin" style="width: 20px; height: 20px;"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
