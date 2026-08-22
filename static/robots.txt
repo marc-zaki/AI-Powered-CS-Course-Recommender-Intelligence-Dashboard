@@ -8,4 +8,4 @@ Disallow: /course/
 Disallow: /resume/
 Disallow: /interview/
 
-Sitemap: https://cs-recommender.com/sitemap.xml
+Sitemap: https://masari.up.railway.app/sitemap.xml
