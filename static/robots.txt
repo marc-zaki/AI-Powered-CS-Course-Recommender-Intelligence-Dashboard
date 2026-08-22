@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /profile/
+Disallow: /course/
+Disallow: /resume/
+Disallow: /interview/
+
+Sitemap: https://cs-recommender.com/sitemap.xml

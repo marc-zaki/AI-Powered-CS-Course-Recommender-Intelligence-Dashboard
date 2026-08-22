@@ -136,9 +136,15 @@ app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY, max_age=86400 * 30)
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")), name="static")
 
 # Inject get_flashed_messages into all templates
+from fastapi.responses import FileResponse
 
+@app.get("/robots.txt", include_in_schema=False)
+async def robots_txt():
+    return FileResponse(os.path.join(os.path.dirname(__file__), "static", "robots.txt"), media_type="text/plain")
 
-
+@app.get("/sitemap.xml", include_in_schema=False)
+async def sitemap_xml():
+    return FileResponse(os.path.join(os.path.dirname(__file__), "static", "sitemap.xml"), media_type="application/xml")
 # We will import and mount routers here:
 from routers import pages, auth, course, interview, resume, admin, dashboard
 
