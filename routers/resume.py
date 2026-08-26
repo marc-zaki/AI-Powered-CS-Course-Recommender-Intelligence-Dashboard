@@ -47,9 +47,9 @@ async def checkout_instapay(request: Request, tier: str = "10"):
     email = user.get("email", "") if user else ""
         
     products = {
-        "10": {"name": "MASARI Starter Pack", "price": "500", "desc": "Unlock 10 AI-powered ATS Resume Scans and detailed tailoring recommendations."},
-        "15": {"name": "MASARI Career Growth Pack", "price": "750", "desc": "Unlock 20 AI-powered ATS Resume Scans and comprehensive skill gap analysis."},
-        "25": {"name": "MASARI Executive Power Pack", "price": "1250", "desc": "Unlock 50 AI-powered ATS Resume Scans, priority processing, and unlimited interview prep."}
+        "10": {"name": "MASARI Starter Pack", "price": "250", "desc": "Unlock 10 AI-powered ATS Resume Scans and detailed tailoring recommendations."},
+        "15": {"name": "MASARI Career Growth Pack", "price": "500", "desc": "Unlock 20 AI-powered ATS Resume Scans and comprehensive skill gap analysis."},
+        "25": {"name": "MASARI Executive Power Pack", "price": "750", "desc": "Unlock 50 AI-powered ATS Resume Scans, priority processing, and unlimited interview prep."}
     }
     
     prod = products.get(tier, products["10"])
