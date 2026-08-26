@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | MASARI{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; padding: 4rem 1rem;">
+    <!-- Order Summary -->
+    <div style="background: var(--surface); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+        <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--text-color);">Complete Your Order</h1>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Manual InstaPay Checkout</p>
+        
+        <div style="background: var(--bg-main); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px dashed var(--primary);">
+            <div style="font-weight: 700; color: var(--primary); font-size: 1.25rem; margin-bottom: 0.5rem;">{{ product_name }}</div>
+            <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">{{ description }}</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--text-color);">{{ product_price }} <span style="font-size: 1rem; color: var(--text-muted);">EGP</span></div>
+        </div>
+    </div>
+
+    <!-- InstaPay Instructions -->
+    <div style="background: var(--surface); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--text-color); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: var(--primary); color: white; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1rem;">1</span>
+            Send the transfer via InstaPay
+        </h3>
+        
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">Copy our InstaPay handle below and send exactly <strong>{{ product_price }} EGP</strong>.</p>
+        
+        <div style="background: var(--bg-main); padding: 1rem; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <code style="font-size: 1.1rem; color: var(--text-color); font-weight: 600;" id="instapay-handle">https://ipn.eg/S/marczaki/instapay/2X0ZlH</code>
+            <button onclick="copyHandle()" class="btn btn-outline" style="padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem;">Copy</button>
+        </div>
+
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--text-color); display: flex; align-items: center; gap: 0.5rem;">
+            <span style="background: #25D366; color: white; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1rem;">2</span>
+            Send us the receipt
+        </h3>
+        
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem;">Click the button below to open a WhatsApp chat with the MASARI team. Attach a screenshot of your successful InstaPay transfer.</p>
+        
+        {% set whatsapp_msg = "Hello MASARI Team! I just paid " + product_price + " EGP via InstaPay for the " + product_name + ". My account email is: " + user_email + " (Here is the receipt screenshot)." %}
+        
+        <a href="https://wa.me/201551052900?text={{ whatsapp_msg | urlencode }}" target="_blank" rel="noopener noreferrer" class="btn" style="width: 100%; padding: 1rem; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; background: #25D366; color: white; border: none; text-decoration: none; border-radius: 8px; font-weight: 700; transition: background 0.3s ease;" onmouseover="this.style.background='#1da851'" onmouseout="this.style.background='#25D366'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="fill: white;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            Send Receipt on WhatsApp
+        </a>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 1rem;">We will credit your account immediately upon verifying the receipt!</p>
+    </div>
+</div>
+
+<script>
+function copyHandle() {
+    const handle = document.getElementById('instapay-handle').innerText;
+    navigator.clipboard.writeText(handle).then(() => {
+        alert("InstaPay handle copied to clipboard!");
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+</script>
+{% endblock %}

@@ -35,15 +35,33 @@ import hmac
 import hashlib
 from datetime import datetime, timezone
 
-@router.get("/checkout/premium")
-async def checkout_premium(request: Request, tier: str = "10"):
+@router.get("/checkout/instapay")
+async def checkout_instapay(request: Request, tier: str = "10"):
     user_id = request.session.get('user_id')
     if not user_id:
         flash(request, "Please log in to purchase scans.", "warning")
         return RedirectResponse(url="/login", status_code=303)
         
-    flash(request, "Payments are coming soon! We are finalizing our new payment gateway.", "info")
-    return RedirectResponse(url="/pricing", status_code=303)
+    db = request.app.state.mongo_db
+    user = await db.users.find_one({"_id": user_id})
+    email = user.get("email", "") if user else ""
+        
+    products = {
+        "10": {"name": "MASARI Starter Pack", "price": "500", "desc": "Unlock 10 AI-powered ATS Resume Scans and detailed tailoring recommendations."},
+        "15": {"name": "MASARI Career Growth Pack", "price": "750", "desc": "Unlock 20 AI-powered ATS Resume Scans and comprehensive skill gap analysis."},
+        "25": {"name": "MASARI Executive Power Pack", "price": "1250", "desc": "Unlock 50 AI-powered ATS Resume Scans, priority processing, and unlimited interview prep."}
+    }
+    
+    prod = products.get(tier, products["10"])
+    
+    return templates.TemplateResponse(request=request, name="instapay_checkout.html", context={
+        "request": request,
+        "product_name": prod["name"],
+        "product_price": prod["price"],
+        "description": prod["desc"],
+        "tier": tier,
+        "user_email": email
+    })
 
 @router.get("/checkout/demo_unlock")
 async def demo_unlock(request: Request, tier: str = "10"):
